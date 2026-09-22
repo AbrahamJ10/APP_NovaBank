@@ -16,56 +16,56 @@ import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { getLastAccount } from '../../lib/secureTokens';
 
-const RADIUS = 46;
-const CIRC = 2 * Math.PI * RADIUS;
+const RADIO = 46;
+const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
 export default function SecurityScreen() {
   const nav = useNavigation<any>();
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { alerts, toggleAlert, panicMode, openPanic, closePanic, sessions, loadSecurity } = useAppState();
-  const [confirmPanic, setConfirmPanic] = useState(false);
+  const [confirmarPanico, setConfirmarPanico] = useState(false);
 
   useEffect(() => {
     loadSecurity();
   }, [loadSecurity]);
 
-  const [faceIdOn, setFaceIdOn] = useState(false);
+  const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
     Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), getLastAccount()])
-      .then(([hw, enrolled, remembered]) => setFaceIdOn(hw && enrolled && !!remembered))
-      .catch(() => setFaceIdOn(false));
+      .then(([hw, enrolled, remembered]) => setFaceIdActivo(hw && enrolled && !!remembered))
+      .catch(() => setFaceIdActivo(false));
   }, []);
 
-  const otherSessions = Math.max(0, sessions.length - 1);
-  const noSuspicious = otherSessions === 0;
+  const otrasSesiones = Math.max(0, sessions.length - 1);
+  const sinSospechosas = otrasSesiones === 0;
 
-  const score = useMemo(() => {
-    let s = 100;
-    if (!faceIdOn) s -= 10;
-    if (!noSuspicious) s -= 8;
-    if (!alerts.compra) s -= 4;
-    if (!alerts.retiro) s -= 4;
-    if (!alerts.login) s -= 6;
-    return Math.max(0, Math.min(100, s));
-  }, [faceIdOn, noSuspicious, alerts]);
+  const puntaje = useMemo(() => {
+    let puntos = 100;
+    if (!faceIdActivo) puntos -= 10;
+    if (!sinSospechosas) puntos -= 8;
+    if (!alerts.compra) puntos -= 4;
+    if (!alerts.retiro) puntos -= 4;
+    if (!alerts.login) puntos -= 6;
+    return Math.max(0, Math.min(100, puntos));
+  }, [faceIdActivo, sinSospechosas, alerts]);
 
-  const tasks = [
-    { icon: 'fingerprint', done: faceIdOn, label: t('security.taskFaceId'), desc: faceIdOn ? t('security.taskFaceIdDesc') : t('security.taskFaceIdDescOff') },
+  const tareas = [
+    { icon: 'fingerprint', done: faceIdActivo, label: t('security.taskFaceId'), desc: faceIdActivo ? t('security.taskFaceIdDesc') : t('security.taskFaceIdDescOff') },
     // Siempre true, no es un relleno: toda transferencia y cambio de perfil
     // ya exige un OTP real por correo en toda la app — no hay un estado
     // "apagado" que verificar.
     { icon: 'password', done: true, label: t('security.taskTwoStep'), desc: t('security.taskTwoStepDesc') },
     {
       icon: 'gpp_maybe',
-      done: noSuspicious,
+      done: sinSospechosas,
       label: t('security.taskSuspicious'),
-      desc: noSuspicious ? t('security.taskSuspiciousOk') : t('security.taskSuspiciousBad', { count: String(otherSessions) }),
+      desc: sinSospechosas ? t('security.taskSuspiciousOk') : t('security.taskSuspiciousBad', { count: String(otrasSesiones) }),
     },
     { icon: 'notifications_active', done: alerts.compra && alerts.retiro && alerts.login, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
   ];
 
-  const alertRows: { key: keyof typeof alerts; icon: string; label: string }[] = [
+  const filasAlerta: { key: keyof typeof alerts; icon: string; label: string }[] = [
     { key: 'compra', icon: 'shopping_cart', label: t('security.alertPurchase') },
     { key: 'retiro', icon: 'local_atm', label: t('security.alertWithdrawal') },
     { key: 'login', icon: 'login', label: t('security.alertLogin') },
@@ -86,14 +86,14 @@ export default function SecurityScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
           <View style={{ width: 112, height: 112, alignItems: 'center', justifyContent: 'center' }}>
             <Svg width={112} height={112} style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>
-              <Circle cx={56} cy={56} r={RADIUS} stroke="rgba(255,255,255,.15)" strokeWidth={9} fill="none" />
-              <Circle cx={56} cy={56} r={RADIUS} stroke="#C9A227" strokeWidth={9} fill="none" strokeDasharray={`${CIRC},${CIRC}`} strokeDashoffset={CIRC * (1 - score / 100)} strokeLinecap="round" />
+              <Circle cx={56} cy={56} r={RADIO} stroke="rgba(255,255,255,.15)" strokeWidth={9} fill="none" />
+              <Circle cx={56} cy={56} r={RADIO} stroke="#C9A227" strokeWidth={9} fill="none" strokeDasharray={`${CIRCUNFERENCIA},${CIRCUNFERENCIA}`} strokeDashoffset={CIRCUNFERENCIA * (1 - puntaje / 100)} strokeLinecap="round" />
             </Svg>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 28, color: '#fff', letterSpacing: -1 }}>{score}</Text>
+            <Text style={{ fontFamily: fonts.heading, fontSize: 28, color: '#fff', letterSpacing: -1 }}>{puntaje}</Text>
             <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 8.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('security.of100')}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 17, color: '#fff' }}>{score >= 90 ? t('security.excellent') : score >= 70 ? t('security.good') : t('security.atRisk')}</Text>
+            <Text style={{ fontFamily: fonts.headingBold, fontSize: 17, color: '#fff' }}>{puntaje >= 90 ? t('security.excellent') : puntaje >= 70 ? t('security.good') : t('security.atRisk')}</Text>
             <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.66)' }}>{t('security.completeActions')}</Text>
           </View>
         </View>
@@ -102,12 +102,12 @@ export default function SecurityScreen() {
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
         <View style={{ marginTop: 14, gap: 16 }}>
-          {tasks.map((task) => (
-            <View key={task.label} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-              <Icon name={task.done ? 'check_circle' : task.icon} size={20} color={task.done ? theme.green : theme.red} />
+          {tareas.map((tarea) => (
+            <View key={tarea.label} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+              <Icon name={tarea.done ? 'check_circle' : tarea.icon} size={20} color={tarea.done ? theme.green : theme.red} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{task.label}</Text>
-                <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>{task.desc}</Text>
+                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{tarea.label}</Text>
+                <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>{tarea.desc}</Text>
               </View>
             </View>
           ))}
@@ -115,24 +115,24 @@ export default function SecurityScreen() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 18 }}>
-        <ModuleRow
-          icon="devices"
-          label={t('security.devicesSessions')}
-          desc={t('devices.subtitle', { count: String(sessions.length) })}
-          badge={otherSessions > 0 ? String(otherSessions) : undefined}
-          onPress={() => nav.navigate('Devices')}
+        <FilaModulo
+          icono="devices"
+          etiqueta={t('security.devicesSessions')}
+          descripcion={t('devices.subtitle', { count: String(sessions.length) })}
+          insignia={otrasSesiones > 0 ? String(otrasSesiones) : undefined}
+          alPresionar={() => nav.navigate('Devices')}
         />
-        <ModuleRow icon="place" label={t('security.limitsGeo')} desc={t('security.limitsGeoDesc')} onPress={() => nav.navigate('Limits')} last />
+        <FilaModulo icono="place" etiqueta={t('security.limitsGeo')} descripcion={t('security.limitsGeoDesc')} alPresionar={() => nav.navigate('Limits')} ultimo />
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
         <View style={{ marginTop: 10 }}>
-          {alertRows.map((a) => (
-            <View key={a.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
-              <Icon name={a.icon} size={19} color={theme.soft} />
-              <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{a.label}</Text>
-              <Toggle value={alerts[a.key]} onChange={() => toggleAlert(a.key)} />
+          {filasAlerta.map((fila) => (
+            <View key={fila.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
+              <Icon name={fila.icon} size={19} color={theme.soft} />
+              <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{fila.label}</Text>
+              <Toggle value={alerts[fila.key]} onChange={() => toggleAlert(fila.key)} />
             </View>
           ))}
         </View>
@@ -155,14 +155,14 @@ export default function SecurityScreen() {
 
       {!panicMode && (
         <>
-          <DangerOutlineButton label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmPanic(true)} style={{ marginTop: 16 }} />
+          <DangerOutlineButton label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmarPanico(true)} style={{ marginTop: 16 }} />
           <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
             {t('security.panicHint')}
           </Text>
         </>
       )}
 
-      <BottomSheet visible={confirmPanic} onClose={() => setConfirmPanic(false)}>
+      <BottomSheet visible={confirmarPanico} onClose={() => setConfirmarPanico(false)}>
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="emergency_home" size={26} color="#C2352B" />
         </View>
@@ -174,30 +174,30 @@ export default function SecurityScreen() {
           label={t('security.yesBlockAll')}
           onPress={() => {
             openPanic();
-            setConfirmPanic(false);
+            setConfirmarPanico(false);
           }}
           style={{ marginTop: 22 }}
         />
-        <GhostButton label={t('security.cancel')} onPress={() => setConfirmPanic(false)} style={{ marginTop: 10 }} />
+        <GhostButton label={t('security.cancel')} onPress={() => setConfirmarPanico(false)} style={{ marginTop: 10 }} />
       </BottomSheet>
     </Screen>
   );
 }
 
-function ModuleRow({ icon, label, desc, badge, onPress, last }: { icon: string; label: string; desc: string; badge?: string; onPress?: () => void; last?: boolean }) {
+function FilaModulo({ icono, etiqueta, descripcion, insignia, alPresionar, ultimo }: { icono: string; etiqueta: string; descripcion: string; insignia?: string; alPresionar?: () => void; ultimo?: boolean }) {
   const { theme } = useTheme();
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: last ? 0 : 1, borderBottomColor: theme.line }}>
+    <Pressable onPress={alPresionar} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: theme.line }}>
       <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name={icon} size={20} color={theme.gold} />
+        <Icon name={icono} size={20} color={theme.gold} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{label}</Text>
-        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{desc}</Text>
+        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{descripcion}</Text>
       </View>
-      {badge ? (
+      {insignia ? (
         <View style={{ minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.red }}>{badge}</Text>
+          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.red }}>{insignia}</Text>
         </View>
       ) : null}
       <Icon name="chevron_right" size={18} color={theme.soft} />
