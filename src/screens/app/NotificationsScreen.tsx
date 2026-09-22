@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { Row } from '../../components/Primitives';
-import BottomSheet from '../../components/BottomSheet';
-import { GhostButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import Pantalla from '../../components/Pantalla';
+import { Fila } from '../../components/Primitivas';
+import HojaInferior from '../../components/HojaInferior';
+import { BotonFantasma, BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -45,7 +45,7 @@ export default function NotificationsScreen() {
   const accion = accionRelacionada(seleccionada);
 
   return (
-    <Screen bg={theme.bg}>
+    <Pantalla bg={theme.bg}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <View>
           <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('notifications.title')}</Text>
@@ -54,7 +54,7 @@ export default function NotificationsScreen() {
           </Text>
         </View>
         <View style={{ alignItems: 'flex-end', gap: 8 }}>
-          <LanguageSwitch />
+          <SelectorIdioma />
           {notifications.length > 0 && (
             <Pressable onPress={markAllNotifRead} style={{ paddingHorizontal: 12, paddingVertical: 9, borderRadius: 11, backgroundColor: theme.surf, borderWidth: 1.5, borderColor: theme.line }}>
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.mid }}>{t('notifications.markRead')}</Text>
@@ -66,7 +66,7 @@ export default function NotificationsScreen() {
       {notifications.length === 0 ? (
         <View style={{ marginTop: 100, alignItems: 'center' }}>
           <View style={{ width: 110, height: 110, borderRadius: 34, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="notifications_off" size={56} color="#D9BE7A" />
+            <Icono name="notifications_off" size={56} color="#D9BE7A" />
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('notifications.emptyTitle')}</Text>
           <Text style={{ marginTop: 8, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, maxWidth: 260 }}>
@@ -89,7 +89,7 @@ export default function NotificationsScreen() {
                     ]}
                   >
                     <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: notificacion.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon name={notificacion.icon} size={20} color={notificacion.iconFg} />
+                      <Icono name={notificacion.icon} size={20} color={notificacion.iconFg} />
                     </View>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -98,7 +98,7 @@ export default function NotificationsScreen() {
                       </View>
                       <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>{notificacion.body}</Text>
                     </View>
-                    <Icon name="chevron_right" size={18} color={theme.soft} />
+                    <Icono name="chevron_right" size={18} color={theme.soft} />
                   </Pressable>
                 ))}
               </View>
@@ -110,19 +110,19 @@ export default function NotificationsScreen() {
         </View>
       )}
 
-      <BottomSheet visible={!!seleccionada} onClose={() => setSeleccionada(null)}>
+      <HojaInferior visible={!!seleccionada} onClose={() => setSeleccionada(null)}>
         {seleccionada ? (
           <View>
             <View style={{ width: 48, height: 48, borderRadius: 15, backgroundColor: seleccionada.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name={seleccionada.icon} size={24} color={seleccionada.iconFg} />
+              <Icono name={seleccionada.icon} size={24} color={seleccionada.iconFg} />
             </View>
             <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{seleccionada.title}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>{seleccionada.body}</Text>
             <View style={{ marginTop: 18 }}>
-              <Row label={t('notifications.when')} value={`${seleccionada.group} · ${seleccionada.time}`} />
+              <Fila label={t('notifications.when')} value={`${seleccionada.group} · ${seleccionada.time}`} />
             </View>
             {accion ? (
-              <PrimaryButton
+              <BotonPrimario
                 label={accion.label}
                 onPress={() => {
                   setSeleccionada(null);
@@ -131,10 +131,10 @@ export default function NotificationsScreen() {
                 style={{ marginTop: 18 }}
               />
             ) : null}
-            <GhostButton label={t('notifications.close')} onPress={() => setSeleccionada(null)} style={{ marginTop: 10 }} />
+            <BotonFantasma label={t('notifications.close')} onPress={() => setSeleccionada(null)} style={{ marginTop: 10 }} />
           </View>
         ) : null}
-      </BottomSheet>
-    </Screen>
+      </HojaInferior>
+    </Pantalla>
   );
 }

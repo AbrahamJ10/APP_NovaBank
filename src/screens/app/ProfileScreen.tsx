@@ -4,13 +4,13 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as LocalAuthentication from 'expo-local-authentication';
-import Screen from '../../components/Screen';
-import { Badge, OtpBoxes } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { DangerOutlineButton, GhostButton, PrimaryButton } from '../../components/Buttons';
-import BottomSheet from '../../components/BottomSheet';
-import Icon from '../../components/Icon';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import Pantalla from '../../components/Pantalla';
+import { Insignia, CasillasOtp } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonPeligroContorno, BotonFantasma, BotonPrimario } from '../../components/Botones';
+import HojaInferior from '../../components/HojaInferior';
+import Icono from '../../components/Icono';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -144,9 +144,9 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <Screen bg={theme.bg}>
+    <Pantalla bg={theme.bg}>
       <View style={{ alignItems: 'flex-end' }}>
-        <LanguageSwitch />
+        <SelectorIdioma />
       </View>
       <View style={{ alignItems: 'center', marginTop: 4 }}>
         <View style={{ width: 86, height: 86, borderRadius: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B2340', borderWidth: 2, borderColor: '#C9A227' }}>
@@ -155,7 +155,7 @@ export default function ProfileScreen() {
         <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.4, color: theme.ink }}>{user.name}</Text>
         <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('profile.memberSince', { date: user.memberSince })}</Text>
         <View style={{ marginTop: 12 }}>
-          <Badge label={t('profile.identityVerified')} tone="green" />
+          <Insignia label={t('profile.identityVerified')} tone="green" />
         </View>
       </View>
 
@@ -181,15 +181,15 @@ export default function ProfileScreen() {
           icono="fingerprint"
           etiqueta={t('profile.faceId')}
           descripcion={faceIdActivo ? t('profile.faceIdDesc') : t('profile.faceIdDescOff')}
-          derecha={faceIdActivo ? <Badge label={t('profile.active')} tone="green" /> : <Badge label={t('profile.inactive')} tone="neutral" />}
+          derecha={faceIdActivo ? <Insignia label={t('profile.active')} tone="green" /> : <Insignia label={t('profile.inactive')} tone="neutral" />}
         />
         <FilaPerfil icono="shield" etiqueta={t('profile.securityCenter')} descripcion={t('profile.securityCenterDesc')} alPresionar={() => nav.navigate('Security')} />
         <FilaPerfil icono="description" etiqueta={t('profile.accountStatement')} descripcion={t('profile.accountStatementDesc')} alPresionar={() => nav.navigate('Reports')} ultimo />
       </View>
 
-      <DangerOutlineButton label={t('profile.logout')} icon="logout" onPress={logout} style={{ marginTop: 16 }} />
+      <BotonPeligroContorno label={t('profile.logout')} icon="logout" onPress={logout} style={{ marginTop: 16 }} />
 
-      <BottomSheet visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
+      <HojaInferior visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
         {editando ? (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.editField', { field: editando.label })}</Text>
@@ -197,7 +197,7 @@ export default function ProfileScreen() {
               {t('profile.criticalField')}
             </Text>
             <View style={{ marginTop: 18 }}>
-              <TextField
+              <CampoTexto
                 value={valor}
                 onChangeText={(v) => setValor(editando.field === 'phone' ? v.replace(/\D/g, '').slice(0, 9) : v)}
                 autoCapitalize="none"
@@ -205,7 +205,7 @@ export default function ProfileScreen() {
               />
             </View>
             <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 16 }}>
-              <OtpBoxes value={codigo} />
+              <CasillasOtp value={codigo} />
             </Pressable>
             <TextInput
               ref={refEntrada}
@@ -227,7 +227,7 @@ export default function ProfileScreen() {
             ) : enviandoOtp ? (
               <Text style={{ marginTop: 10, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('profile.sendingCode')}</Text>
             ) : null}
-            <PrimaryButton
+            <BotonPrimario
               label={enviandoCodigo ? t('profile.verifying') : t('profile.saveChange')}
               onPress={() => enviarCambio(codigo)}
               disabled={codigo.length !== 6 || enviandoCodigo || enviandoOtp}
@@ -235,9 +235,9 @@ export default function ProfileScreen() {
             />
           </View>
         ) : null}
-      </BottomSheet>
+      </HojaInferior>
 
-      <BottomSheet visible={pwAbierto} onClose={cerrarHojaPassword}>
+      <HojaInferior visible={pwAbierto} onClose={cerrarHojaPassword}>
         {pwPaso === 'form' && (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.changePasswordTitle')}</Text>
@@ -245,7 +245,7 @@ export default function ProfileScreen() {
               {t('profile.changePasswordSubtitle')}
             </Text>
             <View style={{ marginTop: 18, gap: 12 }}>
-              <TextField
+              <CampoTexto
                 label={t('profile.currentPassword')}
                 icon="lock"
                 secureTextEntry
@@ -257,14 +257,14 @@ export default function ProfileScreen() {
                 status={errorPwActual ? 'error' : 'default'}
                 hint={errorPwActual ? t('profile.currentPasswordMismatch') : undefined}
               />
-              <TextField label={t('profile.newPassword')} icon="lock" secureTextEntry value={pwNueva} onChangeText={setPwNueva} />
+              <CampoTexto label={t('profile.newPassword')} icon="lock" secureTextEntry value={pwNueva} onChangeText={setPwNueva} />
               <View style={{ gap: 6 }}>
                 <LineaRegla cumple={reglaLargo} etiqueta={t('profile.ruleLen')} />
                 <LineaRegla cumple={reglaNumero} etiqueta={t('profile.ruleNum')} />
                 <LineaRegla cumple={reglaMayuscula} etiqueta={t('profile.ruleUp')} />
                 <LineaRegla cumple={reglaMinuscula} etiqueta={t('profile.ruleLow')} />
               </View>
-              <TextField
+              <CampoTexto
                 label={t('profile.repeatNewPassword')}
                 icon="lock"
                 secureTextEntry
@@ -276,13 +276,13 @@ export default function ProfileScreen() {
             {pwErrorEnvio ? (
               <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorEnvio}</Text>
             ) : null}
-            <PrimaryButton
+            <BotonPrimario
               label={pwEnviandoOtp ? t('profile.sendingCode') : t('profile.continue')}
               onPress={enviarFormularioPassword}
               disabled={pwActual.length === 0 || !pwNuevaValida || !pwConfirmarValida || pwEnviandoOtp}
               style={{ marginTop: 20 }}
             />
-            <GhostButton label={t('profile.cancel')} onPress={cerrarHojaPassword} style={{ marginTop: 10 }} />
+            <BotonFantasma label={t('profile.cancel')} onPress={cerrarHojaPassword} style={{ marginTop: 10 }} />
           </View>
         )}
 
@@ -293,7 +293,7 @@ export default function ProfileScreen() {
               {t('profile.confirmChangeSubtitle')}
             </Text>
             <Pressable onPress={() => refEntradaPw.current?.focus()} style={{ marginTop: 18 }}>
-              <OtpBoxes value={pwCodigo} />
+              <CasillasOtp value={pwCodigo} />
             </Pressable>
             <TextInput
               ref={refEntradaPw}
@@ -310,7 +310,7 @@ export default function ProfileScreen() {
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
             {pwErrorCodigo ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorCodigo}</Text> : null}
-            <PrimaryButton
+            <BotonPrimario
               label={pwEnviando ? t('profile.verifying') : t('profile.confirm')}
               onPress={() => enviarOtpPassword(pwCodigo)}
               disabled={pwCodigo.length !== 6 || pwEnviando}
@@ -322,17 +322,17 @@ export default function ProfileScreen() {
         {pwPaso === 'done' && (
           <View style={{ alignItems: 'center', paddingVertical: 10 }}>
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="check" size={36} color={theme.green} />
+              <Icono name="check" size={36} color={theme.green} />
             </View>
             <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{t('profile.passwordUpdated')}</Text>
             <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
               {t('profile.passwordUpdatedBody')}
             </Text>
-            <PrimaryButton label={t('profile.done')} onPress={cerrarHojaPassword} style={{ marginTop: 18, width: '100%' }} />
+            <BotonPrimario label={t('profile.done')} onPress={cerrarHojaPassword} style={{ marginTop: 18, width: '100%' }} />
           </View>
         )}
-      </BottomSheet>
-    </Screen>
+      </HojaInferior>
+    </Pantalla>
   );
 }
 
@@ -341,7 +341,7 @@ function LineaRegla({ cumple, etiqueta }: { cumple: boolean; etiqueta: string })
   const color = cumple ? theme.green : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <Icon name={cumple ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
+      <Icono name={cumple ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
       <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{etiqueta}</Text>
     </View>
   );
@@ -358,13 +358,13 @@ function FilaPerfil({ icono, etiqueta, descripcion, alPresionar, derecha, ultimo
       ]}
     >
       <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name={icono} size={19} color={theme.gold} />
+        <Icono name={icono} size={19} color={theme.gold} />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{etiqueta}</Text>
         <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{descripcion}</Text>
       </View>
-      {derecha ?? (alPresionar ? <Icon name="chevron_right" size={18} color="#A6B1BD" /> : null)}
+      {derecha ?? (alPresionar ? <Icono name="chevron_right" size={18} color="#A6B1BD" /> : null)}
     </Pressable>
   );
 }

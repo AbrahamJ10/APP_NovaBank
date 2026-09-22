@@ -4,7 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeContext';
 import { BRAND, fonts, GOLD_GRADIENT, radii } from '../theme/tokens';
-import Icon from './Icon';
+import Icono from './Icono';
 
 type BtnProps = {
   label: string;
@@ -19,7 +19,7 @@ type BtnProps = {
 
 const toque = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
-export function PrimaryButton({ label, onPress, icon, iconRight, disabled, loading, style }: BtnProps) {
+export function BotonPrimario({ label, onPress, icon, iconRight, disabled, loading, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {
@@ -37,16 +37,16 @@ export function PrimaryButton({ label, onPress, icon, iconRight, disabled, loadi
         <ActivityIndicator color="#fff" />
       ) : (
         <View style={styles.row}>
-          {icon ? <Icon name={icon} color="#fff" size={19} style={{ marginRight: 8 }} /> : null}
+          {icon ? <Icono name={icon} color="#fff" size={19} style={{ marginRight: 8 }} /> : null}
           <Text style={styles.label}>{label}</Text>
-          {iconRight ? <Icon name={iconRight} color="#fff" size={19} style={{ marginLeft: 8 }} /> : null}
+          {iconRight ? <Icono name={iconRight} color="#fff" size={19} style={{ marginLeft: 8 }} /> : null}
         </View>
       )}
     </Pressable>
   );
 }
 
-export function GoldButton({ label, onPress, icon, disabled, loading, style }: BtnProps) {
+export function BotonDorado({ label, onPress, icon, disabled, loading, style }: BtnProps) {
   const [ancho, setAncho] = useState(320);
   const brillo = useRef(new Animated.Value(0)).current;
 
@@ -65,7 +65,7 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
   const trasladoX = brillo.interpolate({ inputRange: [0, 1], outputRange: [-ancho * 0.7, ancho * 1.4] });
 
   if (disabled) {
-    // Coincide con el aspecto deshabilitado de PrimaryButton (gris plano,
+    // Coincide con el aspecto deshabilitado de BotonPrimario (gris plano,
     // sin sombra) — un degradado dorado a media opacidad con su animación
     // de brillo todavía corriendo se leía como roto/con glitch en vez de
     // "no se puede tocar esto".
@@ -75,7 +75,7 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
           <ActivityIndicator color="#fff" />
         ) : (
           <View style={styles.row}>
-            {icon ? <Icon name={icon} color="#fff" size={19} style={{ marginRight: 8 }} /> : null}
+            {icon ? <Icono name={icon} color="#fff" size={19} style={{ marginRight: 8 }} /> : null}
             <Text style={styles.label}>{label}</Text>
           </View>
         )}
@@ -106,7 +106,7 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
           <ActivityIndicator color="#071B31" />
         ) : (
           <View style={styles.row}>
-            {icon ? <Icon name={icon} color="#071B31" size={19} style={{ marginRight: 8 }} /> : null}
+            {icon ? <Icono name={icon} color="#071B31" size={19} style={{ marginRight: 8 }} /> : null}
             <Text style={[styles.label, { color: '#071B31' }]}>{label}</Text>
           </View>
         )}
@@ -115,7 +115,7 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
   );
 }
 
-export function GhostButton({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
+export function BotonFantasma({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
   const { theme } = useTheme();
   const colorTexto = textColor ?? theme.ink;
   return (
@@ -132,14 +132,14 @@ export function GhostButton({ label, onPress, icon, disabled, style, textColor }
       ]}
     >
       <View style={styles.row}>
-        {icon ? <Icon name={icon} color={colorTexto} size={18} style={{ marginRight: 7 }} /> : null}
+        {icon ? <Icono name={icon} color={colorTexto} size={18} style={{ marginRight: 7 }} /> : null}
         <Text style={[styles.label, { color: colorTexto }]}>{label}</Text>
       </View>
     </Pressable>
   );
 }
 
-export function DangerOutlineButton({ label, onPress, icon, style }: BtnProps) {
+export function BotonPeligroContorno({ label, onPress, icon, style }: BtnProps) {
   const { theme } = useTheme();
   return (
     <Pressable
@@ -154,14 +154,14 @@ export function DangerOutlineButton({ label, onPress, icon, style }: BtnProps) {
       ]}
     >
       <View style={styles.row}>
-        {icon ? <Icon name={icon} color={theme.red} size={19} style={{ marginRight: 8 }} /> : null}
+        {icon ? <Icono name={icon} color={theme.red} size={19} style={{ marginRight: 8 }} /> : null}
         <Text style={[styles.label, { color: theme.red }]}>{label}</Text>
       </View>
     </Pressable>
   );
 }
 
-export function DangerButton({ label, onPress, style }: BtnProps) {
+export function BotonPeligro({ label, onPress, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {

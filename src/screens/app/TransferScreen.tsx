@@ -3,12 +3,12 @@ import { Pressable, Share, Text, TextInput, View } from 'react-native';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton, OtpBoxes, Row, ScreenTitle } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { GhostButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
-import { LogoMark } from '../../components/Logo';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, CasillasOtp, Fila, TituloPantalla } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonFantasma, BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
+import { MarcaLogo } from '../../components/Logo';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money, mmss } from '../../lib/format';
@@ -89,10 +89,10 @@ export default function TransferScreen() {
   };
 
   return (
-    <Screen bg={theme.bg}>
+    <Pantalla bg={theme.bg}>
       {paso === 'form' && (
         <View>
-          <ScreenTitle title={t('transfer.title')} note={t('transfer.note')} />
+          <TituloPantalla title={t('transfer.title')} note={t('transfer.note')} />
 
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.recipient')}</Text>
           <View style={{ marginTop: 10, gap: 9 }}>
@@ -122,16 +122,16 @@ export default function TransferScreen() {
                       {p.bank} · {p.account}
                     </Text>
                   </View>
-                  <Icon name={activo ? 'check_circle' : 'radio_button_unchecked'} size={20} color={activo ? theme.gold : theme.soft} />
+                  <Icono name={activo ? 'check_circle' : 'radio_button_unchecked'} size={20} color={activo ? theme.gold : theme.soft} />
                 </Pressable>
               );
             })}
 
             {agregandoDestinatario ? (
               <View style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, backgroundColor: theme.surf, padding: 13, gap: 10 }}>
-                <TextField placeholder={t('transfer.addAccountName')} value={nuevoNombre} onChangeText={setNuevoNombre} />
-                <TextField placeholder={t('transfer.addAccountNumber')} value={nuevoCci} onChangeText={setNuevoCci} keyboardType="number-pad" />
-                <PrimaryButton
+                <CampoTexto placeholder={t('transfer.addAccountName')} value={nuevoNombre} onChangeText={setNuevoNombre} />
+                <CampoTexto placeholder={t('transfer.addAccountNumber')} value={nuevoCci} onChangeText={setNuevoCci} keyboardType="number-pad" />
+                <BotonPrimario
                   label={guardandoDestinatario ? t('transfer.savingAccount') : t('transfer.addAccount')}
                   disabled={nuevoNombre.trim().length < 2 || nuevoCci.trim().length < 4 || guardandoDestinatario}
                   onPress={async () => {
@@ -161,7 +161,7 @@ export default function TransferScreen() {
                 style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, borderStyle: 'dashed', backgroundColor: theme.surf, padding: 13, flexDirection: 'row', alignItems: 'center', gap: 12 }}
               >
                 <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="add" size={20} color={theme.ink} />
+                  <Icono name="add" size={20} color={theme.ink} />
                 </View>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.addOtherBank')}</Text>
               </Pressable>
@@ -199,13 +199,13 @@ export default function TransferScreen() {
 
           <Text style={{ marginTop: 18, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.concept')}</Text>
           <View style={{ marginTop: 10 }}>
-            <TextField placeholder={t('transfer.conceptPlaceholder')} value={concepto} onChangeText={setConcepto} />
+            <CampoTexto placeholder={t('transfer.conceptPlaceholder')} value={concepto} onChangeText={setConcepto} />
           </View>
 
           {errorEnvio ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
           ) : null}
-          <PrimaryButton
+          <BotonPrimario
             label={enviandoOtp ? t('transfer.sendingCode') : t('transfer.continue')}
             iconRight="arrow_forward"
             disabled={!puedeContinuar || enviandoOtp}
@@ -230,13 +230,13 @@ export default function TransferScreen() {
 
       {paso === 'otp' && destinatarioSeleccionado && (
         <View>
-          <BackButton onPress={() => setPaso('form')} />
+          <BotonVolver onPress={() => setPaso('form')} />
           <Text style={{ fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.confirmToken')}</Text>
           <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {t('transfer.tokenSubtitleEmail', { amount: money(montoNum) })}
           </Text>
           <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
-            <OtpBoxes value={codigo} />
+            <CasillasOtp value={codigo} />
           </Pressable>
           <TextInput
             ref={refEntrada}
@@ -271,8 +271,8 @@ export default function TransferScreen() {
           </Text>
 
           <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18, gap: 4 }}>
-            <Row label={t('transfer.destination')} value={`${destinatarioSeleccionado.name} · ${destinatarioSeleccionado.bank}`} />
-            <Row label={t('transfer.fee')} value="S/ 0.00" />
+            <Fila label={t('transfer.destination')} value={`${destinatarioSeleccionado.name} · ${destinatarioSeleccionado.bank}`} />
+            <Fila label={t('transfer.fee')} value="S/ 0.00" />
             <View style={{ height: 1, backgroundColor: theme.line, marginVertical: 6 }} />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.total')}</Text>
@@ -285,7 +285,7 @@ export default function TransferScreen() {
       {paso === 'done' && comprobante && (
         <View style={{ alignItems: 'center', paddingTop: 8 }}>
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check" size={40} color="#21A26B" />
+            <Icono name="check" size={40} color="#21A26B" />
           </View>
           <Text style={{ marginTop: 18, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.sent')}</Text>
           <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 13.5, color: theme.mid }}>{t('transfer.sentSubtitle')}</Text>
@@ -293,7 +293,7 @@ export default function TransferScreen() {
           <View style={{ marginTop: 20, width: '100%', borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, borderStyle: 'dashed', padding: 22 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <LogoMark size={22} />
+                <MarcaLogo size={22} />
                 <Text style={{ fontFamily: fonts.displaySemi, fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: '#123A63' }}>NovaBank</Text>
               </View>
               <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: '#EAF9F1' }}>
@@ -302,22 +302,22 @@ export default function TransferScreen() {
             </View>
             <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{money(comprobante.amount)}</Text>
             <View style={{ marginTop: 16, gap: 10 }}>
-              <Row label={t('transfer.recipientLabel')} value={comprobante.payee.name} />
-              <Row label={t('transfer.bankLabel')} value={`${comprobante.payee.bank} ${comprobante.payee.account}`} />
-              <Row label={t('transfer.dateLabel')} value={comprobante.date} />
-              <Row label={t('transfer.referenceLabel')} value={comprobante.reference} />
+              <Fila label={t('transfer.recipientLabel')} value={comprobante.payee.name} />
+              <Fila label={t('transfer.bankLabel')} value={`${comprobante.payee.bank} ${comprobante.payee.account}`} />
+              <Fila label={t('transfer.dateLabel')} value={comprobante.date} />
+              <Fila label={t('transfer.referenceLabel')} value={comprobante.reference} />
             </View>
           </View>
 
-          <GhostButton label={t('transfer.share')} icon="share" onPress={() => compartirComprobante(comprobante)} style={{ marginTop: 18, width: '100%', height: 50 }} />
-          <PrimaryButton label={t('transfer.newTransfer')} onPress={reiniciar} style={{ marginTop: 10, width: '100%', height: 50 }} />
+          <BotonFantasma label={t('transfer.share')} icon="share" onPress={() => compartirComprobante(comprobante)} style={{ marginTop: 18, width: '100%', height: 50 }} />
+          <BotonPrimario label={t('transfer.newTransfer')} onPress={reiniciar} style={{ marginTop: 10, width: '100%', height: 50 }} />
         </View>
       )}
 
       {paso === 'error' && comprobante && (
         <View style={{ alignItems: 'center', paddingTop: 8 }}>
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#FFF4F3', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="error_outline" size={40} color="#C2352B" />
+            <Icono name="error_outline" size={40} color="#C2352B" />
           </View>
           <Text style={{ marginTop: 18, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink, textAlign: 'center' }}>{t('transfer.failedTitle')}</Text>
           <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, textAlign: 'center' }}>
@@ -332,17 +332,17 @@ export default function TransferScreen() {
               </View>
             </View>
             <View style={{ marginTop: 14, gap: 10 }}>
-              <Row label={t('transfer.reasonLabel')} value={comprobante.reasonLabel ?? ''} />
-              <Row label={t('transfer.codeLabel')} value={comprobante.reasonCode ?? ''} />
-              <Row label={t('transfer.amountLabel')} value={money(comprobante.amount)} />
-              <Row label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: money(available) })}</Text>} />
+              <Fila label={t('transfer.reasonLabel')} value={comprobante.reasonLabel ?? ''} />
+              <Fila label={t('transfer.codeLabel')} value={comprobante.reasonCode ?? ''} />
+              <Fila label={t('transfer.amountLabel')} value={money(comprobante.amount)} />
+              <Fila label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: money(available) })}</Text>} />
             </View>
           </View>
 
-          <PrimaryButton label={t('transfer.fixAndRetry')} onPress={() => setPaso('form')} style={{ marginTop: 18, width: '100%', height: 52 }} />
-          <GhostButton label={t('transfer.contactSupport')} icon="support_agent" onPress={() => nav.navigate('Concierge')} style={{ marginTop: 10, width: '100%', height: 52 }} />
+          <BotonPrimario label={t('transfer.fixAndRetry')} onPress={() => setPaso('form')} style={{ marginTop: 18, width: '100%', height: 52 }} />
+          <BotonFantasma label={t('transfer.contactSupport')} icon="support_agent" onPress={() => nav.navigate('Concierge')} style={{ marginTop: 10, width: '100%', height: 52 }} />
         </View>
       )}
-    </Screen>
+    </Pantalla>
   );
 }

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import QRCode from 'react-native-qrcode-svg';
-import Screen from '../../components/Screen';
-import { ScreenTitle } from '../../components/Primitives';
-import { DangerOutlineButton, PrimaryButton } from '../../components/Buttons';
+import Pantalla from '../../components/Pantalla';
+import { TituloPantalla } from '../../components/Primitivas';
+import { BotonPeligroContorno, BotonPrimario } from '../../components/Botones';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { mmss } from '../../lib/format';
@@ -35,8 +35,8 @@ export default function WithdrawScreen() {
   };
 
   return (
-    <Screen bg={theme.bg}>
-      <ScreenTitle title={t('withdraw.title')} showLanguageSwitch />
+    <Pantalla bg={theme.bg}>
+      <TituloPantalla title={t('withdraw.title')} showLanguageSwitch />
 
       {!withdraw ? (
         <View>
@@ -67,7 +67,7 @@ export default function WithdrawScreen() {
           {error ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
-          <PrimaryButton
+          <BotonPrimario
             label={generando ? t('withdraw.generating') : t('withdraw.generateKey')}
             icon="key"
             disabled={generando}
@@ -111,12 +111,12 @@ export default function WithdrawScreen() {
           </Text>
 
           {withdrawExpired ? (
-            <PrimaryButton label={t('withdraw.generateNewKey')} icon="refresh" onPress={renewWithdraw} style={{ marginTop: 20, width: '100%' }} />
+            <BotonPrimario label={t('withdraw.generateNewKey')} icon="refresh" onPress={renewWithdraw} style={{ marginTop: 20, width: '100%' }} />
           ) : (
-            <DangerOutlineButton label={t('withdraw.cancelKey')} icon="close" onPress={cancelWithdraw} style={{ marginTop: 20, width: '100%' }} />
+            <BotonPeligroContorno label={t('withdraw.cancelKey')} icon="close" onPress={cancelWithdraw} style={{ marginTop: 20, width: '100%' }} />
           )}
         </View>
       )}
-    </Screen>
+    </Pantalla>
   );
 }

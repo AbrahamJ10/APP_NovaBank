@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TabParamList } from './types';
 import { useTheme } from '../theme/ThemeContext';
 import { fonts } from '../theme/tokens';
-import Icon from '../components/Icon';
+import Icono from '../components/Icono';
 import HomeScreen from '../screens/app/HomeScreen';
 import TransactionsScreen from '../screens/app/TransactionsScreen';
 import TransferScreen from '../screens/app/TransferScreen';
@@ -59,7 +59,7 @@ export default function AppTabs() {
           }
           options={{
             tabBarLabel: t(pestana.labelKey),
-            tabBarIcon: ({ color }) => <Icon name={pestana.icon} size={23} color={color} />,
+            tabBarIcon: ({ color }) => <Icono name={pestana.icon} size={23} color={color} />,
           }}
         />
       ))}

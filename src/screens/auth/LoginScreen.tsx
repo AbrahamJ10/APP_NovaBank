@@ -3,12 +3,12 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as LocalAuthentication from 'expo-local-authentication';
-import Screen from '../../components/Screen';
-import TextField from '../../components/TextField';
-import { PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
-import { LogoMark } from '../../components/Logo';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import Pantalla from '../../components/Pantalla';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
+import { MarcaLogo } from '../../components/Logo';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { mmss } from '../../lib/format';
@@ -90,10 +90,10 @@ export default function LoginScreen() {
   };
 
   return (
-    <Screen bg={theme.dark ? theme.bg : '#fff'}>
+    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <LogoMark size={52} />
-        <LanguageSwitch />
+        <MarcaLogo size={52} />
+        <SelectorIdioma />
       </View>
       <Text style={{ marginTop: 14, fontFamily: fonts.displaySemi, fontSize: 15, letterSpacing: 3, textTransform: 'uppercase', color: theme.gold }}>
         NovaBank
@@ -114,7 +114,7 @@ export default function LoginScreen() {
       {bloqueado ? (
         <View style={{ marginTop: 20, borderRadius: 16, backgroundColor: '#FFF4F3', borderWidth: 1, borderColor: '#F6CFCA', padding: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Icon name="lock_clock" size={18} color="#C2352B" />
+            <Icono name="lock_clock" size={18} color="#C2352B" />
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#C2352B' }}>{t('login.blockedTitle')}</Text>
           </View>
           <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: '#8A4741' }}>
@@ -127,7 +127,7 @@ export default function LoginScreen() {
         </View>
       ) : error ? (
         <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: '#FFF4F3', borderWidth: 1, borderColor: '#F6CFCA', padding: 14, flexDirection: 'row', gap: 10 }}>
-          <Icon name="error" size={18} color="#C2352B" />
+          <Icono name="error" size={18} color="#C2352B" />
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 12.5, color: '#C2352B' }}>{t('login.errorTitle')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: '#8A4741' }}>{mensajeError ?? t('login.errorDefault')}</Text>
@@ -135,7 +135,7 @@ export default function LoginScreen() {
         </View>
       ) : mensajeBiometria ? (
         <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: theme.tint, padding: 14, flexDirection: 'row', gap: 10 }}>
-          <Icon name="fingerprint" size={18} color={theme.gold} />
+          <Icono name="fingerprint" size={18} color={theme.gold} />
           <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>{mensajeBiometria}</Text>
         </View>
       ) : null}
@@ -143,7 +143,7 @@ export default function LoginScreen() {
       {!bloqueado && (
         <View style={{ marginTop: 22, gap: 14 }}>
           {!accesoRapido && (
-            <TextField label={t('login.email')} icon="person" placeholder="tucorreo@gmail.com" autoCapitalize="none" value={identificador} onChangeText={setIdentificador} />
+            <CampoTexto label={t('login.email')} icon="person" placeholder="tucorreo@gmail.com" autoCapitalize="none" value={identificador} onChangeText={setIdentificador} />
           )}
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 7 }}>
@@ -152,7 +152,7 @@ export default function LoginScreen() {
                 <Text style={{ fontFamily: fonts.headingSemi, fontSize: 12, color: theme.gold }}>{t('login.forgot')}</Text>
               </Pressable>
             </View>
-            <TextField
+            <CampoTexto
               placeholder={t('login.passwordPlaceholder')}
               icon="lock"
               secureTextEntry={!contrasenaVisible}
@@ -165,7 +165,7 @@ export default function LoginScreen() {
         </View>
       )}
 
-      {!bloqueado && <PrimaryButton label={enviando ? t('login.submitting') : t('login.submit')} disabled={enviando} onPress={enviar} style={{ marginTop: 22 }} />}
+      {!bloqueado && <BotonPrimario label={enviando ? t('login.submitting') : t('login.submit')} disabled={enviando} onPress={enviar} style={{ marginTop: 22 }} />}
 
       {accesoRapido && (
         <Pressable
@@ -196,12 +196,12 @@ export default function LoginScreen() {
               justifyContent: 'center',
             }}
           >
-            {verificandoBiometria ? <ActivityIndicator color={theme.gold} /> : <Icon name="fingerprint" size={50} color={theme.gold} />}
+            {verificandoBiometria ? <ActivityIndicator color={theme.gold} /> : <Icono name="fingerprint" size={50} color={theme.gold} />}
           </View>
           <Text style={{ marginTop: 12, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('login.faceId')}</Text>
           <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('login.faceIdSub')}</Text>
         </Pressable>
       )}
-    </Screen>
+    </Pantalla>
   );
 }

@@ -6,11 +6,11 @@ import QRCode from 'react-native-qrcode-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
-import { BackButton } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { GoldButton, GhostButton, PrimaryButton } from '../../components/Buttons';
-import BottomSheet from '../../components/BottomSheet';
-import Icon from '../../components/Icon';
+import { BotonVolver } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonDorado, BotonFantasma, BotonPrimario } from '../../components/Botones';
+import HojaInferior from '../../components/HojaInferior';
+import Icono from '../../components/Icono';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
 import { useAppState } from '../../state/AppStateContext';
@@ -94,7 +94,7 @@ export default function QrScreen() {
     <View style={{ flex: 1, backgroundColor: '#0F1A26' }}>
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 22 }}>
         <View style={{ marginTop: 4 }}>
-          <BackButton dark onPress={() => nav.goBack()} />
+          <BotonVolver dark onPress={() => nav.goBack()} />
         </View>
 
         <View style={{ flexDirection: 'row', gap: 8, padding: 4, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.1)' }}>
@@ -117,11 +117,11 @@ export default function QrScreen() {
               />
             ) : (
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-                <Icon name="qr_code_2" size={56} color="rgba(255,255,255,.3)" />
+                <Icono name="qr_code_2" size={56} color="rgba(255,255,255,.3)" />
                 <Text style={{ marginTop: 14, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>
                   {t('qr.enableCamera')}
                 </Text>
-                <GoldButton label={t('qr.enableCameraButton')} onPress={solicitarPermiso} style={{ marginTop: 16 }} />
+                <BotonDorado label={t('qr.enableCameraButton')} onPress={solicitarPermiso} style={{ marginTop: 16 }} />
               </View>
             )}
             {permiso?.granted && (
@@ -151,14 +151,14 @@ export default function QrScreen() {
               disabled={seleccionandoImagen}
               style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: seleccionandoImagen ? 0.6 : 1 }}
             >
-              <Icon name="photo_library" size={18} color="#fff" />
+              <Icono name="photo_library" size={18} color="#fff" />
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.fromGallery')}</Text>
             </Pressable>
             <Pressable
               onPress={() => setEscaneado('MANUAL')}
               style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
-              <Icon name="dialpad" size={18} color="#fff" />
+              <Icono name="dialpad" size={18} color="#fff" />
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.manualCode')}</Text>
             </Pressable>
           </View>
@@ -173,7 +173,7 @@ export default function QrScreen() {
           {pagosQr.map((tx) => (
             <View key={tx.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.1)', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name={tx.icon} size={19} color="#FFB07A" />
+                <Icono name={tx.icon} size={19} color="#FFB07A" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: '#fff' }}>{tx.name}</Text>
@@ -185,7 +185,7 @@ export default function QrScreen() {
         </View>
       </SafeAreaView>
 
-      <BottomSheet visible={!!escaneado} onClose={cerrarHoja}>
+      <HojaInferior visible={!!escaneado} onClose={cerrarHoja}>
         {escaneado && !listo ? (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5 }}>{t('qr.payWithQr')}</Text>
@@ -193,7 +193,7 @@ export default function QrScreen() {
               {escaneado !== 'MANUAL' ? t('qr.codeReadFrom', { merchant: nombreComercio }) : t('qr.codeReadManually')}
             </Text>
             <View style={{ marginTop: 16 }}>
-              <TextField label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+              <CampoTexto label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
             </View>
             <Text style={{ marginTop: 6, fontFamily: fonts.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
               {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: money(available) })}
@@ -201,25 +201,25 @@ export default function QrScreen() {
             {error ? (
               <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
             ) : null}
-            <PrimaryButton
+            <BotonPrimario
               label={pagando ? t('qr.paying') : t('qr.confirmPayment')}
               disabled={montoNum <= 0 || montoNum > available || pagando}
               onPress={enviar}
               style={{ marginTop: 18 }}
             />
-            <GhostButton label={t('qr.cancel')} onPress={cerrarHoja} style={{ marginTop: 10 }} />
+            <BotonFantasma label={t('qr.cancel')} onPress={cerrarHoja} style={{ marginTop: 10 }} />
           </View>
         ) : listo ? (
           <View style={{ alignItems: 'center', paddingVertical: 10 }}>
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="check" size={36} color="#21A26B" />
+              <Icono name="check" size={36} color="#21A26B" />
             </View>
             <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19 }}>{t('qr.paymentDone')}</Text>
             <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: money(montoNum) })}</Text>
-            <PrimaryButton label={t('qr.done')} onPress={cerrarHoja} style={{ marginTop: 18, width: '100%' }} />
+            <BotonPrimario label={t('qr.done')} onPress={cerrarHoja} style={{ marginTop: 18, width: '100%' }} />
           </View>
         ) : null}
-      </BottomSheet>
+      </HojaInferior>
     </View>
   );
 }

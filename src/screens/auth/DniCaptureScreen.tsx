@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Haptics from 'expo-haptics';
 import { fonts } from '../../theme/tokens';
-import { GoldButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import { BotonDorado } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
 import { analyzeDniFront } from '../../lib/dniOcr';
@@ -145,10 +145,10 @@ export default function DniCaptureScreen() {
   if (!permiso.granted) {
     return (
       <View style={styles.permWrap}>
-        <Icon name="photo_camera" size={44} color="#E7CE92" />
+        <Icono name="photo_camera" size={44} color="#E7CE92" />
         <Text style={styles.permTitle}>{t('dniCapture.permTitle')}</Text>
         <Text style={styles.permBody}>{t('dniCapture.permBody')}</Text>
-        <GoldButton label={t('dniCapture.givePermission')} onPress={solicitarPermiso} style={{ marginTop: 22, width: '100%' }} />
+        <BotonDorado label={t('dniCapture.givePermission')} onPress={solicitarPermiso} style={{ marginTop: 22, width: '100%' }} />
         <Pressable onPress={() => nav.goBack()} style={{ marginTop: 14 }}>
           <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fonts.bodyMed }}>{t('dniCapture.cancel')}</Text>
         </Pressable>
@@ -159,10 +159,10 @@ export default function DniCaptureScreen() {
   if (mensajeMenorEdad) {
     return (
       <View style={styles.permWrap}>
-        <Icon name="block" size={44} color="#C2352B" />
+        <Icono name="block" size={44} color="#C2352B" />
         <Text style={styles.permTitle}>{t('dniCapture.underageTitle')}</Text>
         <Text style={styles.permBody}>{mensajeMenorEdad}</Text>
-        <GoldButton label={t('dniCapture.understood')} onPress={descartarYVolver} style={{ marginTop: 22, width: '100%' }} />
+        <BotonDorado label={t('dniCapture.understood')} onPress={descartarYVolver} style={{ marginTop: 22, width: '100%' }} />
       </View>
     );
   }
@@ -194,10 +194,10 @@ export default function DniCaptureScreen() {
       <SafeAreaView style={styles.overlay}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Pressable onPress={descartarYVolver} style={styles.closeBtn}>
-            <Icon name="close" size={20} color="#fff" />
+            <Icono name="close" size={20} color="#fff" />
           </Pressable>
           <Pressable onPress={() => setLinterna((v) => !v)} style={[styles.closeBtn, { marginLeft: 0, marginRight: 20 }]}>
-            <Icon name={linterna ? 'flash_on' : 'flash_off'} size={20} color={linterna ? '#E7CE92' : '#fff'} />
+            <Icono name={linterna ? 'flash_on' : 'flash_off'} size={20} color={linterna ? '#E7CE92' : '#fff'} />
           </Pressable>
         </View>
 
@@ -214,7 +214,7 @@ export default function DniCaptureScreen() {
             <View style={styles.tipsBox}>
               {consejos.map((consejo) => (
                 <View key={consejo} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 6 }}>
-                  <Icon name="lightbulb" size={14} color="#E7CE92" />
+                  <Icono name="lightbulb" size={14} color="#E7CE92" />
                   <Text style={styles.tipText}>{consejo}</Text>
                 </View>
               ))}
@@ -230,7 +230,7 @@ export default function DniCaptureScreen() {
                 <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fonts.bodyMed, fontSize: 12 }}>{t('dniCapture.reading')}</Text>
               </View>
             ) : estado === 'success' ? null : (
-              <GoldButton label={estado === 'retry' ? t('dniCapture.retakePhoto') : t('dniCapture.takePhoto')} icon="photo_camera" onPress={capturarFrente} />
+              <BotonDorado label={estado === 'retry' ? t('dniCapture.retakePhoto') : t('dniCapture.takePhoto')} icon="photo_camera" onPress={capturarFrente} />
             )}
           </View>
         )}

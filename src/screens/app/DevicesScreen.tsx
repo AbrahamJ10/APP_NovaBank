@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { BackButton } from '../../components/Primitives';
-import { GhostButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver } from '../../components/Primitivas';
+import { BotonFantasma } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -23,8 +23,8 @@ export default function DevicesScreen() {
   const otras = sessions.filter((sesion) => !sesion.current);
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
       <Text style={{ fontFamily: fonts.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('devices.title')}</Text>
       <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
         {t('devices.subtitle', { count: String(sessions.length) })}
@@ -35,7 +35,7 @@ export default function DevicesScreen() {
           <View key={sesion.id} style={{ borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 13 }}>
               <View style={{ width: 42, height: 42, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="smartphone" size={21} color={theme.gold} />
+                <Icono name="smartphone" size={21} color={theme.gold} />
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }} numberOfLines={1}>
@@ -57,7 +57,7 @@ export default function DevicesScreen() {
                 onPress={() => revokeSession(sesion.id)}
                 style={{ marginTop: 14, height: 44, borderRadius: 13, backgroundColor: theme.red, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
-                <Icon name="logout" size={18} color="#fff" />
+                <Icono name="logout" size={18} color="#fff" />
                 <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('devices.closeSession')}</Text>
               </Pressable>
             )}
@@ -72,13 +72,13 @@ export default function DevicesScreen() {
       )}
 
       {otras.length > 0 && (
-        <GhostButton
+        <BotonFantasma
           label={t('devices.closeAllOthers')}
           icon="phonelink_erase"
           onPress={revokeOtherSessions}
           style={{ marginTop: 18 }}
         />
       )}
-    </Screen>
+    </Pantalla>
   );
 }

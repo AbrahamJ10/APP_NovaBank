@@ -16,7 +16,7 @@ type Props = {
 // de este proyecto de OneDrive tan anidado. Este es un equivalente sin
 // dependencias: solo View + PanResponder, sin módulo nativo, así que nunca
 // más puede toparse con esa falla de compilación.
-export default function SimpleSlider({ minimumValue, maximumValue, step = 1, value, onValueChange, onSlidingComplete }: Props) {
+export default function DeslizadorSimple({ minimumValue, maximumValue, step = 1, value, onValueChange, onSlidingComplete }: Props) {
   const { theme } = useTheme();
   const [anchoPista, setAnchoPista] = useState(0);
   const anchoRef = useRef(0);

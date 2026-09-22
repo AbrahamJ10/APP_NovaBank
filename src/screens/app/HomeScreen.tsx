@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import Screen from '../../components/Screen';
-import TransactionRow from '../../components/TransactionRow';
-import Icon from '../../components/Icon';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import Pantalla from '../../components/Pantalla';
+import FilaTransaccion from '../../components/FilaTransaccion';
+import Icono from '../../components/Icono';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -38,7 +38,7 @@ export default function HomeScreen() {
   const enmascarar = (v: string) => v.replace(/[0-9]/g, '•');
 
   return (
-    <Screen scroll padded={false} bg={theme.bg}>
+    <Pantalla scroll padded={false} bg={theme.bg}>
       <LinearGradient colors={['#0E2C4E', '#061626']} start={{ x: 0.85, y: 0 }} end={{ x: 0.2, y: 1 }} style={{ paddingTop: 14, paddingHorizontal: 22, paddingBottom: 30, borderBottomLeftRadius: 34, borderBottomRightRadius: 34 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.12)', borderWidth: 1, borderColor: 'rgba(217,190,122,.4)', alignItems: 'center', justifyContent: 'center' }}>
@@ -48,12 +48,12 @@ export default function HomeScreen() {
             <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fonts.headingBold, fontSize: 16, color: '#fff' }}>{user.name}</Text>
           </View>
-          <LanguageSwitch dark compact />
+          <SelectorIdioma dark compact />
           <Pressable onPress={toggle} style={estilosH.iconBtn}>
-            <Icon name={dark ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
+            <Icono name={dark ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
           <Pressable onPress={() => nav.navigate('Notifications' as never)} style={estilosH.iconBtn}>
-            <Icon name="notifications" size={20} color="#fff" />
+            <Icono name="notifications" size={20} color="#fff" />
             <View style={estilosH.dot} />
           </Pressable>
         </View>
@@ -61,7 +61,7 @@ export default function HomeScreen() {
         <View style={{ marginTop: 24, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>{t('home.availableBalance')}</Text>
           <Pressable onPress={() => setOcultar((h) => !h)} style={estilosH.eyeBtn}>
-            <Icon name={ocultar ? 'visibility_off' : 'visibility'} size={17} color="#fff" />
+            <Icono name={ocultar ? 'visibility_off' : 'visibility'} size={17} color="#fff" />
           </Pressable>
         </View>
         <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
@@ -90,7 +90,7 @@ export default function HomeScreen() {
               onPress={() => (acceso.go === 'TransferTab' ? nav.navigate('Transfer' as never) : nav.navigate(acceso.go as any))}
               style={{ width: '47%', borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 16, gap: 10 }}
             >
-              <Icon name={acceso.icon} size={23} color={theme.gold} />
+              <Icono name={acceso.icon} size={23} color={theme.gold} />
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{acceso.label}</Text>
             </Pressable>
           ))}
@@ -104,7 +104,7 @@ export default function HomeScreen() {
         </View>
         <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
           {recientes.map((transaccion) => (
-            <TransactionRow key={transaccion.id} tx={transaccion} showDate />
+            <FilaTransaccion key={transaccion.id} tx={transaccion} showDate />
           ))}
         </View>
 
@@ -112,14 +112,14 @@ export default function HomeScreen() {
           onPress={() => nav.navigate('Card')}
           style={{ marginTop: 20, borderRadius: 20, padding: 18, backgroundColor: cardBlocked ? '#5B6875' : '#123A63', flexDirection: 'row', alignItems: 'center', gap: 14 }}
         >
-          <Icon name={cardBlocked ? 'lock' : 'credit_card'} size={26} color="#fff" />
+          <Icono name={cardBlocked ? 'lock' : 'credit_card'} size={26} color="#fff" />
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{user.cardNumber.slice(-4)}</Text>
             <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.65)' }}>
               {t('home.cardStatus', { status: cardBlocked ? t('home.cardBlocked') : t('home.cardActive') })}
             </Text>
           </View>
-          <Icon name="chevron_right" size={20} color="rgba(255,255,255,.7)" />
+          <Icono name="chevron_right" size={20} color="rgba(255,255,255,.7)" />
         </Pressable>
 
         <Pressable
@@ -133,7 +133,7 @@ export default function HomeScreen() {
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 14, color: theme.ink }}>{t('home.monthSpend')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('home.reviewCategories')}</Text>
           </View>
-          <Icon name="chevron_right" size={20} color="#A6B1BD" />
+          <Icono name="chevron_right" size={20} color="#A6B1BD" />
         </Pressable>
 
         <Pressable
@@ -141,16 +141,16 @@ export default function HomeScreen() {
           style={{ marginTop: 12, borderRadius: 20, padding: 18, backgroundColor: '#0E2C4E', flexDirection: 'row', alignItems: 'center', gap: 14 }}
         >
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(217,190,122,.16)', borderWidth: 1, borderColor: 'rgba(217,190,122,.35)', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="support_agent" size={21} color="#E7CE92" />
+            <Icono name="support_agent" size={21} color="#E7CE92" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 14, color: '#fff' }}>{t('home.conciergeOnline')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.6)' }}>{t('home.conciergeReply')}</Text>
           </View>
-          <Icon name="chevron_right" size={20} color="rgba(231,206,146,.8)" />
+          <Icono name="chevron_right" size={20} color="rgba(231,206,146,.8)" />
         </Pressable>
       </View>
-    </Screen>
+    </Pantalla>
   );
 }
 

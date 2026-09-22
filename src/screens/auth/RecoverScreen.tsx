@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton, OtpBoxes } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, CasillasOtp } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { mmss } from '../../lib/format';
@@ -116,8 +116,8 @@ export default function RecoverScreen() {
   };
 
   return (
-    <Screen bg={theme.dark ? theme.bg : '#fff'}>
-      <BackButton
+    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+      <BotonVolver
         onPress={() => {
           if (paso === 1) {
             nav.goBack();
@@ -134,7 +134,7 @@ export default function RecoverScreen() {
       </View>
       {(paso === 2 || paso === 3) && limiteFlujo ? (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <Icon name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
+          <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
           <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
             {t('recover.timeLeft', { time: mmss(tiempoRestante) })}
           </Text>
@@ -147,7 +147,7 @@ export default function RecoverScreen() {
           <Text style={estilos(theme).title}>{t('recover.title1')}</Text>
           <Text style={estilos(theme).sub}>{t('recover.sub1')}</Text>
           <View style={{ marginTop: 24 }}>
-            <TextField
+            <CampoTexto
               label={t('recover.email')}
               icon="person"
               autoCapitalize="none"
@@ -162,14 +162,14 @@ export default function RecoverScreen() {
           {errorEnvio ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
           ) : null}
-          <PrimaryButton
+          <BotonPrimario
             label={enviando ? t('recover.sending') : t('recover.sendCode')}
             disabled={!REGEX_CORREO.test(correo) || enviando}
             onPress={enviarCodigo}
             style={{ marginTop: 22 }}
           />
           <View style={{ marginTop: 26, padding: 16, borderRadius: 16, backgroundColor: theme.tint, flexDirection: 'row', gap: 11 }}>
-            <Icon name="shield" size={19} color={theme.gold} />
+            <Icono name="shield" size={19} color={theme.gold} />
             <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
               {t('recover.safetyNote')}
             </Text>
@@ -183,7 +183,7 @@ export default function RecoverScreen() {
           <Text style={estilos(theme).title}>{t('recover.title2')}</Text>
           <Text style={estilos(theme).sub}>{t('recover.sub2')}</Text>
           <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
-            <OtpBoxes value={codigo} />
+            <CasillasOtp value={codigo} />
           </Pressable>
           <TextInput
             ref={refEntrada}
@@ -225,7 +225,7 @@ export default function RecoverScreen() {
           <Text style={estilos(theme).title}>{t('recover.title3')}</Text>
           <Text style={estilos(theme).sub}>{t('recover.sub3')}</Text>
           <View style={{ marginTop: 22, gap: 12 }}>
-            <TextField
+            <CampoTexto
               label={t('recover.newPassword')}
               icon="lock"
               secureTextEntry={!contrasenaVisible}
@@ -240,7 +240,7 @@ export default function RecoverScreen() {
               <LineaRegla ok={reglaMayuscula} label={t('recover.ruleUp')} />
               <LineaRegla ok={reglaMinuscula} label={t('recover.ruleLow')} />
             </View>
-            <TextField
+            <CampoTexto
               label={t('recover.repeatPassword')}
               icon="lock"
               secureTextEntry={!repetirVisible}
@@ -254,7 +254,7 @@ export default function RecoverScreen() {
           {errorConfirmacion ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorConfirmacion}</Text>
           ) : null}
-          <PrimaryButton
+          <BotonPrimario
             label={confirmando ? t('recover.confirming') : t('recover.savePassword')}
             disabled={!contrasenaOk || !repetirOk || confirmando}
             onPress={confirmarRestablecimiento}
@@ -266,14 +266,14 @@ export default function RecoverScreen() {
       {paso === 4 && (
         <View style={{ alignItems: 'center', paddingTop: 44 }}>
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check" size={44} color="#21A26B" />
+            <Icono name="check" size={44} color="#21A26B" />
           </View>
           <Text style={[estilos(theme).title, { marginTop: 22, textAlign: 'center' }]}>{t('recover.title4')}</Text>
           <Text style={[estilos(theme).sub, { textAlign: 'center' }]}>{t('recover.sub4')}</Text>
-          <PrimaryButton label={t('recover.signIn')} onPress={() => nav.replace('Login')} style={{ marginTop: 26, width: '100%' }} />
+          <BotonPrimario label={t('recover.signIn')} onPress={() => nav.replace('Login')} style={{ marginTop: 26, width: '100%' }} />
         </View>
       )}
-    </Screen>
+    </Pantalla>
   );
 }
 
@@ -281,7 +281,7 @@ function InsigniaIcono({ name }: { name: string }) {
   const { theme } = useTheme();
   return (
     <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-      <Icon name={name} size={25} color={theme.gold} />
+      <Icono name={name} size={25} color={theme.gold} />
     </View>
   );
 }
@@ -291,7 +291,7 @@ function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
   const color = ok ? '#21A26B' : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <Icon name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
+      <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
       <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{label}</Text>
     </View>
   );

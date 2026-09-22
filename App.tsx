@@ -10,7 +10,7 @@ import { ThemeProvider } from './src/theme/ThemeContext';
 import { LanguageProvider } from './src/i18n/LanguageContext';
 import { AppStateProvider } from './src/state/AppStateContext';
 import RootNavigator from './src/navigation/RootNavigator';
-import ActivityTracker from './src/components/ActivityTracker';
+import RastreadorActividad from './src/components/RastreadorActividad';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -47,9 +47,9 @@ export default function App() {
         <ThemeProvider>
           <LanguageProvider>
             <AppStateProvider>
-              <ActivityTracker>
+              <RastreadorActividad>
                 <RootNavigator />
-              </ActivityTracker>
+              </RastreadorActividad>
             </AppStateProvider>
           </LanguageProvider>
         </ThemeProvider>

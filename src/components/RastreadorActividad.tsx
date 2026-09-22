@@ -7,7 +7,7 @@ import { useAppState } from '../state/AppStateContext';
 // de inactividad solo se reiniciaba en el login, así que una sesión usada
 // activamente igual se cerraría en un horario fijo sin importar cuánto
 // estuviera interactuando la persona.
-export default function ActivityTracker({ children }: { children: React.ReactNode }) {
+export default function RastreadorActividad({ children }: { children: React.ReactNode }) {
   const { touch } = useAppState();
   return (
     <View style={{ flex: 1 }} onTouchStart={touch} onTouchMove={touch}>

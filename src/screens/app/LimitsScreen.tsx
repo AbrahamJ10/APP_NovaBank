@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import SimpleSlider from '../../components/SimpleSlider';
+import DeslizadorSimple from '../../components/DeslizadorSimple';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { BackButton, Toggle } from '../../components/Primitives';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, Interruptor } from '../../components/Primitivas';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -31,8 +31,8 @@ export default function LimitsScreen() {
   };
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
       <Text style={{ fontFamily: fonts.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('limits.title')}</Text>
       <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{t('limits.subtitle')}</Text>
 
@@ -42,7 +42,7 @@ export default function LimitsScreen() {
           <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{money(limitOnline)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
-          <SimpleSlider
+          <DeslizadorSimple
             minimumValue={EN_LINEA_MIN}
             maximumValue={EN_LINEA_MAX}
             step={100}
@@ -64,7 +64,7 @@ export default function LimitsScreen() {
           <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{money(limitAtm)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
-          <SimpleSlider
+          <DeslizadorSimple
             minimumValue={CAJERO_MIN}
             maximumValue={CAJERO_MAX}
             step={100}
@@ -84,32 +84,32 @@ export default function LimitsScreen() {
         <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('limits.whereCardWorks')}</Text>
         <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
           <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="place" size={20} color={theme.gold} />
+            <Icono name="place" size={20} color={theme.gold} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('limits.peru')}</Text>
             <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('limits.peruDesc')}</Text>
           </View>
-          <Toggle value={geoPeru} onChange={(v) => { setGeoPeru(v); persistir({ geoPeru: v }); }} />
+          <Interruptor value={geoPeru} onChange={(v) => { setGeoPeru(v); persistir({ geoPeru: v }); }} />
         </View>
         <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
           <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="flight_takeoff" size={20} color={theme.gold} />
+            <Icono name="flight_takeoff" size={20} color={theme.gold} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('limits.abroad')}</Text>
             <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{geoIntl ? t('limits.enabledTemp') : t('limits.blockedDefault')}</Text>
           </View>
-          <Toggle value={geoIntl} onChange={(v) => { setGeoIntl(v); persistir({ geoIntl: v }); }} />
+          <Interruptor value={geoIntl} onChange={(v) => { setGeoIntl(v); persistir({ geoIntl: v }); }} />
         </View>
       </View>
 
       <View style={{ marginTop: 14, borderRadius: 20, backgroundColor: theme.tint, padding: 18, flexDirection: 'row', gap: 11 }}>
-        <Icon name="info" size={19} color={theme.gold} />
+        <Icono name="info" size={19} color={theme.gold} />
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
           {t('limits.travelTip')}
         </Text>
       </View>
-    </Screen>
+    </Pantalla>
   );
 }

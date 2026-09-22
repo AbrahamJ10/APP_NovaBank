@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { BackButton, ScreenTitle } from '../../components/Primitives';
-import { GhostButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, TituloPantalla } from '../../components/Primitivas';
+import { BotonFantasma, BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -48,26 +48,26 @@ export default function ReportsScreen() {
 
   if (enviado) {
     return (
-      <Screen bg={theme.bg}>
-        <BackButton onPress={() => nav.goBack()} />
+      <Pantalla bg={theme.bg}>
+        <BotonVolver onPress={() => nav.goBack()} />
         <View style={{ alignItems: 'center', paddingTop: 60 }}>
           <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="mark_email_read" size={44} color={theme.green} />
+            <Icono name="mark_email_read" size={44} color={theme.green} />
           </View>
           <Text style={{ marginTop: 20, fontFamily: fonts.heading, fontSize: 22, letterSpacing: -0.7, color: theme.ink }}>{t('reports.sentTitle')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, maxWidth: 280 }}>
             {t('reports.sentBody', { email: user.email })}
           </Text>
-          <GhostButton label={t('reports.requestAnother')} onPress={() => setEnviado(false)} style={{ marginTop: 22, width: 200 }} />
+          <BotonFantasma label={t('reports.requestAnother')} onPress={() => setEnviado(false)} style={{ marginTop: 22, width: 200 }} />
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
-      <ScreenTitle title={t('reports.title')} note={t('reports.note')} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
+      <TituloPantalla title={t('reports.title')} note={t('reports.note')} />
 
       <View style={{ marginTop: 20, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('reports.chooseMonth')}</Text>
@@ -88,7 +88,7 @@ export default function ReportsScreen() {
         <View
           style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: theme.bg, flexDirection: 'row', alignItems: 'center', gap: 10 }}
         >
-          <Icon name="mail" size={19} color={theme.gold} />
+          <Icono name="mail" size={19} color={theme.gold} />
           <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, color: theme.ink }}>{user.email}</Text>
         </View>
       </View>
@@ -97,13 +97,13 @@ export default function ReportsScreen() {
         <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
       ) : null}
 
-      <PrimaryButton
+      <BotonPrimario
         label={enviando ? t('reports.sending') : t('reports.sendToEmail')}
         icon="send"
         onPress={enviar}
         disabled={enviando}
         style={{ marginTop: 18 }}
       />
-    </Screen>
+    </Pantalla>
   );
 }

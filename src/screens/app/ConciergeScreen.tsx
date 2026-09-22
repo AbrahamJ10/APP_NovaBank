@@ -4,9 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { BackButton } from '../../components/Primitives';
-import { LogoMark } from '../../components/Logo';
-import Icon from '../../components/Icon';
+import { BotonVolver } from '../../components/Primitivas';
+import { MarcaLogo } from '../../components/Logo';
+import Icono from '../../components/Icono';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
 import { useAppState } from '../../state/AppStateContext';
@@ -236,11 +236,11 @@ export default function ConciergeScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={{ paddingHorizontal: 22 }}>
-            <BackButton dark onPress={() => nav.goBack()} />
+            <BotonVolver dark onPress={() => nav.goBack()} />
           </View>
           <View style={{ paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
             <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.94)', alignItems: 'center', justifyContent: 'center' }}>
-              <LogoMark size={34} />
+              <MarcaLogo size={34} />
               <View style={{ position: 'absolute', right: -2, bottom: -2, width: 14, height: 14, borderRadius: 7, backgroundColor: '#21A26B', borderWidth: 2.5, borderColor: '#0E2C4E' }} />
             </View>
             <View style={{ flex: 1 }}>
@@ -297,7 +297,7 @@ export default function ConciergeScreen() {
                 editable={!ocupado}
               />
               <Pressable onPress={enviar} disabled={ocupado} style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#C9A227', alignItems: 'center', justifyContent: 'center', opacity: ocupado ? 0.6 : 1 }}>
-                <Icon name="send" size={19} color="#071B31" />
+                <Icono name="send" size={19} color="#071B31" />
               </Pressable>
             </View>
           </View>

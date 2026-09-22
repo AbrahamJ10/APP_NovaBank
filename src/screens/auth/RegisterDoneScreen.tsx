@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoldButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import { BotonDorado } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -19,7 +19,7 @@ export default function RegisterDoneScreen() {
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 26, paddingTop: 60, paddingBottom: 30, justifyContent: 'space-between' }}>
         <View style={{ alignItems: 'center' }}>
           <View style={styles.check}>
-            <Icon name="check" size={50} color="#7BE0A8" />
+            <Icono name="check" size={50} color="#7BE0A8" />
           </View>
           <Text style={styles.title}>{t('registerDone.title')}</Text>
           <Text style={styles.sub}>{t('registerDone.sub', { name: primerNombre })}</Text>
@@ -36,7 +36,7 @@ export default function RegisterDoneScreen() {
           </View>
         </View>
 
-        <GoldButton
+        <BotonDorado
           label={t('registerDone.goToAccount')}
           onPress={() => {
             setSession('in');

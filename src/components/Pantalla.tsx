@@ -13,7 +13,7 @@ type Props = {
   edges?: ('top' | 'bottom' | 'left' | 'right')[];
 };
 
-export default function Screen({ children, scroll = true, padded = true, bg, style, contentStyle, edges }: Props) {
+export default function Pantalla({ children, scroll = true, padded = true, bg, style, contentStyle, edges }: Props) {
   const { theme, dark } = useTheme();
   const fondo = bg ?? theme.bg;
 

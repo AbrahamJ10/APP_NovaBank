@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton, ProgressSteps } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, PasosProgreso } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { AuthStackParamList } from '../../navigation/types';
@@ -75,21 +75,21 @@ export default function RegisterScreen() {
   };
 
   return (
-    <Screen bg={theme.dark ? theme.bg : '#fff'}>
-      <BackButton onPress={() => nav.goBack()} />
-      <ProgressSteps total={2} current={1} />
+    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+      <BotonVolver onPress={() => nav.goBack()} />
+      <PasosProgreso total={2} current={1} />
       <View>
         <Text style={{ fontFamily: fonts.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('register.title')}</Text>
         <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 13.5, color: theme.mid }}>{t('register.step')}</Text>
       </View>
 
       <View style={{ marginTop: 22, gap: 15 }}>
-        <TextField label={t('register.names')} icon="person" value={nombres} editable={false} />
-        <TextField label={t('register.firstLastName')} icon="badge" value={apellidoPaterno} editable={false} />
-        <TextField label={t('register.secondLastName')} icon="badge" value={apellidoMaterno} editable={false} />
-        <TextField label={t('register.dni')} icon="fingerprint" value={dni} editable={false} status="success" hint={t('register.verifiedReniec')} />
+        <CampoTexto label={t('register.names')} icon="person" value={nombres} editable={false} />
+        <CampoTexto label={t('register.firstLastName')} icon="badge" value={apellidoPaterno} editable={false} />
+        <CampoTexto label={t('register.secondLastName')} icon="badge" value={apellidoMaterno} editable={false} />
+        <CampoTexto label={t('register.dni')} icon="fingerprint" value={dni} editable={false} status="success" hint={t('register.verifiedReniec')} />
 
-        <TextField
+        <CampoTexto
           label={t('register.email')}
           icon="mail"
           placeholder="tucorreo@gmail.com"
@@ -99,7 +99,7 @@ export default function RegisterScreen() {
           keyboardType="email-address"
           status={correo.length === 0 ? 'default' : correoValido ? 'success' : 'error'}
         />
-        <TextField
+        <CampoTexto
           label={t('register.phone')}
           icon="call"
           placeholder="987 214 550"
@@ -109,7 +109,7 @@ export default function RegisterScreen() {
           status={telefono.length === 0 ? 'default' : telefonoValido ? 'success' : 'error'}
         />
         <View>
-          <TextField
+          <CampoTexto
             label={t('register.password')}
             icon="lock"
             placeholder={t('register.passwordPlaceholder')}
@@ -131,7 +131,7 @@ export default function RegisterScreen() {
           {fortaleza.label ? <Text style={{ marginTop: 6, fontFamily: fonts.bodyBold, fontSize: 11.5, color: fortaleza.color }}>{fortaleza.label}</Text> : null}
         </View>
 
-        <TextField
+        <CampoTexto
           label={t('register.confirmPassword')}
           icon="lock"
           placeholder={t('register.confirmPasswordPlaceholder')}
@@ -158,15 +158,15 @@ export default function RegisterScreen() {
             justifyContent: 'center',
           }}
         >
-          {aceptado ? <Icon name="check" size={15} color="#fff" /> : null}
+          {aceptado ? <Icono name="check" size={15} color="#fff" /> : null}
         </View>
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
           {t('register.termsPrefix')}<Text style={{ color: '#C9A227' }}>{t('register.termsLink')}</Text>{t('register.termsSuffix')}
         </Text>
       </Pressable>
 
-      <PrimaryButton label={t('register.continue')} iconRight="arrow_forward" disabled={!puedeContinuar} onPress={alContinuar} style={{ marginTop: 22 }} />
-    </Screen>
+      <BotonPrimario label={t('register.continue')} iconRight="arrow_forward" disabled={!puedeContinuar} onPress={alContinuar} style={{ marginTop: 22 }} />
+    </Pantalla>
   );
 }
 
@@ -175,7 +175,7 @@ function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
   const color = ok ? '#21A26B' : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <Icon name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
+      <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
       <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{label}</Text>
     </View>
   );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { fonts } from '../theme/tokens';
-import Icon from './Icon';
+import Icono from './Icono';
 
 type Props = TextInputProps & {
   label?: string;
@@ -13,7 +13,7 @@ type Props = TextInputProps & {
   hint?: string;
 };
 
-export default function TextField({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
+export default function CampoTexto({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
   const { theme } = useTheme();
   const [enfocado, setEnfocado] = useState(false);
 
@@ -47,7 +47,7 @@ export default function TextField({ label, icon, status = 'default', rightIcon, 
           gap: 10,
         }}
       >
-        {icon ? <Icon name={icon} size={19} color={theme.soft} /> : null}
+        {icon ? <Icono name={icon} size={19} color={theme.soft} /> : null}
         <TextInput
           placeholderTextColor={theme.soft}
           onFocus={() => setEnfocado(true)}
@@ -55,10 +55,10 @@ export default function TextField({ label, icon, status = 'default', rightIcon, 
           style={[{ flex: 1, fontSize: 14.5, color: theme.ink, padding: 0 }, style]}
           {...rest}
         />
-        {status === 'success' ? <Icon name="check_circle" size={19} color="#21A26B" /> : null}
+        {status === 'success' ? <Icono name="check_circle" size={19} color="#21A26B" /> : null}
         {rightIcon ? (
           <Pressable onPress={onRightIconPress} hitSlop={10}>
-            <Icon name={rightIcon} size={19} color={theme.soft} />
+            <Icono name={rightIcon} size={19} color={theme.soft} />
           </Pressable>
         ) : null}
       </View>

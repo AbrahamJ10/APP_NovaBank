@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton, OtpBoxes, ProgressSteps } from '../../components/Primitives';
-import { PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, CasillasOtp, PasosProgreso } from '../../components/Primitivas';
+import { BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { mmss, maskEmail } from '../../lib/format';
@@ -91,19 +91,19 @@ export default function OtpScreen() {
   };
 
   return (
-    <Screen bg={theme.dark ? theme.bg : '#fff'}>
-      <BackButton onPress={() => nav.goBack()} />
-      <ProgressSteps total={2} current={2} />
+    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+      <BotonVolver onPress={() => nav.goBack()} />
+      <PasosProgreso total={2} current={2} />
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-        <Icon name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
+        <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
         <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
           {t('otp.timeLeft', { time: mmss(tiempoRestante) })}
         </Text>
       </View>
 
       <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name="mail" size={25} color={theme.gold} />
+        <Icono name="mail" size={25} color={theme.gold} />
       </View>
       <Text style={{ marginTop: 20, fontFamily: fonts.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('otp.title')}</Text>
       <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
@@ -112,7 +112,7 @@ export default function OtpScreen() {
       </Text>
 
       <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 26 }}>
-        <OtpBoxes value={codigo} />
+        <CasillasOtp value={codigo} />
       </Pressable>
       <TextInput
         ref={refEntrada}
@@ -151,7 +151,7 @@ export default function OtpScreen() {
         </Pressable>
       </View>
 
-      <PrimaryButton label={enviando ? t('otp.verifying') : t('otp.verify')} onPress={() => enviar(codigo)} disabled={codigo.length !== 6 || enviando} style={{ marginTop: 26 }} />
-    </Screen>
+      <BotonPrimario label={enviando ? t('otp.verifying') : t('otp.verify')} onPress={() => enviar(codigo)} disabled={codigo.length !== 6 || enviando} style={{ marginTop: 26 }} />
+    </Pantalla>
   );
 }

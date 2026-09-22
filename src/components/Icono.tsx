@@ -12,7 +12,7 @@ const ALIAS: Record<string, string> = {
   local_atm: 'local-atm',
 };
 
-export function symbolToGlyph(nombre: string) {
+export function simboloAGlifo(nombre: string) {
   if (ALIAS[nombre]) return ALIAS[nombre];
   return nombre.replace(/_/g, '-');
 }
@@ -24,6 +24,6 @@ type Props = {
   style?: any;
 };
 
-export default function Icon({ name, size = 20, color = '#0F1A26', style }: Props) {
-  return <MaterialIcons name={symbolToGlyph(name) as any} size={size} color={color} style={style} />;
+export default function Icono({ name, size = 20, color = '#0F1A26', style }: Props) {
+  return <MaterialIcons name={simboloAGlifo(name) as any} size={size} color={color} style={style} />;
 }

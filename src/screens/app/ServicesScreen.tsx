@@ -3,10 +3,10 @@ import { Pressable, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton, ScreenTitle } from '../../components/Primitives';
-import { GhostButton, GoldButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver, TituloPantalla } from '../../components/Primitivas';
+import { BotonFantasma, BotonDorado } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -54,16 +54,16 @@ export default function ServicesScreen() {
 
   if (listo && seleccionado) {
     return (
-      <Screen bg={theme.bg}>
+      <Pantalla bg={theme.bg}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check" size={44} color={theme.green} />
+            <Icono name="check" size={44} color={theme.green} />
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {t('services.receiptPaidBody', { name: seleccionado.name, amount: money(seleccionado.amount) })}
           </Text>
-          <GhostButton
+          <BotonFantasma
             label={t('services.payAnother')}
             onPress={() => {
               setSeleccionado(null);
@@ -72,17 +72,17 @@ export default function ServicesScreen() {
             style={{ marginTop: 24, width: 220 }}
           />
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   if (seleccionado && seleccionado.suspended) {
     return (
-      <Screen bg={theme.bg}>
-        <BackButton onPress={() => setSeleccionado(null)} />
+      <Pantalla bg={theme.bg}>
+        <BotonVolver onPress={() => setSeleccionado(null)} />
         <View style={{ marginTop: 22, borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22, alignItems: 'center' }}>
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="pause_circle" size={30} color={theme.gold} />
+            <Icono name="pause_circle" size={30} color={theme.gold} />
           </View>
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
           <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
@@ -91,38 +91,38 @@ export default function ServicesScreen() {
           {error ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
-          <GhostButton
+          <BotonFantasma
             label={alternando ? t('services.paying') : t('concierge.actionResume')}
             onPress={alternarSuspension}
             disabled={alternando}
             style={{ marginTop: 18, width: 220 }}
           />
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   if (seleccionado && seleccionado.paid) {
     return (
-      <Screen bg={theme.bg}>
-        <BackButton onPress={() => setSeleccionado(null)} />
+      <Pantalla bg={theme.bg}>
+        <BotonVolver onPress={() => setSeleccionado(null)} />
         <View style={{ marginTop: 22, borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22, alignItems: 'center' }}>
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check_circle" size={30} color={theme.green} />
+            <Icono name="check_circle" size={30} color={theme.green} />
           </View>
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
           <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
             {t('serviceLookup.upToDateBody', { supply: seleccionado.supplyNumber })}
           </Text>
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   if (seleccionado) {
     return (
-      <Screen bg={theme.bg}>
-        <BackButton onPress={() => setSeleccionado(null)} />
+      <Pantalla bg={theme.bg}>
+        <BotonVolver onPress={() => setSeleccionado(null)} />
         <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{seleccionado.name}</Text>
         <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{seleccionado.meta}</Text>
 
@@ -149,43 +149,43 @@ export default function ServicesScreen() {
 
         <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
           <View style={{ width: 42, height: 42, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="account_balance_wallet" size={20} color={theme.gold} />
+            <Icono name="account_balance_wallet" size={20} color={theme.gold} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('services.savings')}</Text>
             <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: money(available) })}</Text>
           </View>
-          <Icon name="check_circle" size={19} color={theme.gold} />
+          <Icono name="check_circle" size={19} color={theme.gold} />
         </View>
 
         {error ? (
           <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
         ) : null}
 
-        <GoldButton
+        <BotonDorado
           label={pagando ? t('services.paying') : t('services.pay', { amount: money(seleccionado.amount) })}
           disabled={seleccionado.amount > available || pagando}
           onPress={enviar}
           style={{ marginTop: 20 }}
         />
-        <GhostButton
+        <BotonFantasma
           label={alternando ? t('services.paying') : t('concierge.actionSuspend')}
           onPress={alternarSuspension}
           disabled={alternando || pagando}
           style={{ marginTop: 10 }}
         />
-      </Screen>
+      </Pantalla>
     );
   }
 
   return (
-    <Screen bg={theme.bg}>
-      <ScreenTitle eyebrow={t('services.eyebrow')} title={t('services.title')} />
+    <Pantalla bg={theme.bg}>
+      <TituloPantalla eyebrow={t('services.eyebrow')} title={t('services.title')} />
       <Pressable
         onPress={() => nav.navigate('ServiceCatalog')}
         style={{ marginTop: 14, height: 48, borderRadius: 15, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}
       >
-        <Icon name="search" size={19} color={theme.soft} />
+        <Icono name="search" size={19} color={theme.soft} />
         <Text style={{ fontFamily: fonts.body, fontSize: 13.5, color: theme.soft }}>{t('services.searchPlaceholder')}</Text>
       </Pressable>
 
@@ -201,7 +201,7 @@ export default function ServicesScreen() {
             style={{ borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
           >
             <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name={servicio.icon} size={21} color={theme.gold} />
+              <Icono name={servicio.icon} size={21} color={theme.gold} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{servicio.name}</Text>
@@ -221,9 +221,9 @@ export default function ServicesScreen() {
         onPress={() => nav.navigate('ServiceCatalog')}
         style={{ marginTop: 18, borderRadius: 18, borderWidth: 1, borderColor: theme.line, borderStyle: 'dashed', padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}
       >
-        <Icon name="add" size={21} color={theme.gold} />
+        <Icono name="add" size={21} color={theme.gold} />
         <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('services.addNewService')}</Text>
       </Pressable>
-    </Screen>
+    </Pantalla>
   );
 }

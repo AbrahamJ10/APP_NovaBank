@@ -3,10 +3,10 @@ import { Animated, Easing, Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { fonts } from '../theme/tokens';
-import Icon from './Icon';
-import LanguageSwitch from './LanguageSwitch';
+import Icono from './Icono';
+import SelectorIdioma from './SelectorIdioma';
 
-export function BackButton({ onPress, dark }: { onPress?: () => void; dark?: boolean }) {
+export function BotonVolver({ onPress, dark }: { onPress?: () => void; dark?: boolean }) {
   const nav = useNavigation();
   const { theme } = useTheme();
   return (
@@ -24,14 +24,14 @@ export function BackButton({ onPress, dark }: { onPress?: () => void; dark?: boo
           justifyContent: 'center',
         }}
       >
-        <Icon name="arrow_back" size={20} color={dark ? '#fff' : theme.ink} />
+        <Icono name="arrow_back" size={20} color={dark ? '#fff' : theme.ink} />
       </Pressable>
-      <LanguageSwitch dark={dark} />
+      <SelectorIdioma dark={dark} />
     </View>
   );
 }
 
-export function ScreenTitle({
+export function TituloPantalla({
   eyebrow,
   title,
   note,
@@ -40,8 +40,8 @@ export function ScreenTitle({
   eyebrow?: string;
   title: string;
   note?: string;
-  // Solo lo necesitan las pantallas que llegan a ScreenTitle sin un
-  // BackButton arriba — BackButton ya trae su propio LanguageSwitch, así
+  // Solo lo necesitan las pantallas que llegan a TituloPantalla sin un
+  // BotonVolver arriba — BotonVolver ya trae su propio SelectorIdioma, así
   // que pasar esto junto con uno solo lo mostraría dos veces.
   showLanguageSwitch?: boolean;
 }) {
@@ -67,12 +67,12 @@ export function ScreenTitle({
   return (
     <View style={{ marginBottom: 4, flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
       {encabezado}
-      <LanguageSwitch />
+      <SelectorIdioma />
     </View>
   );
 }
 
-export function Row({ label, value, k }: { label: string; value?: string; k?: React.ReactNode }) {
+export function Fila({ label, value, k }: { label: string; value?: string; k?: React.ReactNode }) {
   const { theme } = useTheme();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 }}>
@@ -82,7 +82,7 @@ export function Row({ label, value, k }: { label: string; value?: string; k?: Re
   );
 }
 
-export function Chip({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void }) {
+export function Pastilla({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void }) {
   const { theme } = useTheme();
   return (
     <Pressable
@@ -103,7 +103,7 @@ export function Chip({ label, active, onPress }: { label: string; active?: boole
   );
 }
 
-export function Badge({ label, tone = 'gold' }: { label: string; tone?: 'gold' | 'green' | 'red' | 'neutral' }) {
+export function Insignia({ label, tone = 'gold' }: { label: string; tone?: 'gold' | 'green' | 'red' | 'neutral' }) {
   const { theme } = useTheme();
   const mapaColores = {
     gold: { bg: theme.selBg, fg: theme.gold },
@@ -138,7 +138,7 @@ export function Avatar({ initials, size = 42 }: { initials: string; size?: numbe
   );
 }
 
-export function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+export function Interruptor({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   const { theme } = useTheme();
   const animacion = useRef(new Animated.Value(value ? 1 : 0)).current;
   useEffect(() => {
@@ -174,7 +174,7 @@ export function Toggle({ value, onChange }: { value: boolean; onChange: (v: bool
   );
 }
 
-export function OtpBoxes({ value, length = 6 }: { value: string; length?: number }) {
+export function CasillasOtp({ value, length = 6 }: { value: string; length?: number }) {
   const { theme } = useTheme();
   const caracteres = value.split('');
   return (
@@ -204,7 +204,7 @@ export function OtpBoxes({ value, length = 6 }: { value: string; length?: number
   );
 }
 
-export function ProgressSteps({ total, current }: { total: number; current: number }) {
+export function PasosProgreso({ total, current }: { total: number; current: number }) {
   const { theme } = useTheme();
   return (
     <View style={{ flexDirection: 'row', gap: 5, marginBottom: 22 }}>

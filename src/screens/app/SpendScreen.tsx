@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { BackButton } from '../../components/Primitives';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver } from '../../components/Primitivas';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -52,8 +52,8 @@ export default function SpendScreen() {
   }, [txMes]);
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
       <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('spend.last31Days')}</Text>
       <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('spend.title')}</Text>
 
@@ -120,11 +120,11 @@ export default function SpendScreen() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: '#0E2C4E', padding: 20, flexDirection: 'row', gap: 12 }}>
-        <Icon name="insights" size={20} color="#E7CE92" />
+        <Icono name="insights" size={20} color="#E7CE92" />
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 19, color: 'rgba(255,255,255,.82)' }}>
           {t('spend.summary', { total: money(total), count: txMes.length })}
         </Text>
       </View>
-    </Screen>
+    </Pantalla>
   );
 }

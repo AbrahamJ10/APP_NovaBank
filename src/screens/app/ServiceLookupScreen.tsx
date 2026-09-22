@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton } from '../../components/Primitives';
-import TextField from '../../components/TextField';
-import { GhostButton, GoldButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver } from '../../components/Primitivas';
+import CampoTexto from '../../components/CampoTexto';
+import { BotonFantasma, BotonDorado, BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -60,34 +60,34 @@ export default function ServiceLookupScreen() {
 
   if (recibo && pagado) {
     return (
-      <Screen bg={theme.bg}>
+      <Pantalla bg={theme.bg}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check" size={44} color={theme.green} />
+            <Icono name="check" size={44} color={theme.green} />
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {t('services.receiptPaidBody', { name: recibo.name, amount: money(recibo.amount) })}
           </Text>
-          <GhostButton label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 24, width: 240 }} />
+          <BotonFantasma label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 24, width: 240 }} />
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 }}>
         <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: biller.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name={biller.icon} size={21} color={biller.iconFg} />
+          <Icono name={biller.icon} size={21} color={biller.iconFg} />
         </View>
         <Text style={{ fontFamily: fonts.heading, fontSize: 22, letterSpacing: -0.6, color: theme.ink }}>{biller.name}</Text>
       </View>
 
       {!recibo ? (
         <View style={{ marginTop: 22 }}>
-          <TextField
+          <CampoTexto
             label={biller.fieldLabel}
             icon="tag"
             placeholder={biller.fieldPlaceholder}
@@ -98,7 +98,7 @@ export default function ServiceLookupScreen() {
           {error ? (
             <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
-          <PrimaryButton
+          <BotonPrimario
             label={cargando ? t('serviceLookup.checking') : t('serviceLookup.check')}
             disabled={!numeroSuministro.trim() || cargando}
             onPress={consultar}
@@ -108,13 +108,13 @@ export default function ServiceLookupScreen() {
       ) : recibo.paid ? (
         <View style={{ marginTop: 22, borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22, alignItems: 'center' }}>
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check_circle" size={30} color={theme.green} />
+            <Icono name="check_circle" size={30} color={theme.green} />
           </View>
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{t('serviceLookup.upToDate')}</Text>
           <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
             {t('serviceLookup.upToDateBody', { supply: recibo.supplyNumber })}
           </Text>
-          <GhostButton label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 18, width: 220 }} />
+          <BotonFantasma label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 18, width: 220 }} />
         </View>
       ) : (
         <View style={{ marginTop: 22 }}>
@@ -140,7 +140,7 @@ export default function ServiceLookupScreen() {
             <Text style={{ marginTop: 10, fontFamily: fonts.bodyMed, fontSize: 11.5, color: '#C2352B' }}>{t('qr.insufficientBalance')}</Text>
           ) : null}
 
-          <GoldButton
+          <BotonDorado
             label={pagando ? t('services.paying') : t('services.pay', { amount: money(recibo.amount) })}
             disabled={recibo.amount > available || pagando}
             onPress={enviarPago}
@@ -148,6 +148,6 @@ export default function ServiceLookupScreen() {
           />
         </View>
       )}
-    </Screen>
+    </Pantalla>
   );
 }

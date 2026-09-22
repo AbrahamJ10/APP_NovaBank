@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Screen from '../../components/Screen';
-import { BackButton } from '../../components/Primitives';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { BotonVolver } from '../../components/Primitivas';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -55,13 +55,13 @@ export default function ServiceCatalogScreen() {
   }, [filtrados]);
 
   return (
-    <Screen bg={theme.bg}>
-      <BackButton onPress={() => nav.goBack()} />
+    <Pantalla bg={theme.bg}>
+      <BotonVolver onPress={() => nav.goBack()} />
       <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('serviceCatalog.title')}</Text>
       <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{t('serviceCatalog.subtitle')}</Text>
 
       <View style={{ marginTop: 16, height: 48, borderRadius: 15, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}>
-        <Icon name="search" size={19} color={theme.soft} />
+        <Icono name="search" size={19} color={theme.soft} />
         <TextInput
           autoFocus
           value={consulta}
@@ -90,16 +90,16 @@ export default function ServiceCatalogScreen() {
                     style={{ borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12 }}
                   >
                     <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: proveedor.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon name={proveedor.icon} size={19} color={proveedor.iconFg} />
+                      <Icono name={proveedor.icon} size={19} color={proveedor.iconFg} />
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{proveedor.name}</Text>
                       <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{proveedor.fieldLabel}</Text>
                     </View>
                     {afiliado ? (
-                      <Icon name="check_circle" size={19} color={theme.green} />
+                      <Icono name="check_circle" size={19} color={theme.green} />
                     ) : (
-                      <Icon name="chevron_right" size={19} color={theme.soft} />
+                      <Icono name="chevron_right" size={19} color={theme.soft} />
                     )}
                   </Pressable>
                 );
@@ -108,6 +108,6 @@ export default function ServiceCatalogScreen() {
           </View>
         ))
       )}
-    </Screen>
+    </Pantalla>
   );
 }

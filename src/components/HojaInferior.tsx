@@ -6,7 +6,7 @@ import { radii } from '../theme/tokens';
 
 const { height: ALTO_PANTALLA } = Dimensions.get('window');
 
-export default function BottomSheet({
+export default function HojaInferior({
   visible,
   onClose,
   onShow,

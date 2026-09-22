@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import Icon from '../../components/Icon';
-import { GoldButton, GhostButton } from '../../components/Buttons';
+import Icono from '../../components/Icono';
+import { BotonDorado, BotonFantasma } from '../../components/Botones';
 import { fonts } from '../../theme/tokens';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
@@ -137,7 +137,7 @@ export default function RegisterFaceScreen() {
       <LinearGradient colors={['#122438', '#08131F']} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 26, paddingTop: 10, paddingBottom: 30 }}>
         <Pressable onPress={() => nav.goBack()} style={styles.closeBtn}>
-          <Icon name="close" size={20} color="#fff" />
+          <Icono name="close" size={20} color="#fff" />
         </Pressable>
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -153,17 +153,17 @@ export default function RegisterFaceScreen() {
                 )}
               </View>
             ) : (
-              <Icon name="face" size={96} color={etapa === 'ok' || etapa === 'otpFailed' ? '#7BE0A8' : etapa === 'fail' ? '#C2352B' : 'rgba(255,255,255,.55)'} />
+              <Icono name="face" size={96} color={etapa === 'ok' || etapa === 'otpFailed' ? '#7BE0A8' : etapa === 'fail' ? '#C2352B' : 'rgba(255,255,255,.55)'} />
             )}
 
             {(etapa === 'ok' || etapa === 'otpFailed') && (
               <View style={[styles.badge, { backgroundColor: '#21A26B' }]}>
-                <Icon name="check" size={30} color="#fff" />
+                <Icono name="check" size={30} color="#fff" />
               </View>
             )}
             {etapa === 'fail' && (
               <View style={[styles.badge, { backgroundColor: '#C2352B' }]}>
-                <Icon name="close" size={30} color="#fff" />
+                <Icono name="close" size={30} color="#fff" />
               </View>
             )}
           </View>
@@ -173,20 +173,20 @@ export default function RegisterFaceScreen() {
         </View>
 
         <View style={{ gap: 11 }}>
-          {etapa === 'idle' && <GoldButton label={t('registerFace.scanButton')} icon="face" onPress={iniciarEscaneo} />}
+          {etapa === 'idle' && <BotonDorado label={t('registerFace.scanButton')} icon="face" onPress={iniciarEscaneo} />}
           {(etapa === 'scanning' || etapa === 'checking') && (
-            <GhostButton label={t('registerFace.cancel')} onPress={() => setEtapa('idle')} textColor="#fff" style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.28)' }} />
+            <BotonFantasma label={t('registerFace.cancel')} onPress={() => setEtapa('idle')} textColor="#fff" style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.28)' }} />
           )}
           {etapa === 'ok' && (
-            <GoldButton label={t('registerFace.continueButton')} icon="arrow_forward" onPress={() => nav.replace('Otp')} />
+            <BotonDorado label={t('registerFace.continueButton')} icon="arrow_forward" onPress={() => nav.replace('Otp')} />
           )}
           {etapa === 'otpFailed' && (
-            <GoldButton label={t('registerFace.retrySendEmail')} icon="refresh" onPress={enviarOtp} />
+            <BotonDorado label={t('registerFace.retrySendEmail')} icon="refresh" onPress={enviarOtp} />
           )}
           {etapa === 'fail' && (
             <>
-              <GoldButton label={t('registerFace.retryButton')} onPress={() => setEtapa('idle')} />
-              <GhostButton
+              <BotonDorado label={t('registerFace.retryButton')} onPress={() => setEtapa('idle')} />
+              <BotonFantasma
                 label={t('registerFace.rescanDni')}
                 onPress={() => nav.goBack()}
                 textColor="#fff"

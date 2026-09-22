@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Screen from '../../components/Screen';
-import { ScreenTitle } from '../../components/Primitives';
-import { GhostButton, GoldButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { TituloPantalla } from '../../components/Primitivas';
+import { BotonFantasma, BotonDorado } from '../../components/Botones';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -47,10 +47,10 @@ export default function PayCardScreen() {
 
   if (listo) {
     return (
-      <Screen bg={theme.bg}>
+      <Pantalla bg={theme.bg}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="check" size={44} color={theme.green} />
+            <Icono name="check" size={44} color={theme.green} />
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('payCard.scheduled')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
@@ -58,15 +58,15 @@ export default function PayCardScreen() {
               ? t('payCard.scheduledInstallments', { amount: money(cardDebt) })
               : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: money(planes.find((opcion) => opcion.id === plan)!.amt) })}
           </Text>
-          <GhostButton label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
+          <BotonFantasma label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
         </View>
-      </Screen>
+      </Pantalla>
     );
   }
 
   return (
-    <Screen bg={theme.bg}>
-      <ScreenTitle eyebrow={`Visa Infinite ···${user.cardNumber.slice(-4)}`} title={t('payCard.title')} showLanguageSwitch />
+    <Pantalla bg={theme.bg}>
+      <TituloPantalla eyebrow={`Visa Infinite ···${user.cardNumber.slice(-4)}`} title={t('payCard.title')} showLanguageSwitch />
 
       <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 18, borderRadius: 24, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -98,7 +98,7 @@ export default function PayCardScreen() {
               onPress={() => setPlan(opcion.id)}
               style={{ borderRadius: 18, borderWidth: 1.5, borderColor: activo ? theme.gold : theme.line, backgroundColor: activo ? theme.selBg : theme.surf, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
             >
-              <Icon name={opcion.icon} size={21} color={activo ? theme.gold : theme.soft} />
+              <Icono name={opcion.icon} size={21} color={activo ? theme.gold : theme.soft} />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{opcion.label}</Text>
                 <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{opcion.note}</Text>
@@ -130,7 +130,7 @@ export default function PayCardScreen() {
         <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
       ) : null}
 
-      <GoldButton label={pagando ? t('payCard.paying') : t('payCard.confirmPayment')} disabled={pagando} onPress={enviar} style={{ marginTop: 20 }} />
-    </Screen>
+      <BotonDorado label={pagando ? t('payCard.paying') : t('payCard.confirmPayment')} disabled={pagando} onPress={enviar} style={{ marginTop: 20 }} />
+    </Pantalla>
   );
 }

@@ -2,11 +2,11 @@ import React, { useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../../components/Screen';
-import { OtpBoxes, ScreenTitle, Toggle } from '../../components/Primitives';
-import { DangerButton, GhostButton, PrimaryButton } from '../../components/Buttons';
-import BottomSheet from '../../components/BottomSheet';
-import Icon from '../../components/Icon';
+import Pantalla from '../../components/Pantalla';
+import { CasillasOtp, TituloPantalla, Interruptor } from '../../components/Primitivas';
+import { BotonPeligro, BotonFantasma, BotonPrimario } from '../../components/Botones';
+import HojaInferior from '../../components/HojaInferior';
+import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
@@ -63,8 +63,8 @@ export default function CardScreen() {
   };
 
   return (
-    <Screen bg={theme.bg}>
-      <ScreenTitle title={t('card.title')} showLanguageSwitch />
+    <Pantalla bg={theme.bg}>
+      <TituloPantalla title={t('card.title')} showLanguageSwitch />
 
       <LinearGradient
         colors={cardBlocked ? ['#5B6875', '#3A434C'] : ['#0E2C4E', '#061626']}
@@ -103,7 +103,7 @@ export default function CardScreen() {
             {cardBlocked ? t('card.blockedDesc') : t('card.unblockedDesc')}
           </Text>
         </View>
-        <Toggle value={cardBlocked} onChange={(siguiente) => (siguiente ? setConfirmarAbierto(true) : requestCardBlock(false))} />
+        <Interruptor value={cardBlocked} onChange={(siguiente) => (siguiente ? setConfirmarAbierto(true) : requestCardBlock(false))} />
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 14 }}>
@@ -117,26 +117,26 @@ export default function CardScreen() {
             ]}
           >
             <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name={control.icon} size={19} color={theme.gold} />
+              <Icono name={control.icon} size={19} color={theme.gold} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{control.label}</Text>
               <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{control.desc}</Text>
             </View>
-            <Icon name="chevron_right" size={18} color="#A6B1BD" />
+            <Icono name="chevron_right" size={18} color="#A6B1BD" />
           </Pressable>
         ))}
       </View>
 
-      <BottomSheet visible={confirmarAbierto} onClose={() => setConfirmarAbierto(false)}>
+      <HojaInferior visible={confirmarAbierto} onClose={() => setConfirmarAbierto(false)}>
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name="gpp_maybe" size={26} color="#C2352B" />
+          <Icono name="gpp_maybe" size={26} color="#C2352B" />
         </View>
         <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('card.confirmBlockTitle')}</Text>
         <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('card.confirmBlockBody')}
         </Text>
-        <DangerButton
+        <BotonPeligro
           label={t('card.yesBlock')}
           onPress={() => {
             requestCardBlock(true);
@@ -144,21 +144,21 @@ export default function CardScreen() {
           }}
           style={{ marginTop: 22 }}
         />
-        <GhostButton label={t('card.cancel')} onPress={() => setConfirmarAbierto(false)} style={{ marginTop: 10 }} />
-      </BottomSheet>
+        <BotonFantasma label={t('card.cancel')} onPress={() => setConfirmarAbierto(false)} style={{ marginTop: 10 }} />
+      </HojaInferior>
 
-      <BottomSheet visible={pinAbierto} onClose={() => setPinAbierto(false)}>
+      <HojaInferior visible={pinAbierto} onClose={() => setPinAbierto(false)}>
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name="pin" size={24} color={theme.gold} />
+          <Icono name="pin" size={24} color={theme.gold} />
         </View>
         <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.changePinTitle')}</Text>
         <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('card.changePinBody')}
         </Text>
-        <PrimaryButton label={t('card.understood')} onPress={() => setPinAbierto(false)} style={{ marginTop: 20 }} />
-      </BottomSheet>
+        <BotonPrimario label={t('card.understood')} onPress={() => setPinAbierto(false)} style={{ marginTop: 20 }} />
+      </HojaInferior>
 
-      <BottomSheet
+      <HojaInferior
         visible={pasoCvv !== 'closed'}
         onShow={() => refEntradaCvv.current?.focus()}
         onClose={() => {
@@ -173,7 +173,7 @@ export default function CardScreen() {
               {t('card.verifyIdentityBody')}
             </Text>
             <Pressable onPress={() => refEntradaCvv.current?.focus()} style={{ marginTop: 18 }}>
-              <OtpBoxes value={codigoCvv} />
+              <CasillasOtp value={codigoCvv} />
             </Pressable>
             <TextInput
               ref={refEntradaCvv}
@@ -193,7 +193,7 @@ export default function CardScreen() {
             ) : enviandoCvv ? (
               <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('card.sendingCode')}</Text>
             ) : null}
-            <PrimaryButton
+            <BotonPrimario
               label={verificandoCvv ? t('card.verifying') : t('card.verify')}
               onPress={() => enviarCvv(codigoCvv)}
               disabled={codigoCvv.length !== 6 || verificandoCvv || enviandoCvv}
@@ -203,14 +203,14 @@ export default function CardScreen() {
         )}
         {pasoCvv === 'shown' && (
           <View style={{ alignItems: 'center', paddingVertical: 6 }}>
-            <Icon name="lock_open" size={30} color={theme.green} />
+            <Icono name="lock_open" size={30} color={theme.green} />
             <Text style={{ marginTop: 14, fontFamily: fonts.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: user.cardNumber.slice(-4) })}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{valorCvv}</Text>
             <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('card.cvvHides')}</Text>
-            <PrimaryButton label={t('card.done')} onPress={() => setPasoCvv('closed')} style={{ marginTop: 18, width: '100%' }} />
+            <BotonPrimario label={t('card.done')} onPress={() => setPasoCvv('closed')} style={{ marginTop: 18, width: '100%' }} />
           </View>
         )}
-      </BottomSheet>
-    </Screen>
+      </HojaInferior>
+    </Pantalla>
   );
 }

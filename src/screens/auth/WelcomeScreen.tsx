@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigation/types';
 import { fonts } from '../../theme/tokens';
-import { GoldButton, GhostButton } from '../../components/Buttons';
-import { LogoMark } from '../../components/Logo';
-import Icon from '../../components/Icon';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import { BotonDorado, BotonFantasma } from '../../components/Botones';
+import { MarcaLogo } from '../../components/Logo';
+import Icono from '../../components/Icono';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function WelcomeScreen() {
@@ -30,9 +30,9 @@ export default function WelcomeScreen() {
         <View style={{ marginTop: 28 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <View style={styles.badge}>
-              <LogoMark size={54} />
+              <MarcaLogo size={54} />
             </View>
-            <LanguageSwitch dark />
+            <SelectorIdioma dark />
           </View>
           <Text style={styles.wordmark}>NOVABANK</Text>
           <View style={styles.rule} />
@@ -42,7 +42,7 @@ export default function WelcomeScreen() {
           <View style={{ marginTop: 30, gap: 13 }}>
             {CARACTERISTICAS.map((c) => (
               <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
-                <Icon name={c.icon} size={19} color="#D9BE7A" />
+                <Icono name={c.icon} size={19} color="#D9BE7A" />
                 <Text style={styles.featureText}>{c.label}</Text>
               </View>
             ))}
@@ -50,8 +50,8 @@ export default function WelcomeScreen() {
         </View>
 
         <View style={{ gap: 11 }}>
-          <GoldButton label={t('welcome.createAccount')} onPress={() => nav.navigate('DniCapture')} />
-          <GhostButton
+          <BotonDorado label={t('welcome.createAccount')} onPress={() => nav.navigate('DniCapture')} />
+          <BotonFantasma
             label={t('welcome.haveAccount')}
             onPress={() => nav.navigate('Login')}
             textColor="#fff"

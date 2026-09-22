@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Share, Text, View } from 'react-native';
-import Screen from '../../components/Screen';
-import { Chip, Row } from '../../components/Primitives';
-import TransactionRow from '../../components/TransactionRow';
-import BottomSheet from '../../components/BottomSheet';
-import { GhostButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
-import LanguageSwitch from '../../components/LanguageSwitch';
+import Pantalla from '../../components/Pantalla';
+import { Pastilla, Fila } from '../../components/Primitivas';
+import FilaTransaccion from '../../components/FilaTransaccion';
+import HojaInferior from '../../components/HojaInferior';
+import { BotonFantasma, BotonPrimario } from '../../components/Botones';
+import Icono from '../../components/Icono';
+import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { money } from '../../lib/format';
@@ -76,18 +76,18 @@ export default function TransactionsScreen() {
   };
 
   return (
-    <Screen padded={false} bg={theme.bg}>
+    <Pantalla padded={false} bg={theme.bg}>
       <View style={{ paddingHorizontal: 22, paddingTop: 10, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('transactions.title')}</Text>
           <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{t('transactions.countInPeriod', { count: filtradas.length })}</Text>
         </View>
-        <LanguageSwitch />
+        <SelectorIdioma />
       </View>
 
       <View style={{ marginTop: 16, paddingHorizontal: 22, flexDirection: 'row', gap: 8 }}>
         {CLAVES_FILTRO.map((f) => (
-          <Chip key={f} label={etiquetaFiltro[f]} active={filtro === f} onPress={() => setFiltro(f)} />
+          <Pastilla key={f} label={etiquetaFiltro[f]} active={filtro === f} onPress={() => setFiltro(f)} />
         ))}
       </View>
 
@@ -111,25 +111,25 @@ export default function TransactionsScreen() {
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 11.5, color: theme.soft, textTransform: 'uppercase', letterSpacing: 0.7, marginBottom: 9 }}>{label}</Text>
               <View style={{ borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
                 {items.map((tx) => (
-                  <TransactionRow key={tx.id} tx={tx} showDate onPress={() => setSeleccionada(tx)} />
+                  <FilaTransaccion key={tx.id} tx={tx} showDate onPress={() => setSeleccionada(tx)} />
                 ))}
               </View>
             </View>
           ))
         )}
 
-        <GhostButton label={t('transactions.refresh')} icon="sync" onPress={refrescar} style={{ marginTop: 4 }} />
+        <BotonFantasma label={t('transactions.refresh')} icon="sync" onPress={refrescar} style={{ marginTop: 4 }} />
         <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>
           {t('transactions.showingCount', { shown: filtradas.length, total: transactions.length })}
         </Text>
       </View>
 
-      <BottomSheet visible={!!seleccionada} onClose={() => setSeleccionada(null)}>
+      <HojaInferior visible={!!seleccionada} onClose={() => setSeleccionada(null)}>
         {seleccionada ? (
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 13 }}>
               <View style={{ width: 48, height: 48, borderRadius: 15, backgroundColor: seleccionada.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name={seleccionada.icon} size={24} color={seleccionada.iconFg} />
+                <Icono name={seleccionada.icon} size={24} color={seleccionada.iconFg} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: fonts.headingBold, fontSize: 15.5, color: theme.ink }}>{seleccionada.name}</Text>
@@ -144,20 +144,20 @@ export default function TransactionsScreen() {
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.gold }}>{t('transactions.completed')}</Text>
             </View>
             <View style={{ marginTop: 18 }}>
-              <Row
+              <Fila
                 label={t('transactions.dateLabel')}
                 value={`${seleccionada.daysAgo === 0 ? t('transactions.groupToday') : seleccionada.daysAgo === 1 ? t('transactions.groupYesterday') : t('transactions.daysAgo', { n: seleccionada.daysAgo })} · ${seleccionada.time}`}
               />
-              <Row label={t('transactions.categoryLabel')} value={seleccionada.category} />
-              <Row label={t('transactions.referenceLabel')} value={('NV-' + seleccionada.id).toUpperCase()} />
+              <Fila label={t('transactions.categoryLabel')} value={seleccionada.category} />
+              <Fila label={t('transactions.referenceLabel')} value={('NV-' + seleccionada.id).toUpperCase()} />
             </View>
             <View style={{ marginTop: 20, flexDirection: 'row', gap: 10 }}>
-              <GhostButton label={t('transactions.share')} icon="share" onPress={() => compartirTx(seleccionada)} style={{ flex: 1 }} />
-              <PrimaryButton label={t('transactions.done')} onPress={() => setSeleccionada(null)} style={{ width: 96 }} />
+              <BotonFantasma label={t('transactions.share')} icon="share" onPress={() => compartirTx(seleccionada)} style={{ flex: 1 }} />
+              <BotonPrimario label={t('transactions.done')} onPress={() => setSeleccionada(null)} style={{ width: 96 }} />
             </View>
           </View>
         ) : null}
-      </BottomSheet>
-    </Screen>
+      </HojaInferior>
+    </Pantalla>
   );
 }
