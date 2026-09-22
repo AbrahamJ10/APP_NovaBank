@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
-import { usarTema } from '../theme/ContextoTema';
+import { usarTema } from '../tema/ContextoTema';
 import { usarEstadoApp } from '../state/ContextoEstadoApp';
 import { iniciarSeguimientoAuditoria, detenerSeguimientoAuditoria, rastrearEvento } from '../lib/auditoria';
 import PilaAutenticacion from './PilaAutenticacion';
 import PilaRaiz from './PilaRaiz';
 
 export default function NavegadorRaiz() {
-  const { theme, dark } = usarTema();
+  const { tema, oscuro } = usarTema();
   const { sesion, tocar } = usarEstadoApp();
   const refNav = useRef<NavigationContainerRef<Record<string, object | undefined>>>(null);
   const ultimaRuta = useRef<string | undefined>(undefined);
@@ -33,21 +33,21 @@ export default function NavegadorRaiz() {
 
   if (sesion === 'checking') {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.bg }}>
-        <ActivityIndicator color={theme.gold} />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: tema.fondo }}>
+        <ActivityIndicator color={tema.dorado} />
       </View>
     );
   }
 
   const temaNavegacion = {
-    ...(dark ? DarkTheme : DefaultTheme),
+    ...(oscuro ? DarkTheme : DefaultTheme),
     colors: {
-      ...(dark ? DarkTheme.colors : DefaultTheme.colors),
-      background: theme.bg,
-      card: theme.surf,
-      border: theme.line,
-      primary: theme.gold,
-      text: theme.ink,
+      ...(oscuro ? DarkTheme.colors : DefaultTheme.colors),
+      background: tema.fondo,
+      card: tema.superficie,
+      border: tema.linea,
+      primary: tema.dorado,
+      text: tema.tinta,
     },
   };
 

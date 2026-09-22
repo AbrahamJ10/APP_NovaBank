@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';

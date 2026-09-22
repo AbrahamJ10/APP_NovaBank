@@ -9,8 +9,8 @@ import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { MarcaLogo } from '../../components/Logo';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { mmss } from '../../lib/formato';
 import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
@@ -19,7 +19,7 @@ import { limpiarUltimaCuenta, obtenerUltimaCuenta } from '../../lib/tokensSeguro
 
 export default function PantallaIniciarSesion() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { iniciarSesion, bloqueadoHasta, tiempoBloqueoRestante, restaurarSesion } = usarEstadoApp();
 
@@ -90,15 +90,15 @@ export default function PantallaIniciarSesion() {
   };
 
   return (
-    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+    <Pantalla bg={tema.oscuro ? tema.fondo : '#fff'}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <MarcaLogo size={52} />
         <SelectorIdioma />
       </View>
-      <Text style={{ marginTop: 14, fontFamily: fuentes.displaySemi, fontSize: 15, letterSpacing: 3, textTransform: 'uppercase', color: theme.gold }}>
+      <Text style={{ marginTop: 14, fontFamily: fuentes.displaySemi, fontSize: 15, letterSpacing: 3, textTransform: 'uppercase', color: tema.dorado }}>
         NovaBank
       </Text>
-      <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 28, lineHeight: 32, color: theme.ink, letterSpacing: -1 }}>
+      <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 28, lineHeight: 32, color: tema.tinta, letterSpacing: -1 }}>
         {accesoRapido ? (
           <>
             {t('login.greeting')}
@@ -109,7 +109,7 @@ export default function PantallaIniciarSesion() {
           t('login.greeting')
         )}
       </Text>
-      <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, color: theme.mid }}>{t('login.subtitle')}</Text>
+      <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, color: tema.medio }}>{t('login.subtitle')}</Text>
 
       {bloqueado ? (
         <View style={{ marginTop: 20, borderRadius: 16, backgroundColor: '#FFF4F3', borderWidth: 1, borderColor: '#F6CFCA', padding: 16 }}>
@@ -134,9 +134,9 @@ export default function PantallaIniciarSesion() {
           </View>
         </View>
       ) : mensajeBiometria ? (
-        <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: theme.tint, padding: 14, flexDirection: 'row', gap: 10 }}>
-          <Icono name="fingerprint" size={18} color={theme.gold} />
-          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>{mensajeBiometria}</Text>
+        <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: tema.matiz, padding: 14, flexDirection: 'row', gap: 10 }}>
+          <Icono name="fingerprint" size={18} color={tema.dorado} />
+          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: tema.medio }}>{mensajeBiometria}</Text>
         </View>
       ) : null}
 
@@ -147,9 +147,9 @@ export default function PantallaIniciarSesion() {
           )}
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 7 }}>
-              <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.mid }}>{t('login.password')}</Text>
+              <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: tema.medio }}>{t('login.password')}</Text>
               <Pressable onPress={() => nav.navigate('Recover')}>
-                <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.gold }}>{t('login.forgot')}</Text>
+                <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: tema.dorado }}>{t('login.forgot')}</Text>
               </Pressable>
             </View>
             <CampoTexto
@@ -177,9 +177,9 @@ export default function PantallaIniciarSesion() {
           }}
           style={{ marginTop: 14, alignSelf: 'center' }}
         >
-          <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>
             {t('login.notYou')}
-            <Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{t('login.useOtherAccount')}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, color: tema.dorado }}>{t('login.useOtherAccount')}</Text>
           </Text>
         </Pressable>
       )}
@@ -191,15 +191,15 @@ export default function PantallaIniciarSesion() {
               width: 92,
               height: 92,
               borderRadius: 30,
-              backgroundColor: theme.dark ? theme.tint : '#EDF2F8',
+              backgroundColor: tema.oscuro ? tema.matiz : '#EDF2F8',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            {verificandoBiometria ? <ActivityIndicator color={theme.gold} /> : <Icono name="fingerprint" size={50} color={theme.gold} />}
+            {verificandoBiometria ? <ActivityIndicator color={tema.dorado} /> : <Icono name="fingerprint" size={50} color={tema.dorado} />}
           </View>
-          <Text style={{ marginTop: 12, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('login.faceId')}</Text>
-          <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('login.faceIdSub')}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('login.faceId')}</Text>
+          <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 11.5, color: tema.suave }}>{t('login.faceIdSub')}</Text>
         </Pressable>
       )}
     </Pantalla>

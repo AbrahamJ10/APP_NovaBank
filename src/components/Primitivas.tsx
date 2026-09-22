@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { usarTema } from '../theme/ContextoTema';
-import { fuentes } from '../theme/estilos';
+import { usarTema } from '../tema/ContextoTema';
+import { fuentes } from '../tema/estilos';
 import Icono from './Icono';
 import SelectorIdioma from './SelectorIdioma';
 
-export function BotonVolver({ onPress, dark }: { onPress?: () => void; dark?: boolean }) {
+export function BotonVolver({ onPress, oscuro }: { onPress?: () => void; oscuro?: boolean }) {
   const nav = useNavigation();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
       <Pressable
@@ -17,16 +17,16 @@ export function BotonVolver({ onPress, dark }: { onPress?: () => void; dark?: bo
           width: 38,
           height: 38,
           borderRadius: 12,
-          backgroundColor: dark ? 'rgba(255,255,255,.12)' : theme.surf,
-          borderWidth: dark ? 0 : 1,
-          borderColor: theme.line,
+          backgroundColor: oscuro ? 'rgba(255,255,255,.12)' : tema.superficie,
+          borderWidth: oscuro ? 0 : 1,
+          borderColor: tema.linea,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Icono name="arrow_back" size={20} color={dark ? '#fff' : theme.ink} />
+        <Icono name="arrow_back" size={20} color={oscuro ? '#fff' : tema.tinta} />
       </Pressable>
-      <SelectorIdioma dark={dark} />
+      <SelectorIdioma oscuro={oscuro} />
     </View>
   );
 }
@@ -45,18 +45,18 @@ export function TituloPantalla({
   // que pasar esto junto con uno solo lo mostraría dos veces.
   showLanguageSwitch?: boolean;
 }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const encabezado = (
     <View style={{ flex: 1 }}>
       {eyebrow ? (
-        <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: tema.dorado, letterSpacing: 1.8, textTransform: 'uppercase' }}>
           {eyebrow}
         </Text>
       ) : null}
-      <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.7, color: theme.ink, marginTop: eyebrow ? 6 : 0 }}>
+      <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.7, color: tema.tinta, marginTop: eyebrow ? 6 : 0 }}>
         {title}
       </Text>
-      {note ? <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid, marginTop: 5 }}>{note}</Text> : null}
+      {note ? <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio, marginTop: 5 }}>{note}</Text> : null}
     </View>
   );
 
@@ -73,17 +73,17 @@ export function TituloPantalla({
 }
 
 export function Fila({ label, value, k }: { label: string; value?: string; k?: React.ReactNode }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 }}>
-      <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: theme.soft }}>{label}</Text>
-      {k ?? <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: theme.ink }}>{value}</Text>}
+      <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: tema.suave }}>{label}</Text>
+      {k ?? <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: tema.tinta }}>{value}</Text>}
     </View>
   );
 }
 
 export function Pastilla({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
     <Pressable
       onPress={onPress}
@@ -93,23 +93,23 @@ export function Pastilla({ label, active, onPress }: { label: string; active?: b
         borderRadius: 18,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: active ? '#133A63' : theme.surf,
+        backgroundColor: active ? '#133A63' : tema.superficie,
         borderWidth: 1.5,
-        borderColor: active ? '#133A63' : theme.line,
+        borderColor: active ? '#133A63' : tema.linea,
       }}
     >
-      <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: active ? '#fff' : theme.mid }}>{label}</Text>
+      <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: active ? '#fff' : tema.medio }}>{label}</Text>
     </Pressable>
   );
 }
 
 export function Insignia({ label, tone = 'gold' }: { label: string; tone?: 'gold' | 'green' | 'red' | 'neutral' }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const mapaColores = {
-    gold: { bg: theme.selBg, fg: theme.gold },
-    green: { bg: theme.okBg, fg: theme.green },
-    red: { bg: theme.warnBg, fg: theme.red },
-    neutral: { bg: theme.tint, fg: theme.mid },
+    gold: { bg: tema.fondoSel, fg: tema.dorado },
+    green: { bg: tema.fondoOk, fg: tema.verde },
+    red: { bg: tema.fondoAdvertencia, fg: tema.rojo },
+    neutral: { bg: tema.matiz, fg: tema.medio },
   } as const;
   const colores = mapaColores[tone];
   return (
@@ -139,7 +139,7 @@ export function Avatar({ initials, size = 42 }: { initials: string; size?: numbe
 }
 
 export function Interruptor({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const animacion = useRef(new Animated.Value(value ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(animacion, { toValue: value ? 1 : 0, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
@@ -153,7 +153,7 @@ export function Interruptor({ value, onChange }: { value: boolean; onChange: (v:
         height: 32,
         borderRadius: 16,
         padding: 3,
-        backgroundColor: value ? '#21A26B' : theme.line,
+        backgroundColor: value ? '#21A26B' : tema.linea,
       }}
     >
       <Animated.View
@@ -175,7 +175,7 @@ export function Interruptor({ value, onChange }: { value: boolean; onChange: (v:
 }
 
 export function CasillasOtp({ value, length = 6 }: { value: string; length?: number }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const caracteres = value.split('');
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -190,13 +190,13 @@ export function CasillasOtp({ value, length = 6 }: { value: string; length?: num
               height: 60,
               borderRadius: 14,
               borderWidth: 1.5,
-              borderColor: activo || lleno ? theme.gold : theme.line,
-              backgroundColor: lleno ? theme.selBg : theme.surf,
+              borderColor: activo || lleno ? tema.dorado : tema.linea,
+              backgroundColor: lleno ? tema.fondoSel : tema.superficie,
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 23, color: theme.ink }}>{caracteres[i] ?? ''}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 23, color: tema.tinta }}>{caracteres[i] ?? ''}</Text>
           </View>
         );
       })}
@@ -205,11 +205,11 @@ export function CasillasOtp({ value, length = 6 }: { value: string; length?: num
 }
 
 export function PasosProgreso({ total, current }: { total: number; current: number }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
     <View style={{ flexDirection: 'row', gap: 5, marginBottom: 22 }}>
       {Array.from({ length: total }).map((_, i) => (
-        <View key={i} style={{ height: 4, flex: 1, borderRadius: 2, backgroundColor: i < current ? theme.gold : theme.line }} />
+        <View key={i} style={{ height: 4, flex: 1, borderRadius: 2, backgroundColor: i < current ? tema.dorado : tema.linea }} />
       ))}
     </View>
   );

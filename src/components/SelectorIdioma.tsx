@@ -1,9 +1,9 @@
 import React from 'react';
 import { Pressable, Text } from 'react-native';
-import { usarTema } from '../theme/ContextoTema';
+import { usarTema } from '../tema/ContextoTema';
 import { usarIdioma } from '../i18n/ContextoIdioma';
 import Icono from './Icono';
-import { fuentes } from '../theme/estilos';
+import { fuentes } from '../tema/estilos';
 
 // Píldora de idioma en línea (no flotante) pensada para ir dentro de la
 // propia fila de encabezado de una pantalla — usualmente emparejada con
@@ -12,27 +12,27 @@ import { fuentes } from '../theme/estilos';
 // ES/EN a un simple botón cuadrado con ícono, para encabezados ya
 // apretados de espacio (ej. la fila de avatar/nombre/modo oscuro/campana
 // de Inicio).
-export default function SelectorIdioma({ dark, compact }: { dark?: boolean; compact?: boolean }) {
-  const { theme } = usarTema();
-  const { language, toggle } = usarIdioma();
+export default function SelectorIdioma({ oscuro, compact }: { oscuro?: boolean; compact?: boolean }) {
+  const { tema } = usarTema();
+  const { language, alternar } = usarIdioma();
 
   if (compact) {
     return (
       <Pressable
-        onPress={toggle}
+        onPress={alternar}
         hitSlop={8}
         style={{
           width: 40,
           height: 40,
           borderRadius: 13,
-          backgroundColor: dark ? 'rgba(255,255,255,.12)' : theme.surf,
-          borderWidth: dark ? 0 : 1,
-          borderColor: theme.line,
+          backgroundColor: oscuro ? 'rgba(255,255,255,.12)' : tema.superficie,
+          borderWidth: oscuro ? 0 : 1,
+          borderColor: tema.linea,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontFamily: fuentes.headingBold, fontSize: 10.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.3 }}>
+        <Text style={{ fontFamily: fuentes.headingBold, fontSize: 10.5, color: oscuro ? '#fff' : tema.tinta, letterSpacing: 0.3 }}>
           {language === 'es' ? 'ES' : 'EN'}
         </Text>
       </Pressable>
@@ -41,7 +41,7 @@ export default function SelectorIdioma({ dark, compact }: { dark?: boolean; comp
 
   return (
     <Pressable
-      onPress={toggle}
+      onPress={alternar}
       hitSlop={8}
       style={{
         flexDirection: 'row',
@@ -50,13 +50,13 @@ export default function SelectorIdioma({ dark, compact }: { dark?: boolean; comp
         paddingHorizontal: 10,
         height: 38,
         borderRadius: 12,
-        backgroundColor: dark ? 'rgba(255,255,255,.12)' : theme.surf,
-        borderWidth: dark ? 0 : 1,
-        borderColor: theme.line,
+        backgroundColor: oscuro ? 'rgba(255,255,255,.12)' : tema.superficie,
+        borderWidth: oscuro ? 0 : 1,
+        borderColor: tema.linea,
       }}
     >
-      <Icono name="language" size={14} color={dark ? '#fff' : theme.ink} />
-      <Text style={{ fontFamily: fuentes.headingBold, fontSize: 11.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.5 }}>
+      <Icono name="language" size={14} color={oscuro ? '#fff' : tema.tinta} />
+      <Text style={{ fontFamily: fuentes.headingBold, fontSize: 11.5, color: oscuro ? '#fff' : tema.tinta, letterSpacing: 0.5 }}>
         {language === 'es' ? 'ES' : 'EN'}
       </Text>
     </Pressable>

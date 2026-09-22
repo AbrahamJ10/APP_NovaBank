@@ -5,8 +5,8 @@ import QRCode from 'react-native-qrcode-svg';
 import Pantalla from '../../components/Pantalla';
 import { TituloPantalla } from '../../components/Primitivas';
 import { BotonPeligroContorno, BotonPrimario } from '../../components/Botones';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { mmss } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
@@ -16,7 +16,7 @@ const RADIO = 46;
 const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
 export default function PantallaRetiro() {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { retiro, retiroRestante, retiroExpirado, generarRetiro, cancelarRetiro, renovarRetiro } = usarEstadoApp();
   const [monto, setMonto] = useState(200);
@@ -35,32 +35,32 @@ export default function PantallaRetiro() {
   };
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       <TituloPantalla title={t('withdraw.title')} showLanguageSwitch />
 
       {!retiro ? (
         <View>
-          <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>
             {t('withdraw.subtitle')}
           </Text>
-          <View style={{ marginTop: 20, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('withdraw.amountToWithdraw')}</Text>
-            <View style={{ marginTop: 12, height: 74, borderRadius: 16, borderWidth: 1.5, borderColor: theme.gold, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, gap: 9 }}>
-              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 17, color: theme.soft }}>S/</Text>
-              <Text style={{ fontFamily: fuentes.heading, fontSize: 30, letterSpacing: -1, color: theme.ink }}>{monto.toFixed(2)}</Text>
+          <View style={{ marginTop: 20, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('withdraw.amountToWithdraw')}</Text>
+            <View style={{ marginTop: 12, height: 74, borderRadius: 16, borderWidth: 1.5, borderColor: tema.dorado, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, gap: 9 }}>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 17, color: tema.suave }}>S/</Text>
+              <Text style={{ fontFamily: fuentes.heading, fontSize: 30, letterSpacing: -1, color: tema.tinta }}>{monto.toFixed(2)}</Text>
             </View>
             <View style={{ marginTop: 12, flexDirection: 'row', flexWrap: 'wrap', gap: 9 }}>
               {PREDEFINIDOS.map((valor) => (
                 <Pressable
                   key={valor}
                   onPress={() => setMonto(valor)}
-                  style={{ width: '47%', height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: monto === valor ? theme.selBg : theme.bg, borderWidth: monto === valor ? 1.5 : 0, borderColor: theme.gold }}
+                  style={{ width: '47%', height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: monto === valor ? tema.fondoSel : tema.fondo, borderWidth: monto === valor ? 1.5 : 0, borderColor: tema.dorado }}
                 >
-                  <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>S/ {valor}</Text>
+                  <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>S/ {valor}</Text>
                 </Pressable>
               ))}
             </View>
-            <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
+            <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: tema.suave }}>
               {t('withdraw.rules')}
             </Text>
           </View>
@@ -76,9 +76,9 @@ export default function PantallaRetiro() {
           />
         </View>
       ) : (
-        <View style={{ marginTop: 18, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 26, alignItems: 'center' }}>
-          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11.5, color: theme.mid, textTransform: 'uppercase', letterSpacing: 1 }}>{t('withdraw.withdrawKey')}</Text>
-          <Text style={{ marginTop: 12, fontFamily: fuentes.heading, fontSize: 36, letterSpacing: 5, color: retiroExpirado ? theme.soft : theme.ink }}>{retiro.code}</Text>
+        <View style={{ marginTop: 18, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 26, alignItems: 'center' }}>
+          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11.5, color: tema.medio, textTransform: 'uppercase', letterSpacing: 1 }}>{t('withdraw.withdrawKey')}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.heading, fontSize: 36, letterSpacing: 5, color: retiroExpirado ? tema.suave : tema.tinta }}>{retiro.code}</Text>
 
           <View style={{ marginTop: 22, padding: 12, backgroundColor: '#fff', borderRadius: 18, opacity: retiroExpirado ? 0.35 : 1 }}>
             <QRCode value={retiro.qr} size={114} color="#0F1A26" backgroundColor="#fff" />
@@ -86,12 +86,12 @@ export default function PantallaRetiro() {
 
           <View style={{ marginTop: 22, width: 110, height: 110, alignItems: 'center', justifyContent: 'center' }}>
             <Svg width={110} height={110} style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>
-              <Circle cx={55} cy={55} r={RADIO} stroke={theme.line} strokeWidth={8} fill="none" />
+              <Circle cx={55} cy={55} r={RADIO} stroke={tema.linea} strokeWidth={8} fill="none" />
               <Circle
                 cx={55}
                 cy={55}
                 r={RADIO}
-                stroke={retiroExpirado ? theme.soft : '#C9A227'}
+                stroke={retiroExpirado ? tema.suave : '#C9A227'}
                 strokeWidth={8}
                 fill="none"
                 strokeDasharray={`${CIRCUNFERENCIA}, ${CIRCUNFERENCIA}`}
@@ -99,14 +99,14 @@ export default function PantallaRetiro() {
                 strokeLinecap="round"
               />
             </Svg>
-            <Text style={{ fontFamily: fuentes.heading, fontSize: 19, color: theme.ink }}>{mmss(retiroRestante)}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 10, color: theme.soft }}>{t('withdraw.remaining')}</Text>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 19, color: tema.tinta }}>{mmss(retiroRestante)}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 10, color: tema.suave }}>{t('withdraw.remaining')}</Text>
           </View>
 
-          <Text style={{ marginTop: 18, fontFamily: fuentes.headingBold, fontSize: 14, color: theme.ink }}>
+          <Text style={{ marginTop: 18, fontFamily: fuentes.headingBold, fontSize: 14, color: tema.tinta }}>
             {retiroExpirado ? t('withdraw.keyExpired') : t('withdraw.presentKey')}
           </Text>
-          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
+          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: tema.suave }}>
             {retiroExpirado ? t('withdraw.generateNewToContinue') : t('withdraw.withdrawWithoutCard', { amount: retiro.amount.toFixed(2) })}
           </Text>
 

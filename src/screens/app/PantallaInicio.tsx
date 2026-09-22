@@ -9,8 +9,8 @@ import Pantalla from '../../components/Pantalla';
 import FilaTransaccion from '../../components/FilaTransaccion';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { ListaParametrosRaiz, ListaParametrosPestanas } from '../../navigation/tipos';
@@ -20,7 +20,7 @@ type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParamet
 
 export default function PantallaInicio() {
   const nav = useNavigation<Navegacion>();
-  const { theme, dark, toggle } = usarTema();
+  const { tema, oscuro, alternar } = usarTema();
   const { t } = usarIdioma();
   const { usuario, disponible, retenido, lineaCredito, pagoMinimo, fechaCorte, tarjetaBloqueada, transacciones } = usarEstadoApp();
 
@@ -38,7 +38,7 @@ export default function PantallaInicio() {
   const enmascarar = (v: string) => v.replace(/[0-9]/g, '•');
 
   return (
-    <Pantalla scroll padded={false} bg={theme.bg}>
+    <Pantalla scroll padded={false} bg={tema.fondo}>
       <LinearGradient colors={['#0E2C4E', '#061626']} start={{ x: 0.85, y: 0 }} end={{ x: 0.2, y: 1 }} style={{ paddingTop: 14, paddingHorizontal: 22, paddingBottom: 30, borderBottomLeftRadius: 34, borderBottomRightRadius: 34 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.12)', borderWidth: 1, borderColor: 'rgba(217,190,122,.4)', alignItems: 'center', justifyContent: 'center' }}>
@@ -48,9 +48,9 @@ export default function PantallaInicio() {
             <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' }}>{usuario.name}</Text>
           </View>
-          <SelectorIdioma dark compact />
-          <Pressable onPress={toggle} style={estilosH.iconBtn}>
-            <Icono name={dark ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
+          <SelectorIdioma oscuro compact />
+          <Pressable onPress={alternar} style={estilosH.iconBtn}>
+            <Icono name={oscuro ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
           <Pressable onPress={() => nav.navigate('Notifications' as never)} style={estilosH.iconBtn}>
             <Icono name="notificaciones" size={20} color="#fff" />
@@ -88,21 +88,21 @@ export default function PantallaInicio() {
             <Pressable
               key={acceso.label}
               onPress={() => (acceso.go === 'TransferTab' ? nav.navigate('Transfer' as never) : nav.navigate(acceso.go as any))}
-              style={{ width: '47%', borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 16, gap: 10 }}
+              style={{ width: '47%', borderRadius: 18, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 16, gap: 10 }}
             >
-              <Icono name={acceso.icon} size={23} color={theme.gold} />
-              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{acceso.label}</Text>
+              <Icono name={acceso.icon} size={23} color={tema.dorado} />
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{acceso.label}</Text>
             </Pressable>
           ))}
         </View>
 
         <View style={{ marginTop: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15.5, color: theme.ink }}>{t('home.recentMovements')}</Text>
+          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15.5, color: tema.tinta }}>{t('home.recentMovements')}</Text>
           <Pressable onPress={() => nav.navigate('Transactions' as never)}>
-            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('home.seeAll')}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: tema.dorado }}>{t('home.seeAll')}</Text>
           </Pressable>
         </View>
-        <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
+        <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, overflow: 'hidden' }}>
           {recientes.map((transaccion) => (
             <FilaTransaccion key={transaccion.id} tx={transaccion} showDate />
           ))}
@@ -124,14 +124,14 @@ export default function PantallaInicio() {
 
         <Pressable
           onPress={() => nav.navigate('Spend')}
-          style={{ marginTop: 12, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14 }}
+          style={{ marginTop: 12, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14 }}
         >
           <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#C9A227', alignItems: 'center', justifyContent: 'center' }}>
-            <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: theme.surf }} />
+            <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: tema.superficie }} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: theme.ink }}>{t('home.monthSpend')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('home.reviewCategories')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: tema.tinta }}>{t('home.monthSpend')}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: tema.suave }}>{t('home.reviewCategories')}</Text>
           </View>
           <Icono name="chevron_right" size={20} color="#A6B1BD" />
         </Pressable>

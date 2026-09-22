@@ -11,7 +11,7 @@ import CampoTexto from '../../components/CampoTexto';
 import { BotonDorado, BotonFantasma, BotonPrimario } from '../../components/Botones';
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
@@ -94,7 +94,7 @@ export default function PantallaQr() {
     <View style={{ flex: 1, backgroundColor: '#0F1A26' }}>
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 22 }}>
         <View style={{ marginTop: 4 }}>
-          <BotonVolver dark onPress={() => nav.goBack()} />
+          <BotonVolver oscuro onPress={() => nav.goBack()} />
         </View>
 
         <View style={{ flexDirection: 'row', gap: 8, padding: 4, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.1)' }}>

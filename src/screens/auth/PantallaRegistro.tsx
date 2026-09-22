@@ -7,8 +7,8 @@ import { BotonVolver, PasosProgreso } from '../../components/Primitivas';
 import CampoTexto from '../../components/CampoTexto';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
@@ -19,7 +19,7 @@ function cumpleRegla(regex: RegExp, valor: string) {
 
 export default function PantallaRegistro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { iniciarRegistro, dniEscaneado, setDniEscaneado } = usarEstadoApp();
 
@@ -75,12 +75,12 @@ export default function PantallaRegistro() {
   };
 
   return (
-    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+    <Pantalla bg={tema.oscuro ? tema.fondo : '#fff'}>
       <BotonVolver onPress={() => nav.goBack()} />
       <PasosProgreso total={2} current={1} />
       <View>
-        <Text style={{ fontFamily: fuentes.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('register.title')}</Text>
-        <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 13.5, color: theme.mid }}>{t('register.step')}</Text>
+        <Text style={{ fontFamily: fuentes.heading, fontSize: 26, color: tema.tinta, letterSpacing: -0.9 }}>{t('register.title')}</Text>
+        <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 13.5, color: tema.medio }}>{t('register.step')}</Text>
       </View>
 
       <View style={{ marginTop: 22, gap: 15 }}>
@@ -125,7 +125,7 @@ export default function PantallaRegistro() {
             <LineaRegla ok={reglaMayuscula} label={t('register.ruleUp')} />
             <LineaRegla ok={reglaMinuscula} label={t('register.ruleLow')} />
           </View>
-          <View style={{ marginTop: 12, height: 6, borderRadius: 3, backgroundColor: theme.line, overflow: 'hidden' }}>
+          <View style={{ marginTop: 12, height: 6, borderRadius: 3, backgroundColor: tema.linea, overflow: 'hidden' }}>
             <View style={{ height: 6, borderRadius: 3, backgroundColor: fortaleza.color, width: fortaleza.pct as any }} />
           </View>
           {fortaleza.label ? <Text style={{ marginTop: 6, fontFamily: fuentes.bodyBold, fontSize: 11.5, color: fortaleza.color }}>{fortaleza.label}</Text> : null}
@@ -153,14 +153,14 @@ export default function PantallaRegistro() {
             borderRadius: 6,
             backgroundColor: aceptado ? '#133A63' : 'transparent',
             borderWidth: aceptado ? 0 : 1.5,
-            borderColor: theme.line,
+            borderColor: tema.linea,
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
           {aceptado ? <Icono name="check" size={15} color="#fff" /> : null}
         </View>
-        <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
+        <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: tema.medio }}>
           {t('register.termsPrefix')}<Text style={{ color: '#C9A227' }}>{t('register.termsLink')}</Text>{t('register.termsSuffix')}
         </Text>
       </Pressable>
@@ -171,8 +171,8 @@ export default function PantallaRegistro() {
 }
 
 function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
-  const { theme } = usarTema();
-  const color = ok ? '#21A26B' : theme.soft;
+  const { tema } = usarTema();
+  const color = ok ? '#21A26B' : tema.suave;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
       <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />

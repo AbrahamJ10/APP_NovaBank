@@ -4,14 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { temaOscuro, temaClaro, Tema } from './estilos';
 
 type ContextoTema = {
-  theme: Tema;
-  dark: boolean;
-  toggle: () => void;
+  tema: Tema;
+  oscuro: boolean;
+  alternar: () => void;
 };
 
-const Contexto = createContext<ContextoTema>({ theme: temaClaro, dark: false, toggle: () => {} });
+const Contexto = createContext<ContextoTema>({ tema: temaClaro, oscuro: false, alternar: () => {} });
 
-const CLAVE_ALMACENAMIENTO = 'novabank.theme';
+const CLAVE_ALMACENAMIENTO = 'novabank.tema';
 
 export function ProveedorTema({ children }: { children: React.ReactNode }) {
   const [oscuro, setOscuro] = useState(Appearance.getColorScheme() === 'dark');
@@ -23,7 +23,7 @@ export function ProveedorTema({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const toggle = () => {
+  const alternar = () => {
     setOscuro((actual) => {
       const siguiente = !actual;
       AsyncStorage.setItem(CLAVE_ALMACENAMIENTO, siguiente ? 'dark' : 'light');
@@ -31,9 +31,9 @@ export function ProveedorTema({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const theme = useMemo(() => (oscuro ? temaOscuro : temaClaro), [oscuro]);
+  const tema = useMemo(() => (oscuro ? temaOscuro : temaClaro), [oscuro]);
 
-  return <Contexto.Provider value={{ theme, dark: oscuro, toggle }}>{children}</Contexto.Provider>;
+  return <Contexto.Provider value={{ tema, oscuro, alternar }}>{children}</Contexto.Provider>;
 }
 
 export const usarTema = () => useContext(Contexto);

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ListaParametrosPestanas } from './tipos';
-import { usarTema } from '../theme/ContextoTema';
-import { fuentes } from '../theme/estilos';
+import { usarTema } from '../tema/ContextoTema';
+import { fuentes } from '../tema/estilos';
 import Icono from '../components/Icono';
 import PantallaInicio from '../screens/app/PantallaInicio';
 import PantallaTransacciones from '../screens/app/PantallaTransacciones';
@@ -22,19 +22,19 @@ const PESTANAS: { name: keyof ListaParametrosPestanas; labelKey: string; icon: s
 ];
 
 export default function PestanasApp() {
-  const { theme, dark } = usarTema();
+  const { tema, oscuro } = usarTema();
   const { t } = usarIdioma();
-  const colorActivo = dark ? '#E7CE92' : '#133A63';
+  const colorActivo = oscuro ? '#E7CE92' : '#133A63';
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colorActivo,
-        tabBarInactiveTintColor: theme.soft,
+        tabBarInactiveTintColor: tema.suave,
         tabBarStyle: {
-          backgroundColor: theme.surf,
-          borderTopColor: theme.line,
+          backgroundColor: tema.superficie,
+          borderTopColor: tema.linea,
           borderTopWidth: 1,
           height: 86,
           paddingTop: 8,

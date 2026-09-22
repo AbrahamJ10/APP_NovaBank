@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Haptics from 'expo-haptics';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { ListaParametrosAuth } from '../../navigation/tipos';

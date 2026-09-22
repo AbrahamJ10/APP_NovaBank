@@ -6,7 +6,7 @@ import { useFonts as useDmSans, DMSans_400Regular, DMSans_500Medium, DMSans_700B
 import { useFonts as useCormorant, CormorantGaramond_600SemiBold, CormorantGaramond_700Bold } from '@expo-google-fonts/cormorant-garamond';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ProveedorTema } from './src/theme/ContextoTema';
+import { ProveedorTema } from './src/tema/ContextoTema';
 import { ProveedorIdioma } from './src/i18n/ContextoIdioma';
 import { ProveedorEstadoApp } from './src/state/ContextoEstadoApp';
 import NavegadorRaiz from './src/navigation/NavegadorRaiz';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
-import { usarTema } from '../theme/ContextoTema';
-import { fuentes } from '../theme/estilos';
+import { usarTema } from '../tema/ContextoTema';
+import { fuentes } from '../tema/estilos';
 import Icono from './Icono';
 
 type Props = TextInputProps & {
@@ -14,25 +14,25 @@ type Props = TextInputProps & {
 };
 
 export default function CampoTexto({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const [enfocado, setEnfocado] = useState(false);
 
-  let colorBorde = theme.line;
-  let fondo = theme.surf;
+  let colorBorde = tema.linea;
+  let fondo = tema.superficie;
   if (status === 'success') {
     colorBorde = '#21A26B';
-    fondo = theme.dark ? theme.surf : '#F5FCF8';
+    fondo = tema.oscuro ? tema.superficie : '#F5FCF8';
   } else if (status === 'error') {
     colorBorde = '#C2352B';
-    fondo = theme.dark ? theme.surf : '#FFF4F3';
+    fondo = tema.oscuro ? tema.superficie : '#FFF4F3';
   } else if (enfocado) {
-    colorBorde = theme.gold;
+    colorBorde = tema.dorado;
   }
 
   return (
     <View style={{ marginBottom: 2 }}>
       {label ? (
-        <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.mid, marginBottom: 7 }}>{label}</Text>
+        <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: tema.medio, marginBottom: 7 }}>{label}</Text>
       ) : null}
       <View
         style={{
@@ -47,22 +47,22 @@ export default function CampoTexto({ label, icon, status = 'default', rightIcon,
           gap: 10,
         }}
       >
-        {icon ? <Icono name={icon} size={19} color={theme.soft} /> : null}
+        {icon ? <Icono name={icon} size={19} color={tema.suave} /> : null}
         <TextInput
-          placeholderTextColor={theme.soft}
+          placeholderTextColor={tema.suave}
           onFocus={() => setEnfocado(true)}
           onBlur={() => setEnfocado(false)}
-          style={[{ flex: 1, fontSize: 14.5, color: theme.ink, padding: 0 }, style]}
+          style={[{ flex: 1, fontSize: 14.5, color: tema.tinta, padding: 0 }, style]}
           {...rest}
         />
         {status === 'success' ? <Icono name="check_circle" size={19} color="#21A26B" /> : null}
         {rightIcon ? (
           <Pressable onPress={onRightIconPress} hitSlop={10}>
-            <Icono name={rightIcon} size={19} color={theme.soft} />
+            <Icono name={rightIcon} size={19} color={tema.suave} />
           </Pressable>
         ) : null}
       </View>
-      {hint ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fuentes.bodyMed, color: status === 'error' ? '#C2352B' : theme.soft }}>{hint}</Text> : null}
+      {hint ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fuentes.bodyMed, color: status === 'error' ? '#C2352B' : tema.suave }}>{hint}</Text> : null}
     </View>
   );
 }

@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ListaParametrosAuth } from '../../navigation/tipos';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { BotonDorado, BotonFantasma } from '../../components/Botones';
 import { MarcaLogo } from '../../components/Logo';
 import Icono from '../../components/Icono';
@@ -32,7 +32,7 @@ export default function PantallaBienvenida() {
             <View style={styles.badge}>
               <MarcaLogo size={54} />
             </View>
-            <SelectorIdioma dark />
+            <SelectorIdioma oscuro />
           </View>
           <Text style={styles.wordmark}>NOVABANK</Text>
           <View style={styles.rule} />

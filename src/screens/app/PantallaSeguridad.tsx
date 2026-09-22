@@ -10,8 +10,8 @@ import { BotonPeligro, BotonPeligroContorno, BotonFantasma } from '../../compone
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
@@ -21,7 +21,7 @@ const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
 export default function PantallaSeguridad() {
   const nav = useNavigation<any>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { alertas, alternarAlerta, modoPanico, abrirPanico, cerrarPanico, sesiones, cargarSeguridad } = usarEstadoApp();
   const [confirmarPanico, setConfirmarPanico] = useState(false);
@@ -73,11 +73,11 @@ export default function PantallaSeguridad() {
   ];
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('security.yourAccount')}</Text>
-          <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('security.center')}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: tema.dorado, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('security.yourAccount')}</Text>
+          <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: tema.tinta }}>{t('security.center')}</Text>
         </View>
         <SelectorIdioma />
       </View>
@@ -99,22 +99,22 @@ export default function PantallaSeguridad() {
         </View>
       </LinearGradient>
 
-      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
         <View style={{ marginTop: 14, gap: 16 }}>
           {tareas.map((tarea) => (
             <View key={tarea.label} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-              <Icono name={tarea.done ? 'check_circle' : tarea.icon} size={20} color={tarea.done ? theme.green : theme.red} />
+              <Icono name={tarea.done ? 'check_circle' : tarea.icon} size={20} color={tarea.done ? tema.verde : tema.rojo} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{tarea.label}</Text>
-                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>{tarea.desc}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{tarea.label}</Text>
+                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: tema.suave }}>{tarea.desc}</Text>
               </View>
             </View>
           ))}
         </View>
       </View>
 
-      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 18 }}>
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, paddingHorizontal: 18 }}>
         <FilaModulo
           icono="devices"
           etiqueta={t('security.devicesSessions')}
@@ -125,13 +125,13 @@ export default function PantallaSeguridad() {
         <FilaModulo icono="place" etiqueta={t('security.limitsGeo')} descripcion={t('security.limitsGeoDesc')} alPresionar={() => nav.navigate('Limits')} ultimo />
       </View>
 
-      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
         <View style={{ marginTop: 10 }}>
           {filasAlerta.map((fila) => (
             <View key={fila.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
-              <Icono name={fila.icon} size={19} color={theme.soft} />
-              <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{fila.label}</Text>
+              <Icono name={fila.icon} size={19} color={tema.suave} />
+              <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{fila.label}</Text>
               <Interruptor value={alertas[fila.key]} onChange={() => alternarAlerta(fila.key)} />
             </View>
           ))}
@@ -156,18 +156,18 @@ export default function PantallaSeguridad() {
       {!modoPanico && (
         <>
           <BotonPeligroContorno label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmarPanico(true)} style={{ marginTop: 16 }} />
-          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
+          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: tema.suave }}>
             {t('security.panicHint')}
           </Text>
         </>
       )}
 
       <HojaInferior visible={confirmarPanico} onClose={() => setConfirmarPanico(false)}>
-        <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: tema.fondoAdvertencia, alignItems: 'center', justifyContent: 'center' }}>
           <Icono name="emergency_home" size={26} color="#C2352B" />
         </View>
-        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('security.confirmPanicTitle')}</Text>
-        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
+        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 21, letterSpacing: -0.6, color: tema.tinta }}>{t('security.confirmPanicTitle')}</Text>
+        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: tema.medio }}>
           {t('security.confirmPanicBody')}
         </Text>
         <BotonPeligro
@@ -185,22 +185,22 @@ export default function PantallaSeguridad() {
 }
 
 function FilaModulo({ icono, etiqueta, descripcion, insignia, alPresionar, ultimo }: { icono: string; etiqueta: string; descripcion: string; insignia?: string; alPresionar?: () => void; ultimo?: boolean }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
-    <Pressable onPress={alPresionar} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: theme.line }}>
-      <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-        <Icono name={icono} size={20} color={theme.gold} />
+    <Pressable onPress={alPresionar} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: tema.linea }}>
+      <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tema.matiz, alignItems: 'center', justifyContent: 'center' }}>
+        <Icono name={icono} size={20} color={tema.dorado} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{etiqueta}</Text>
-        <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{descripcion}</Text>
+        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: tema.suave }}>{descripcion}</Text>
       </View>
       {insignia ? (
-        <View style={{ minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: theme.red }}>{insignia}</Text>
+        <View style={{ minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, backgroundColor: tema.fondoAdvertencia, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: tema.rojo }}>{insignia}</Text>
         </View>
       ) : null}
-      <Icono name="chevron_right" size={18} color={theme.soft} />
+      <Icono name="chevron_right" size={18} color={tema.suave} />
     </Pressable>
   );
 }

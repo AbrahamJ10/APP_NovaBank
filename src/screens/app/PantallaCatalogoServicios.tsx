@@ -5,8 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Pantalla from '../../components/Pantalla';
 import { BotonVolver } from '../../components/Primitivas';
 import Icono from '../../components/Icono';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { billsApi, Biller } from '../../lib/api';
 import { ListaParametrosRaiz } from '../../navigation/tipos';
@@ -26,7 +26,7 @@ const ETIQUETA_CATEGORIA: Record<Biller['category'], string> = {
 
 export default function PantallaCatalogoServicios() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { servicios } = usarEstadoApp();
   const [catalogo, setCatalogo] = useState<Biller[] | null>(null);
@@ -55,31 +55,31 @@ export default function PantallaCatalogoServicios() {
   }, [filtrados]);
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       <BotonVolver onPress={() => nav.goBack()} />
-      <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('serviceCatalog.title')}</Text>
-      <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>{t('serviceCatalog.subtitle')}</Text>
+      <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.8, color: tema.tinta }}>{t('serviceCatalog.title')}</Text>
+      <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>{t('serviceCatalog.subtitle')}</Text>
 
-      <View style={{ marginTop: 16, height: 48, borderRadius: 15, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}>
-        <Icono name="search" size={19} color={theme.soft} />
+      <View style={{ marginTop: 16, height: 48, borderRadius: 15, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}>
+        <Icono name="search" size={19} color={tema.suave} />
         <TextInput
           autoFocus
           value={consulta}
           onChangeText={setConsulta}
           placeholder={t('serviceCatalog.searchPlaceholder')}
-          placeholderTextColor={theme.soft}
-          style={{ flex: 1, fontFamily: fuentes.body, fontSize: 13.5, color: theme.ink }}
+          placeholderTextColor={tema.suave}
+          style={{ flex: 1, fontFamily: fuentes.body, fontSize: 13.5, color: tema.tinta }}
         />
       </View>
 
       {catalogo === null ? (
-        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.loading')}</Text>
+        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: tema.suave, textAlign: 'center' }}>{t('serviceCatalog.loading')}</Text>
       ) : filtrados.length === 0 ? (
-        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.noResults')}</Text>
+        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: tema.suave, textAlign: 'center' }}>{t('serviceCatalog.noResults')}</Text>
       ) : (
         agrupados.map(([categoria, proveedores]) => (
           <View key={categoria} style={{ marginTop: 20 }}>
-            <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{ETIQUETA_CATEGORIA[categoria]}</Text>
+            <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{ETIQUETA_CATEGORIA[categoria]}</Text>
             <View style={{ marginTop: 10, gap: 9 }}>
               {proveedores.map((proveedor) => {
                 const afiliado = clavesAfiliadas.has(proveedor.key);
@@ -87,19 +87,19 @@ export default function PantallaCatalogoServicios() {
                   <Pressable
                     key={proveedor.key}
                     onPress={() => nav.navigate('ServiceLookup', { biller: proveedor })}
-                    style={{ borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+                    style={{ borderRadius: 18, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12 }}
                   >
                     <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: proveedor.iconBg, alignItems: 'center', justifyContent: 'center' }}>
                       <Icono name={proveedor.icon} size={19} color={proveedor.iconFg} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{proveedor.name}</Text>
-                      <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{proveedor.fieldLabel}</Text>
+                      <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{proveedor.name}</Text>
+                      <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{proveedor.fieldLabel}</Text>
                     </View>
                     {afiliado ? (
-                      <Icono name="check_circle" size={19} color={theme.green} />
+                      <Icono name="check_circle" size={19} color={tema.verde} />
                     ) : (
-                      <Icono name="chevron_right" size={19} color={theme.soft} />
+                      <Icono name="chevron_right" size={19} color={tema.suave} />
                     )}
                   </Pressable>
                 );

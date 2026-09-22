@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 

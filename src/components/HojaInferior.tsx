@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Easing, KeyboardAvoidingView, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { usarTema } from '../theme/ContextoTema';
-import { radios } from '../theme/estilos';
+import { usarTema } from '../tema/ContextoTema';
+import { radios } from '../tema/estilos';
 
 const { height: ALTO_PANTALLA } = Dimensions.get('window');
 
@@ -23,7 +23,7 @@ export default function HojaInferior({
   onShow?: () => void;
   children: React.ReactNode;
 }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const trasladoY = useRef(new Animated.Value(ALTO_PANTALLA)).current;
   const desvanecido = useRef(new Animated.Value(0)).current;
 
@@ -49,8 +49,8 @@ export default function HojaInferior({
       </Animated.View>
       <KeyboardAvoidingView behavior="padding" style={styles.sheetWrap} pointerEvents="box-none">
         <Animated.View style={{ transform: [{ translateY: trasladoY }] }}>
-          <SafeAreaView edges={['bottom']} style={[styles.sheet, { backgroundColor: theme.surf }]}>
-            <View style={[styles.handle, { backgroundColor: theme.line }]} />
+          <SafeAreaView edges={['bottom']} style={[styles.sheet, { backgroundColor: tema.superficie }]}>
+            <View style={[styles.handle, { backgroundColor: tema.linea }]} />
             {children}
           </SafeAreaView>
         </Animated.View>

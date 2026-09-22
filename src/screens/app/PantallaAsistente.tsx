@@ -7,7 +7,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BotonVolver } from '../../components/Primitivas';
 import { MarcaLogo } from '../../components/Logo';
 import Icono from '../../components/Icono';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { ListaParametrosRaiz } from '../../navigation/tipos';
@@ -236,7 +236,7 @@ export default function PantallaAsistente() {
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={{ paddingHorizontal: 22 }}>
-            <BotonVolver dark onPress={() => nav.goBack()} />
+            <BotonVolver oscuro onPress={() => nav.goBack()} />
           </View>
           <View style={{ paddingHorizontal: 22, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
             <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.94)', alignItems: 'center', justifyContent: 'center' }}>

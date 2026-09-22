@@ -5,14 +5,14 @@ import Pantalla from '../../components/Pantalla';
 import { TituloPantalla } from '../../components/Primitivas';
 import { BotonFantasma, BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function PantallaPagarTarjeta() {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { usuario, deudaTarjeta, pagoMinimo, lineaCredito, fechaCorte, pagarTarjeta } = usarEstadoApp();
   const [plan, setPlan] = useState<'full' | 'min' | 'installments'>('installments');
@@ -47,13 +47,13 @@ export default function PantallaPagarTarjeta() {
 
   if (listo) {
     return (
-      <Pantalla bg={theme.bg}>
+      <Pantalla bg={tema.fondo}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
-          <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
-            <Icono name="check" size={44} color={theme.green} />
+          <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: tema.fondoOk, alignItems: 'center', justifyContent: 'center' }}>
+            <Icono name="check" size={44} color={tema.verde} />
           </View>
-          <Text style={{ marginTop: 22, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('payCard.scheduled')}</Text>
-          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
+          <Text style={{ marginTop: 22, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: tema.tinta }}>{t('payCard.scheduled')}</Text>
+          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio }}>
             {plan === 'installments'
               ? t('payCard.scheduledInstallments', { amount: dinero(deudaTarjeta) })
               : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.pagoMinimo'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
@@ -65,7 +65,7 @@ export default function PantallaPagarTarjeta() {
   }
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       <TituloPantalla eyebrow={`Visa Infinite ···${usuario.cardNumber.slice(-4)}`} title={t('payCard.title')} showLanguageSwitch />
 
       <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 18, borderRadius: 24, padding: 22 }}>
@@ -88,7 +88,7 @@ export default function PantallaPagarTarjeta() {
         </View>
       </LinearGradient>
 
-      <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('payCard.howToPay')}</Text>
+      <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('payCard.howToPay')}</Text>
       <View style={{ marginTop: 12, gap: 10 }}>
         {planes.map((opcion) => {
           const activo = plan === opcion.id;
@@ -96,33 +96,33 @@ export default function PantallaPagarTarjeta() {
             <Pressable
               key={opcion.id}
               onPress={() => setPlan(opcion.id)}
-              style={{ borderRadius: 18, borderWidth: 1.5, borderColor: activo ? theme.gold : theme.line, backgroundColor: activo ? theme.selBg : theme.surf, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
+              style={{ borderRadius: 18, borderWidth: 1.5, borderColor: activo ? tema.dorado : tema.linea, backgroundColor: activo ? tema.fondoSel : tema.superficie, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
             >
-              <Icono name={opcion.icon} size={21} color={activo ? theme.gold : theme.soft} />
+              <Icono name={opcion.icon} size={21} color={activo ? tema.dorado : tema.suave} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{opcion.label}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{opcion.note}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{opcion.label}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{opcion.note}</Text>
               </View>
-              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: theme.ink }}>{dinero(opcion.amt)}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: tema.tinta }}>{dinero(opcion.amt)}</Text>
             </Pressable>
           );
         })}
       </View>
 
       {plan === 'installments' && (
-        <View style={{ marginTop: 18, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 20 }}>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('payCard.schedule')}</Text>
+        <View style={{ marginTop: 18, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 20 }}>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('payCard.schedule')}</Text>
           {[1, 2, 3].map((n) => (
-            <View key={n} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11, borderBottomWidth: n < 3 ? 1 : 0, borderBottomColor: theme.line }}>
+            <View key={n} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11, borderBottomWidth: n < 3 ? 1 : 0, borderBottomColor: tema.linea }}>
               <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#C9A227' }} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: theme.ink }}>{t('payCard.installmentOf', { n })}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{n === 1 ? t('payCard.confirmPayment') : `${diaCorte} de ${meses[n - 1]}`}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: tema.tinta }}>{t('payCard.installmentOf', { n })}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{n === 1 ? t('payCard.confirmPayment') : `${diaCorte} de ${meses[n - 1]}`}</Text>
               </View>
-              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(cuota)}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{dinero(cuota)}</Text>
             </View>
           ))}
-          <Text style={{ marginTop: 12, fontFamily: fuentes.body, fontSize: 11, lineHeight: 16, color: theme.soft }}>{t('payCard.scheduleNote')}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.body, fontSize: 11, lineHeight: 16, color: tema.suave }}>{t('payCard.scheduleNote')}</Text>
         </View>
       )}
 

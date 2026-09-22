@@ -9,8 +9,8 @@ import CampoTexto from '../../components/CampoTexto';
 import { BotonFantasma, BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { MarcaLogo } from '../../components/Logo';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { dinero, mmss } from '../../lib/formato';
 import { usarEstadoApp, ComprobanteTransferencia } from '../../state/ContextoEstadoApp';
 import { ListaParametrosRaiz, ListaParametrosPestanas } from '../../navigation/tipos';
@@ -21,7 +21,7 @@ type Paso = 'form' | 'otp' | 'done' | 'error';
 
 export default function PantallaTransferencia() {
   const nav = useNavigation<Navegacion>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { destinatarios, disponible, solicitarOtpTransferencia, ejecutarTransferencia, agregarDestinatario, otpRestante } = usarEstadoApp();
 
@@ -89,12 +89,12 @@ export default function PantallaTransferencia() {
   };
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       {paso === 'form' && (
         <View>
           <TituloPantalla title={t('transfer.title')} note={t('transfer.note')} />
 
-          <Text style={{ marginTop: 14, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.recipient')}</Text>
+          <Text style={{ marginTop: 14, fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('transfer.recipient')}</Text>
           <View style={{ marginTop: 10, gap: 9 }}>
             {destinatarios.map((p) => {
               const activo = idDestinatario === p.id;
@@ -105,30 +105,30 @@ export default function PantallaTransferencia() {
                   style={{
                     borderRadius: 16,
                     borderWidth: 1.5,
-                    borderColor: activo ? theme.gold : theme.line,
-                    backgroundColor: activo ? theme.selBg : theme.surf,
+                    borderColor: activo ? tema.dorado : tema.linea,
+                    backgroundColor: activo ? tema.fondoSel : tema.superficie,
                     padding: 13,
                     flexDirection: 'row',
                     alignItems: 'center',
                     gap: 12,
                   }}
                 >
-                  <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: theme.ink }}>{p.initials}</Text>
+                  <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tema.matiz, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: tema.tinta }}>{p.initials}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{p.name}</Text>
-                    <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>
+                    <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{p.name}</Text>
+                    <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: tema.suave }}>
                       {p.bank} · {p.account}
                     </Text>
                   </View>
-                  <Icono name={activo ? 'check_circle' : 'radio_button_unchecked'} size={20} color={activo ? theme.gold : theme.soft} />
+                  <Icono name={activo ? 'check_circle' : 'radio_button_unchecked'} size={20} color={activo ? tema.dorado : tema.suave} />
                 </Pressable>
               );
             })}
 
             {agregandoDestinatario ? (
-              <View style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, backgroundColor: theme.surf, padding: 13, gap: 10 }}>
+              <View style={{ borderRadius: 16, borderWidth: 1.5, borderColor: tema.linea, backgroundColor: tema.superficie, padding: 13, gap: 10 }}>
                 <CampoTexto placeholder={t('transfer.addAccountName')} value={nuevoNombre} onChangeText={setNuevoNombre} />
                 <CampoTexto placeholder={t('transfer.addAccountNumber')} value={nuevoCci} onChangeText={setNuevoCci} keyboardType="number-pad" />
                 <BotonPrimario
@@ -158,46 +158,46 @@ export default function PantallaTransferencia() {
             ) : (
               <Pressable
                 onPress={() => setAgregandoDestinatario(true)}
-                style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, borderStyle: 'dashed', backgroundColor: theme.surf, padding: 13, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+                style={{ borderRadius: 16, borderWidth: 1.5, borderColor: tema.linea, borderStyle: 'dashed', backgroundColor: tema.superficie, padding: 13, flexDirection: 'row', alignItems: 'center', gap: 12 }}
               >
-                <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icono name="add" size={20} color={theme.ink} />
+                <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tema.fondo, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icono name="add" size={20} color={tema.tinta} />
                 </View>
-                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.addOtherBank')}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{t('transfer.addOtherBank')}</Text>
               </Pressable>
             )}
           </View>
 
-          <Text style={{ marginTop: 22, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.amount')}</Text>
+          <Text style={{ marginTop: 22, fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('transfer.amount')}</Text>
           <View
             style={{
               marginTop: 10,
               height: 72,
               borderRadius: 16,
               borderWidth: 1.5,
-              borderColor: insuficiente ? '#C2352B' : theme.gold,
-              backgroundColor: theme.surf,
+              borderColor: insuficiente ? '#C2352B' : tema.dorado,
+              backgroundColor: tema.superficie,
               flexDirection: 'row',
               alignItems: 'center',
               paddingHorizontal: 16,
               gap: 9,
             }}
           >
-            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 17, color: theme.soft }}>S/</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 17, color: tema.suave }}>S/</Text>
             <TextInput
               value={monto}
               onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))}
               placeholder="0.00"
-              placeholderTextColor={theme.soft}
+              placeholderTextColor={tema.suave}
               keyboardType="decimal-pad"
-              style={{ flex: 1, fontSize: 30, fontWeight: '800', color: theme.ink, letterSpacing: -1, padding: 0 }}
+              style={{ flex: 1, fontSize: 30, fontWeight: '800', color: tema.tinta, letterSpacing: -1, padding: 0 }}
             />
           </View>
-          <Text style={{ marginTop: 7, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: insuficiente ? '#C2352B' : theme.soft }}>
+          <Text style={{ marginTop: 7, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: insuficiente ? '#C2352B' : tema.suave }}>
             {insuficiente ? t('transfer.insufficient', { disponible: dinero(disponible) }) : t('transfer.availableAmount', { disponible: dinero(disponible) })}
           </Text>
 
-          <Text style={{ marginTop: 18, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.concept')}</Text>
+          <Text style={{ marginTop: 18, fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('transfer.concept')}</Text>
           <View style={{ marginTop: 10 }}>
             <CampoTexto placeholder={t('transfer.conceptPlaceholder')} value={concepto} onChangeText={setConcepto} />
           </View>
@@ -231,8 +231,8 @@ export default function PantallaTransferencia() {
       {paso === 'otp' && destinatarioSeleccionado && (
         <View>
           <BotonVolver onPress={() => setPaso('form')} />
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.confirmToken')}</Text>
-          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: tema.tinta }}>{t('transfer.confirmToken')}</Text>
+          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio }}>
             {t('transfer.tokenSubtitleEmail', { amount: dinero(montoNum) })}
           </Text>
           <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
@@ -254,29 +254,29 @@ export default function PantallaTransferencia() {
             style={{ position: 'absolute', opacity: 0, height: 0 }}
           />
           {enviandoCodigo ? (
-            <Text style={{ marginTop: 8, fontFamily: fuentes.bodyMed, fontSize: 12, color: theme.mid }}>{t('transfer.verifying')}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.bodyMed, fontSize: 12, color: tema.medio }}>{t('transfer.verifying')}</Text>
           ) : errorCodigo ? (
             <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
           ) : null}
-          <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>
             {otpRestante > 0 ? (
               <>
-                {t('transfer.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpRestante)}</Text>
+                {t('transfer.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: tema.dorado }}>{mmss(otpRestante)}</Text>
               </>
             ) : (
-              <Text onPress={() => solicitarOtpTransferencia()} style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>
+              <Text onPress={() => solicitarOtpTransferencia()} style={{ fontFamily: fuentes.bodyBold, color: tema.dorado }}>
                 {t('transfer.resendCode')}
               </Text>
             )}
           </Text>
 
-          <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18, gap: 4 }}>
+          <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 18, gap: 4 }}>
             <Fila label={t('transfer.destination')} value={`${destinatarioSeleccionado.name} · ${destinatarioSeleccionado.bank}`} />
             <Fila label={t('transfer.fee')} value="S/ 0.00" />
-            <View style={{ height: 1, backgroundColor: theme.line, marginVertical: 6 }} />
+            <View style={{ height: 1, backgroundColor: tema.linea, marginVertical: 6 }} />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.total')}</Text>
-              <Text style={{ fontFamily: fuentes.heading, fontSize: 19, color: theme.ink }}>{dinero(montoNum)}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{t('transfer.total')}</Text>
+              <Text style={{ fontFamily: fuentes.heading, fontSize: 19, color: tema.tinta }}>{dinero(montoNum)}</Text>
             </View>
           </View>
         </View>
@@ -287,10 +287,10 @@ export default function PantallaTransferencia() {
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="check" size={40} color="#21A26B" />
           </View>
-          <Text style={{ marginTop: 18, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.sent')}</Text>
-          <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 13.5, color: theme.mid }}>{t('transfer.sentSubtitle')}</Text>
+          <Text style={{ marginTop: 18, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: tema.tinta }}>{t('transfer.sent')}</Text>
+          <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 13.5, color: tema.medio }}>{t('transfer.sentSubtitle')}</Text>
 
-          <View style={{ marginTop: 20, width: '100%', borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, borderStyle: 'dashed', padding: 22 }}>
+          <View style={{ marginTop: 20, width: '100%', borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, borderStyle: 'dashed', padding: 22 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <MarcaLogo size={22} />
@@ -300,7 +300,7 @@ export default function PantallaTransferencia() {
                 <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 10.5, color: '#21A26B' }}>{t('transfer.completedBadge')}</Text>
               </View>
             </View>
-            <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{dinero(comprobante.amount)}</Text>
+            <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 30, letterSpacing: -1.1, color: tema.tinta }}>{dinero(comprobante.amount)}</Text>
             <View style={{ marginTop: 16, gap: 10 }}>
               <Fila label={t('transfer.recipientLabel')} value={comprobante.payee.name} />
               <Fila label={t('transfer.bankLabel')} value={`${comprobante.payee.bank} ${comprobante.payee.account}`} />
@@ -319,14 +319,14 @@ export default function PantallaTransferencia() {
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#FFF4F3', alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="error_outline" size={40} color="#C2352B" />
           </View>
-          <Text style={{ marginTop: 18, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink, textAlign: 'center' }}>{t('transfer.failedTitle')}</Text>
-          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, textAlign: 'center' }}>
+          <Text style={{ marginTop: 18, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: tema.tinta, textAlign: 'center' }}>{t('transfer.failedTitle')}</Text>
+          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio, textAlign: 'center' }}>
             {t('transfer.failedSubtitle')}
           </Text>
 
-          <View style={{ marginTop: 20, width: '100%', borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 20 }}>
+          <View style={{ marginTop: 20, width: '100%', borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 20 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: theme.ink }}>{t('transfer.rejectionDetail')}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: tema.tinta }}>{t('transfer.rejectionDetail')}</Text>
               <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: '#FFF4F3' }}>
                 <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 10.5, color: '#C2352B' }}>{t('transfer.rejectedBadge')}</Text>
               </View>

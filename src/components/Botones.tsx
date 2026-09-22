@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { usarTema } from '../theme/ContextoTema';
-import { MARCA, fuentes, GRADIENTE_DORADO, radios } from '../theme/estilos';
+import { usarTema } from '../tema/ContextoTema';
+import { MARCA, fuentes, GRADIENTE_DORADO, radios } from '../tema/estilos';
 import Icono from './Icono';
 
 type BtnProps = {
@@ -116,8 +116,8 @@ export function BotonDorado({ label, onPress, icon, disabled, loading, style }: 
 }
 
 export function BotonFantasma({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
-  const { theme } = usarTema();
-  const colorTexto = textColor ?? theme.ink;
+  const { tema } = usarTema();
+  const colorTexto = textColor ?? tema.tinta;
   return (
     <Pressable
       onPress={() => {
@@ -127,7 +127,7 @@ export function BotonFantasma({ label, onPress, icon, disabled, style, textColor
       }}
       style={({ pressed }) => [
         styles.base,
-        { backgroundColor: theme.surf, borderWidth: 1.5, borderColor: theme.line, opacity: pressed ? 0.85 : 1 },
+        { backgroundColor: tema.superficie, borderWidth: 1.5, borderColor: tema.linea, opacity: pressed ? 0.85 : 1 },
         style,
       ]}
     >
@@ -140,7 +140,7 @@ export function BotonFantasma({ label, onPress, icon, disabled, style, textColor
 }
 
 export function BotonPeligroContorno({ label, onPress, icon, style }: BtnProps) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
     <Pressable
       onPress={() => {
@@ -149,13 +149,13 @@ export function BotonPeligroContorno({ label, onPress, icon, style }: BtnProps) 
       }}
       style={({ pressed }) => [
         styles.base,
-        { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: theme.red, opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: tema.rojo, opacity: pressed ? 0.8 : 1 },
         style,
       ]}
     >
       <View style={styles.row}>
-        {icon ? <Icono name={icon} color={theme.red} size={19} style={{ marginRight: 8 }} /> : null}
-        <Text style={[styles.label, { color: theme.red }]}>{label}</Text>
+        {icon ? <Icono name={icon} color={tema.rojo} size={19} style={{ marginRight: 8 }} /> : null}
+        <Text style={[styles.label, { color: tema.rojo }]}>{label}</Text>
       </View>
     </Pressable>
   );

@@ -5,7 +5,7 @@ import { Idioma, traducciones } from './traducciones';
 type ContextoIdioma = {
   language: Idioma;
   setLanguage: (lang: Idioma) => void;
-  toggle: () => void;
+  alternar: () => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
 };
 
@@ -27,7 +27,7 @@ export function ProveedorIdioma({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem(CLAVE_ALMACENAMIENTO, idioma).catch(() => {});
   };
 
-  const toggle = () => setLanguage(language === 'es' ? 'en' : 'es');
+  const alternar = () => setLanguage(language === 'es' ? 'en' : 'es');
 
   const t = useMemo(() => {
     return (key: string, vars?: Record<string, string | number>) => {
@@ -41,7 +41,7 @@ export function ProveedorIdioma({ children }: { children: React.ReactNode }) {
     };
   }, [language]);
 
-  return <Contexto.Provider value={{ language, setLanguage, toggle, t }}>{children}</Contexto.Provider>;
+  return <Contexto.Provider value={{ language, setLanguage, alternar, t }}>{children}</Contexto.Provider>;
 }
 
 export function usarIdioma() {

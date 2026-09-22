@@ -5,15 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import Pantalla from '../../components/Pantalla';
 import { BotonVolver } from '../../components/Primitivas';
 import Icono from '../../components/Icono';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function PantallaGastos() {
   const nav = useNavigation();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { transacciones } = usarEstadoApp();
 
@@ -52,10 +52,10 @@ export default function PantallaGastos() {
   }, [txMes]);
 
   return (
-    <Pantalla bg={theme.bg}>
+    <Pantalla bg={tema.fondo}>
       <BotonVolver onPress={() => nav.goBack()} />
-      <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('spend.last31Days')}</Text>
-      <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('spend.title')}</Text>
+      <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: tema.dorado, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('spend.last31Days')}</Text>
+      <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: tema.tinta }}>{t('spend.title')}</Text>
 
       <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 18, borderRadius: 26, padding: 24 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
@@ -84,16 +84,16 @@ export default function PantallaGastos() {
         </View>
       </LinearGradient>
 
-      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.byCategory')}</Text>
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.byCategory')}</Text>
         <View style={{ marginTop: 16, gap: 14 }}>
           {porCategoria.map(({ cat, amt, pct }) => (
             <View key={cat}>
               <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{META_CATEGORIA[cat]?.label ?? cat}</Text>
-                <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(amt)}</Text>
+                <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{META_CATEGORIA[cat]?.label ?? cat}</Text>
+                <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{dinero(amt)}</Text>
               </View>
-              <View style={{ marginTop: 8, height: 6, borderRadius: 3, backgroundColor: theme.tint, overflow: 'hidden' }}>
+              <View style={{ marginTop: 8, height: 6, borderRadius: 3, backgroundColor: tema.matiz, overflow: 'hidden' }}>
                 <View style={{ height: 6, borderRadius: 3, backgroundColor: META_CATEGORIA[cat]?.color ?? '#999', width: `${Math.max(4, pct * 100)}%` }} />
               </View>
             </View>
@@ -101,8 +101,8 @@ export default function PantallaGastos() {
         </View>
       </View>
 
-      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.topMerchants')}</Text>
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.topMerchants')}</Text>
         <View style={{ marginTop: 14, gap: 15 }}>
           {comerciosTop.map((comercio) => (
             <View key={comercio.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -110,10 +110,10 @@ export default function PantallaGastos() {
                 <Text style={{ fontFamily: fuentes.displaySemi, fontSize: 15, color: '#E7CE92' }}>{comercio.name.slice(0, 1)}</Text>
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{comercio.name}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{comercio.n} {comercio.n > 1 ? t('spend.operations') : t('spend.operation')}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{comercio.name}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{comercio.n} {comercio.n > 1 ? t('spend.operations') : t('spend.operation')}</Text>
               </View>
-              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(comercio.amt)}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: tema.tinta }}>{dinero(comercio.amt)}</Text>
             </View>
           ))}
         </View>

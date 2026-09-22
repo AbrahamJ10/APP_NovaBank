@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Icono from '../../components/Icono';
 import { BotonDorado, BotonFantasma } from '../../components/Botones';
-import { fuentes } from '../../theme/estilos';
+import { fuentes } from '../../tema/estilos';
 import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { mensajeFalloRostro, ejecutarChequeoRostro } from '../../lib/deteccionRostro';

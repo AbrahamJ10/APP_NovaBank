@@ -7,8 +7,8 @@ import { BotonVolver, CasillasOtp } from '../../components/Primitivas';
 import CampoTexto from '../../components/CampoTexto';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { usarTema } from '../../theme/ContextoTema';
-import { fuentes } from '../../theme/estilos';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
 import { mmss } from '../../lib/formato';
 import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
@@ -35,7 +35,7 @@ const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
 export default function PantallaRecuperar() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   const { t } = usarIdioma();
   const { iniciarRecuperacion, otpRestante, reenviarOtp } = usarEstadoApp();
 
@@ -116,7 +116,7 @@ export default function PantallaRecuperar() {
   };
 
   return (
-    <Pantalla bg={theme.dark ? theme.bg : '#fff'}>
+    <Pantalla bg={tema.oscuro ? tema.fondo : '#fff'}>
       <BotonVolver
         onPress={() => {
           if (paso === 1) {
@@ -129,13 +129,13 @@ export default function PantallaRecuperar() {
       />
       <View style={{ flexDirection: 'row', gap: 5, marginBottom: 12 }}>
         {[1, 2, 3, 4].map((i) => (
-          <View key={i} style={{ height: 4, flex: 1, borderRadius: 2, backgroundColor: i <= paso ? theme.gold : theme.line }} />
+          <View key={i} style={{ height: 4, flex: 1, borderRadius: 2, backgroundColor: i <= paso ? tema.dorado : tema.linea }} />
         ))}
       </View>
       {(paso === 2 || paso === 3) && limiteFlujo ? (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
-          <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
+          <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : tema.suave} />
+          <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : tema.suave }}>
             {t('recover.timeLeft', { time: mmss(tiempoRestante) })}
           </Text>
         </View>
@@ -144,8 +144,8 @@ export default function PantallaRecuperar() {
       {paso === 1 && (
         <View>
           <InsigniaIcono name="lock_reset" />
-          <Text style={estilos(theme).title}>{t('recover.title1')}</Text>
-          <Text style={estilos(theme).sub}>{t('recover.sub1')}</Text>
+          <Text style={estilos(tema).title}>{t('recover.title1')}</Text>
+          <Text style={estilos(tema).sub}>{t('recover.sub1')}</Text>
           <View style={{ marginTop: 24 }}>
             <CampoTexto
               label={t('recover.email')}
@@ -168,9 +168,9 @@ export default function PantallaRecuperar() {
             onPress={enviarCodigo}
             style={{ marginTop: 22 }}
           />
-          <View style={{ marginTop: 26, padding: 16, borderRadius: 16, backgroundColor: theme.tint, flexDirection: 'row', gap: 11 }}>
-            <Icono name="shield" size={19} color={theme.gold} />
-            <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
+          <View style={{ marginTop: 26, padding: 16, borderRadius: 16, backgroundColor: tema.matiz, flexDirection: 'row', gap: 11 }}>
+            <Icono name="shield" size={19} color={tema.dorado} />
+            <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: tema.medio }}>
               {t('recover.safetyNote')}
             </Text>
           </View>
@@ -180,8 +180,8 @@ export default function PantallaRecuperar() {
       {paso === 2 && (
         <View>
           <InsigniaIcono name="sms" />
-          <Text style={estilos(theme).title}>{t('recover.title2')}</Text>
-          <Text style={estilos(theme).sub}>{t('recover.sub2')}</Text>
+          <Text style={estilos(tema).title}>{t('recover.title2')}</Text>
+          <Text style={estilos(tema).sub}>{t('recover.sub2')}</Text>
           <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
             <CasillasOtp value={codigo} />
           </Pressable>
@@ -198,10 +198,10 @@ export default function PantallaRecuperar() {
             autoFocus
             style={{ position: 'absolute', opacity: 0, height: 0 }}
           />
-          <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>
             {otpRestante > 0 ? (
               <>
-                {t('recover.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpRestante)}</Text>
+                {t('recover.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: tema.dorado }}>{mmss(otpRestante)}</Text>
               </>
             ) : (
               <Text
@@ -210,7 +210,7 @@ export default function PantallaRecuperar() {
                   reenviarOtp();
                   setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
                 }}
-                style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}
+                style={{ fontFamily: fuentes.bodyBold, color: tema.dorado }}
               >
                 {t('recover.resend')}
               </Text>
@@ -222,8 +222,8 @@ export default function PantallaRecuperar() {
       {paso === 3 && (
         <View>
           <InsigniaIcono name="key" />
-          <Text style={estilos(theme).title}>{t('recover.title3')}</Text>
-          <Text style={estilos(theme).sub}>{t('recover.sub3')}</Text>
+          <Text style={estilos(tema).title}>{t('recover.title3')}</Text>
+          <Text style={estilos(tema).sub}>{t('recover.sub3')}</Text>
           <View style={{ marginTop: 22, gap: 12 }}>
             <CampoTexto
               label={t('recover.newPassword')}
@@ -268,8 +268,8 @@ export default function PantallaRecuperar() {
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="check" size={44} color="#21A26B" />
           </View>
-          <Text style={[estilos(theme).title, { marginTop: 22, textAlign: 'center' }]}>{t('recover.title4')}</Text>
-          <Text style={[estilos(theme).sub, { textAlign: 'center' }]}>{t('recover.sub4')}</Text>
+          <Text style={[estilos(tema).title, { marginTop: 22, textAlign: 'center' }]}>{t('recover.title4')}</Text>
+          <Text style={[estilos(tema).sub, { textAlign: 'center' }]}>{t('recover.sub4')}</Text>
           <BotonPrimario label={t('recover.signIn')} onPress={() => nav.replace('Login')} style={{ marginTop: 26, width: '100%' }} />
         </View>
       )}
@@ -278,17 +278,17 @@ export default function PantallaRecuperar() {
 }
 
 function InsigniaIcono({ name }: { name: string }) {
-  const { theme } = usarTema();
+  const { tema } = usarTema();
   return (
-    <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
-      <Icono name={name} size={25} color={theme.gold} />
+    <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: tema.matiz, alignItems: 'center', justifyContent: 'center' }}>
+      <Icono name={name} size={25} color={tema.dorado} />
     </View>
   );
 }
 
 function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
-  const { theme } = usarTema();
-  const color = ok ? '#21A26B' : theme.soft;
+  const { tema } = usarTema();
+  const color = ok ? '#21A26B' : tema.suave;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
       <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
@@ -297,7 +297,7 @@ function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
   );
 }
 
-const estilos = (theme: any) => ({
-  title: { marginTop: 20, fontFamily: fuentes.heading, fontSize: 26, lineHeight: 30, color: theme.ink, letterSpacing: -0.9 },
-  sub: { marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid },
+const estilos = (tema: any) => ({
+  title: { marginTop: 20, fontFamily: fuentes.heading, fontSize: 26, lineHeight: 30, color: tema.tinta, letterSpacing: -0.9 },
+  sub: { marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio },
 });
