@@ -16,48 +16,48 @@ import { useAppState, TransferReceipt } from '../../state/AppStateContext';
 import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-type Nav = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
-type Step = 'form' | 'otp' | 'done' | 'error';
+type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
+type Paso = 'form' | 'otp' | 'done' | 'error';
 
 export default function TransferScreen() {
-  const nav = useNavigation<Nav>();
+  const nav = useNavigation<Navegacion>();
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { payees, available, requestTransferOtp, executeTransfer, addPayee, otpLeft } = useAppState();
 
-  const [step, setStep] = useState<Step>('form');
-  const [addingPayee, setAddingPayee] = useState(false);
-  const [savingPayee, setSavingPayee] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newCci, setNewCci] = useState('');
+  const [paso, setPaso] = useState<Paso>('form');
+  const [agregandoDestinatario, setAgregandoDestinatario] = useState(false);
+  const [guardandoDestinatario, setGuardandoDestinatario] = useState(false);
+  const [nuevoNombre, setNuevoNombre] = useState('');
+  const [nuevoCci, setNuevoCci] = useState('');
 
-  const [payeeId, setPayeeId] = useState<string | null>(null);
-  const [amount, setAmount] = useState('');
-  const [concept, setConcept] = useState('');
-  const [code, setCode] = useState('');
-  const [codeError, setCodeError] = useState<string | null>(null);
-  const [submittingCode, setSubmittingCode] = useState(false);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
-  const [receipt, setReceipt] = useState<TransferReceipt | null>(null);
-  const inputRef = useRef<TextInput>(null);
+  const [idDestinatario, setIdDestinatario] = useState<string | null>(null);
+  const [monto, setMonto] = useState('');
+  const [concepto, setConcepto] = useState('');
+  const [codigo, setCodigo] = useState('');
+  const [errorCodigo, setErrorCodigo] = useState<string | null>(null);
+  const [enviandoCodigo, setEnviandoCodigo] = useState(false);
+  const [enviandoOtp, setEnviandoOtp] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
+  const [comprobante, setComprobante] = useState<TransferReceipt | null>(null);
+  const refEntrada = useRef<TextInput>(null);
 
-  const selectedPayee = payees.find((p) => p.id === payeeId);
-  const amountNum = Number(amount.replace(',', '.')) || 0;
-  const insufficient = amountNum > available;
-  const canContinue = !!payeeId && amountNum > 0 && !insufficient && concept.trim().length > 0;
+  const destinatarioSeleccionado = payees.find((p) => p.id === idDestinatario);
+  const montoNum = Number(monto.replace(',', '.')) || 0;
+  const insuficiente = montoNum > available;
+  const puedeContinuar = !!idDestinatario && montoNum > 0 && !insuficiente && concepto.trim().length > 0;
 
-  const reset = () => {
-    setStep('form');
-    setPayeeId(null);
-    setAmount('');
-    setConcept('');
-    setCode('');
-    setCodeError(null);
-    setReceipt(null);
+  const reiniciar = () => {
+    setPaso('form');
+    setIdDestinatario(null);
+    setMonto('');
+    setConcepto('');
+    setCodigo('');
+    setErrorCodigo(null);
+    setComprobante(null);
   };
 
-  const shareReceipt = (r: TransferReceipt) => {
+  const compartirComprobante = (r: TransferReceipt) => {
     Share.share({
       message: [
         `NovaBank · ${t('transfer.completedBadge')}`,
@@ -70,43 +70,43 @@ export default function TransferScreen() {
     }).catch(() => {});
   };
 
-  const submitCode = async (value: string) => {
-    if (value.length !== 6 || !payeeId || submittingCode) return;
-    setSubmittingCode(true);
-    setCodeError(null);
+  const enviarCodigo = async (valor: string) => {
+    if (valor.length !== 6 || !idDestinatario || enviandoCodigo) return;
+    setEnviandoCodigo(true);
+    setErrorCodigo(null);
     try {
-      const result = await executeTransfer(payeeId, amountNum, concept, value);
-      if (!result.ok) {
-        setCodeError(result.message);
-        setCode('');
+      const resultado = await executeTransfer(idDestinatario, montoNum, concepto, valor);
+      if (!resultado.ok) {
+        setErrorCodigo(resultado.message);
+        setCodigo('');
         return;
       }
-      setReceipt(result.receipt);
-      setStep(result.receipt.rejected ? 'error' : 'done');
+      setComprobante(resultado.receipt);
+      setPaso(resultado.receipt.rejected ? 'error' : 'done');
     } finally {
-      setSubmittingCode(false);
+      setEnviandoCodigo(false);
     }
   };
 
   return (
     <Screen bg={theme.bg}>
-      {step === 'form' && (
+      {paso === 'form' && (
         <View>
           <ScreenTitle title={t('transfer.title')} note={t('transfer.note')} />
 
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.recipient')}</Text>
           <View style={{ marginTop: 10, gap: 9 }}>
             {payees.map((p) => {
-              const active = payeeId === p.id;
+              const activo = idDestinatario === p.id;
               return (
                 <Pressable
                   key={p.id}
-                  onPress={() => setPayeeId(p.id)}
+                  onPress={() => setIdDestinatario(p.id)}
                   style={{
                     borderRadius: 16,
                     borderWidth: 1.5,
-                    borderColor: active ? theme.gold : theme.line,
-                    backgroundColor: active ? theme.selBg : theme.surf,
+                    borderColor: activo ? theme.gold : theme.line,
+                    backgroundColor: activo ? theme.selBg : theme.surf,
                     padding: 13,
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -122,34 +122,34 @@ export default function TransferScreen() {
                       {p.bank} · {p.account}
                     </Text>
                   </View>
-                  <Icon name={active ? 'check_circle' : 'radio_button_unchecked'} size={20} color={active ? theme.gold : theme.soft} />
+                  <Icon name={activo ? 'check_circle' : 'radio_button_unchecked'} size={20} color={activo ? theme.gold : theme.soft} />
                 </Pressable>
               );
             })}
 
-            {addingPayee ? (
+            {agregandoDestinatario ? (
               <View style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, backgroundColor: theme.surf, padding: 13, gap: 10 }}>
-                <TextField placeholder={t('transfer.addAccountName')} value={newName} onChangeText={setNewName} />
-                <TextField placeholder={t('transfer.addAccountNumber')} value={newCci} onChangeText={setNewCci} keyboardType="number-pad" />
+                <TextField placeholder={t('transfer.addAccountName')} value={nuevoNombre} onChangeText={setNuevoNombre} />
+                <TextField placeholder={t('transfer.addAccountNumber')} value={nuevoCci} onChangeText={setNuevoCci} keyboardType="number-pad" />
                 <PrimaryButton
-                  label={savingPayee ? t('transfer.savingAccount') : t('transfer.addAccount')}
-                  disabled={newName.trim().length < 2 || newCci.trim().length < 4 || savingPayee}
+                  label={guardandoDestinatario ? t('transfer.savingAccount') : t('transfer.addAccount')}
+                  disabled={nuevoNombre.trim().length < 2 || nuevoCci.trim().length < 4 || guardandoDestinatario}
                   onPress={async () => {
-                    setSavingPayee(true);
+                    setGuardandoDestinatario(true);
                     try {
-                      const created = await addPayee({
-                        name: newName.trim(),
+                      const creado = await addPayee({
+                        name: nuevoNombre.trim(),
                         bank: t('transfer.addedAccount'),
-                        accountNumber: '···' + newCci.trim().slice(-4),
+                        accountNumber: '···' + nuevoCci.trim().slice(-4),
                       });
-                      if (created) {
-                        setPayeeId(created.id);
-                        setAddingPayee(false);
-                        setNewName('');
-                        setNewCci('');
+                      if (creado) {
+                        setIdDestinatario(creado.id);
+                        setAgregandoDestinatario(false);
+                        setNuevoNombre('');
+                        setNuevoCci('');
                       }
                     } finally {
-                      setSavingPayee(false);
+                      setGuardandoDestinatario(false);
                     }
                   }}
                   style={{ height: 46 }}
@@ -157,7 +157,7 @@ export default function TransferScreen() {
               </View>
             ) : (
               <Pressable
-                onPress={() => setAddingPayee(true)}
+                onPress={() => setAgregandoDestinatario(true)}
                 style={{ borderRadius: 16, borderWidth: 1.5, borderColor: theme.line, borderStyle: 'dashed', backgroundColor: theme.surf, padding: 13, flexDirection: 'row', alignItems: 'center', gap: 12 }}
               >
                 <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
@@ -175,7 +175,7 @@ export default function TransferScreen() {
               height: 72,
               borderRadius: 16,
               borderWidth: 1.5,
-              borderColor: insufficient ? '#C2352B' : theme.gold,
+              borderColor: insuficiente ? '#C2352B' : theme.gold,
               backgroundColor: theme.surf,
               flexDirection: 'row',
               alignItems: 'center',
@@ -185,42 +185,42 @@ export default function TransferScreen() {
           >
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 17, color: theme.soft }}>S/</Text>
             <TextInput
-              value={amount}
-              onChangeText={(v) => setAmount(v.replace(/[^0-9.]/g, ''))}
+              value={monto}
+              onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))}
               placeholder="0.00"
               placeholderTextColor={theme.soft}
               keyboardType="decimal-pad"
               style={{ flex: 1, fontSize: 30, fontWeight: '800', color: theme.ink, letterSpacing: -1, padding: 0 }}
             />
           </View>
-          <Text style={{ marginTop: 7, fontFamily: fonts.bodyMed, fontSize: 11.5, color: insufficient ? '#C2352B' : theme.soft }}>
-            {insufficient ? t('transfer.insufficient', { available: money(available) }) : t('transfer.availableAmount', { available: money(available) })}
+          <Text style={{ marginTop: 7, fontFamily: fonts.bodyMed, fontSize: 11.5, color: insuficiente ? '#C2352B' : theme.soft }}>
+            {insuficiente ? t('transfer.insufficient', { available: money(available) }) : t('transfer.availableAmount', { available: money(available) })}
           </Text>
 
           <Text style={{ marginTop: 18, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.concept')}</Text>
           <View style={{ marginTop: 10 }}>
-            <TextField placeholder={t('transfer.conceptPlaceholder')} value={concept} onChangeText={setConcept} />
+            <TextField placeholder={t('transfer.conceptPlaceholder')} value={concepto} onChangeText={setConcepto} />
           </View>
 
-          {sendError ? (
-            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{sendError}</Text>
+          {errorEnvio ? (
+            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
           ) : null}
           <PrimaryButton
-            label={sendingOtp ? t('transfer.sendingCode') : t('transfer.continue')}
+            label={enviandoOtp ? t('transfer.sendingCode') : t('transfer.continue')}
             iconRight="arrow_forward"
-            disabled={!canContinue || sendingOtp}
+            disabled={!puedeContinuar || enviandoOtp}
             onPress={async () => {
-              setSendingOtp(true);
-              setSendError(null);
+              setEnviandoOtp(true);
+              setErrorEnvio(null);
               try {
-                const result = await requestTransferOtp();
-                if (!result.ok) {
-                  setSendError(result.message);
+                const resultado = await requestTransferOtp();
+                if (!resultado.ok) {
+                  setErrorEnvio(resultado.message);
                   return;
                 }
-                setStep('otp');
+                setPaso('otp');
               } finally {
-                setSendingOtp(false);
+                setEnviandoOtp(false);
               }
             }}
             style={{ marginTop: 22 }}
@@ -228,35 +228,35 @@ export default function TransferScreen() {
         </View>
       )}
 
-      {step === 'otp' && selectedPayee && (
+      {paso === 'otp' && destinatarioSeleccionado && (
         <View>
-          <BackButton onPress={() => setStep('form')} />
+          <BackButton onPress={() => setPaso('form')} />
           <Text style={{ fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.confirmToken')}</Text>
           <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
-            {t('transfer.tokenSubtitleEmail', { amount: money(amountNum) })}
+            {t('transfer.tokenSubtitleEmail', { amount: money(montoNum) })}
           </Text>
-          <Pressable onPress={() => inputRef.current?.focus()} style={{ marginTop: 24 }}>
-            <OtpBoxes value={code} />
+          <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
+            <OtpBoxes value={codigo} />
           </Pressable>
           <TextInput
-            ref={inputRef}
-            value={code}
+            ref={refEntrada}
+            value={codigo}
             autoFocus
-            editable={!submittingCode}
+            editable={!enviandoCodigo}
             keyboardType="number-pad"
             maxLength={6}
             onChangeText={(v) => {
-              const d = v.replace(/\D/g, '').slice(0, 6);
-              setCode(d);
-              setCodeError(null);
-              if (d.length === 6) submitCode(d);
+              const digitos = v.replace(/\D/g, '').slice(0, 6);
+              setCodigo(digitos);
+              setErrorCodigo(null);
+              if (digitos.length === 6) enviarCodigo(digitos);
             }}
             style={{ position: 'absolute', opacity: 0, height: 0 }}
           />
-          {submittingCode ? (
+          {enviandoCodigo ? (
             <Text style={{ marginTop: 8, fontFamily: fonts.bodyMed, fontSize: 12, color: theme.mid }}>{t('transfer.verifying')}</Text>
-          ) : codeError ? (
-            <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{codeError}</Text>
+          ) : errorCodigo ? (
+            <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
           ) : null}
           <Text style={{ marginTop: 16, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
             {otpLeft > 0 ? (
@@ -271,18 +271,18 @@ export default function TransferScreen() {
           </Text>
 
           <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18, gap: 4 }}>
-            <Row label={t('transfer.destination')} value={`${selectedPayee.name} · ${selectedPayee.bank}`} />
+            <Row label={t('transfer.destination')} value={`${destinatarioSeleccionado.name} · ${destinatarioSeleccionado.bank}`} />
             <Row label={t('transfer.fee')} value="S/ 0.00" />
             <View style={{ height: 1, backgroundColor: theme.line, marginVertical: 6 }} />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.total')}</Text>
-              <Text style={{ fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{money(amountNum)}</Text>
+              <Text style={{ fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{money(montoNum)}</Text>
             </View>
           </View>
         </View>
       )}
 
-      {step === 'done' && receipt && (
+      {paso === 'done' && comprobante && (
         <View style={{ alignItems: 'center', paddingTop: 8 }}>
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="check" size={40} color="#21A26B" />
@@ -300,21 +300,21 @@ export default function TransferScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 10.5, color: '#21A26B' }}>{t('transfer.completedBadge')}</Text>
               </View>
             </View>
-            <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{money(receipt.amount)}</Text>
+            <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{money(comprobante.amount)}</Text>
             <View style={{ marginTop: 16, gap: 10 }}>
-              <Row label={t('transfer.recipientLabel')} value={receipt.payee.name} />
-              <Row label={t('transfer.bankLabel')} value={`${receipt.payee.bank} ${receipt.payee.account}`} />
-              <Row label={t('transfer.dateLabel')} value={receipt.date} />
-              <Row label={t('transfer.referenceLabel')} value={receipt.reference} />
+              <Row label={t('transfer.recipientLabel')} value={comprobante.payee.name} />
+              <Row label={t('transfer.bankLabel')} value={`${comprobante.payee.bank} ${comprobante.payee.account}`} />
+              <Row label={t('transfer.dateLabel')} value={comprobante.date} />
+              <Row label={t('transfer.referenceLabel')} value={comprobante.reference} />
             </View>
           </View>
 
-          <GhostButton label={t('transfer.share')} icon="share" onPress={() => shareReceipt(receipt)} style={{ marginTop: 18, width: '100%', height: 50 }} />
-          <PrimaryButton label={t('transfer.newTransfer')} onPress={reset} style={{ marginTop: 10, width: '100%', height: 50 }} />
+          <GhostButton label={t('transfer.share')} icon="share" onPress={() => compartirComprobante(comprobante)} style={{ marginTop: 18, width: '100%', height: 50 }} />
+          <PrimaryButton label={t('transfer.newTransfer')} onPress={reiniciar} style={{ marginTop: 10, width: '100%', height: 50 }} />
         </View>
       )}
 
-      {step === 'error' && receipt && (
+      {paso === 'error' && comprobante && (
         <View style={{ alignItems: 'center', paddingTop: 8 }}>
           <View style={{ width: 74, height: 74, borderRadius: 37, backgroundColor: '#FFF4F3', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="error_outline" size={40} color="#C2352B" />
@@ -332,14 +332,14 @@ export default function TransferScreen() {
               </View>
             </View>
             <View style={{ marginTop: 14, gap: 10 }}>
-              <Row label={t('transfer.reasonLabel')} value={receipt.reasonLabel ?? ''} />
-              <Row label={t('transfer.codeLabel')} value={receipt.reasonCode ?? ''} />
-              <Row label={t('transfer.amountLabel')} value={money(receipt.amount)} />
+              <Row label={t('transfer.reasonLabel')} value={comprobante.reasonLabel ?? ''} />
+              <Row label={t('transfer.codeLabel')} value={comprobante.reasonCode ?? ''} />
+              <Row label={t('transfer.amountLabel')} value={money(comprobante.amount)} />
               <Row label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: money(available) })}</Text>} />
             </View>
           </View>
 
-          <PrimaryButton label={t('transfer.fixAndRetry')} onPress={() => setStep('form')} style={{ marginTop: 18, width: '100%', height: 52 }} />
+          <PrimaryButton label={t('transfer.fixAndRetry')} onPress={() => setPaso('form')} style={{ marginTop: 18, width: '100%', height: 52 }} />
           <GhostButton label={t('transfer.contactSupport')} icon="support_agent" onPress={() => nav.navigate('Concierge')} style={{ marginTop: 10, width: '100%', height: 52 }} />
         </View>
       )}

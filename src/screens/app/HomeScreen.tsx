@@ -16,15 +16,15 @@ import { useAppState } from '../../state/AppStateContext';
 import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-type Nav = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
+type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
 
 export default function HomeScreen() {
-  const nav = useNavigation<Nav>();
+  const nav = useNavigation<Navegacion>();
   const { theme, dark, toggle } = useTheme();
   const { t } = useLanguage();
   const { user, available, held, creditLine, minPayment, cutDate, cardBlocked, transactions } = useAppState();
 
-  const QUICK = [
+  const ACCESOS_RAPIDOS = [
     { icon: 'swap_horiz', label: t('home.quickTransfer'), go: 'TransferTab' as const },
     { icon: 'qr_code_2', label: t('home.quickQr'), go: 'Qr' as const },
     { icon: 'receipt_long', label: t('home.quickServices'), go: 'Services' as const },
@@ -32,10 +32,10 @@ export default function HomeScreen() {
     { icon: 'credit_score', label: t('home.quickPayCard'), go: 'PayCard' as const },
     { icon: 'support_agent', label: t('home.quickConcierge'), go: 'Concierge' as const },
   ];
-  const [hide, setHide] = useState(false);
+  const [ocultar, setOcultar] = useState(false);
 
-  const recent = transactions.slice(0, 4);
-  const mask = (v: string) => v.replace(/[0-9]/g, '•');
+  const recientes = transactions.slice(0, 4);
+  const enmascarar = (v: string) => v.replace(/[0-9]/g, '•');
 
   return (
     <Screen scroll padded={false} bg={theme.bg}>
@@ -49,23 +49,23 @@ export default function HomeScreen() {
             <Text style={{ marginTop: 3, fontFamily: fonts.headingBold, fontSize: 16, color: '#fff' }}>{user.name}</Text>
           </View>
           <LanguageSwitch dark compact />
-          <Pressable onPress={toggle} style={hstyles.iconBtn}>
+          <Pressable onPress={toggle} style={estilosH.iconBtn}>
             <Icon name={dark ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
-          <Pressable onPress={() => nav.navigate('Notifications' as never)} style={hstyles.iconBtn}>
+          <Pressable onPress={() => nav.navigate('Notifications' as never)} style={estilosH.iconBtn}>
             <Icon name="notifications" size={20} color="#fff" />
-            <View style={hstyles.dot} />
+            <View style={estilosH.dot} />
           </Pressable>
         </View>
 
         <View style={{ marginTop: 24, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>{t('home.availableBalance')}</Text>
-          <Pressable onPress={() => setHide((h) => !h)} style={hstyles.eyeBtn}>
-            <Icon name={hide ? 'visibility_off' : 'visibility'} size={17} color="#fff" />
+          <Pressable onPress={() => setOcultar((h) => !h)} style={estilosH.eyeBtn}>
+            <Icon name={ocultar ? 'visibility_off' : 'visibility'} size={17} color="#fff" />
           </Pressable>
         </View>
         <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
-          {hide ? mask(money(available)) : money(available)}
+          {ocultar ? enmascarar(money(available)) : money(available)}
         </Text>
         <View style={{ marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 22, height: 1, backgroundColor: 'rgba(217,190,122,.7)' }} />
@@ -75,23 +75,23 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: 'rgba(255,255,255,.07)', borderWidth: 1, borderColor: 'rgba(217,190,122,.22)', padding: 18, flexDirection: 'row', flexWrap: 'wrap' }}>
-          <MiniStat label={t('home.heldBalance')} value={money(held)} />
-          <MiniStat label={t('home.creditLine')} value={money(creditLine)} />
-          <MiniStat label={t('home.minPayment')} value={money(minPayment)} />
-          <MiniStat label={t('home.cutDate')} value={cutDate} />
+          <MiniEstadistica label={t('home.heldBalance')} value={money(held)} />
+          <MiniEstadistica label={t('home.creditLine')} value={money(creditLine)} />
+          <MiniEstadistica label={t('home.minPayment')} value={money(minPayment)} />
+          <MiniEstadistica label={t('home.cutDate')} value={cutDate} />
         </View>
       </LinearGradient>
 
       <View style={{ padding: 22, paddingTop: 20 }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 11 }}>
-          {QUICK.map((q) => (
+          {ACCESOS_RAPIDOS.map((acceso) => (
             <Pressable
-              key={q.label}
-              onPress={() => (q.go === 'TransferTab' ? nav.navigate('Transfer' as never) : nav.navigate(q.go as any))}
+              key={acceso.label}
+              onPress={() => (acceso.go === 'TransferTab' ? nav.navigate('Transfer' as never) : nav.navigate(acceso.go as any))}
               style={{ width: '47%', borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 16, gap: 10 }}
             >
-              <Icon name={q.icon} size={23} color={theme.gold} />
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{q.label}</Text>
+              <Icon name={acceso.icon} size={23} color={theme.gold} />
+              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{acceso.label}</Text>
             </Pressable>
           ))}
         </View>
@@ -103,8 +103,8 @@ export default function HomeScreen() {
           </Pressable>
         </View>
         <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
-          {recent.map((tx) => (
-            <TransactionRow key={tx.id} tx={tx} showDate />
+          {recientes.map((transaccion) => (
+            <TransactionRow key={transaccion.id} tx={transaccion} showDate />
           ))}
         </View>
 
@@ -154,7 +154,7 @@ export default function HomeScreen() {
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
+function MiniEstadistica({ label, value }: { label: string; value: string }) {
   return (
     <View style={{ width: '50%', marginBottom: 10 }}>
       <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{label}</Text>
@@ -163,7 +163,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
   );
 }
 
-const hstyles = {
+const estilosH = {
   iconBtn: { width: 40, height: 40, borderRadius: 13, backgroundColor: 'rgba(255,255,255,.12)', alignItems: 'center' as const, justifyContent: 'center' as const },
   dot: { position: 'absolute' as const, top: 8, right: 9, width: 8, height: 8, borderRadius: 4, backgroundColor: '#FF6B5A', borderWidth: 2, borderColor: '#0B2340' },
   eyeBtn: { width: 28, height: 28, borderRadius: 9, backgroundColor: 'rgba(255,255,255,.14)', alignItems: 'center' as const, justifyContent: 'center' as const },
