@@ -16,36 +16,36 @@ export default function PayCardScreen() {
   const { t } = useLanguage();
   const { user, cardDebt, minPayment, creditLine, cutDate, payCard } = useAppState();
   const [plan, setPlan] = useState<'full' | 'min' | 'installments'>('installments');
-  const [done, setDone] = useState(false);
-  const [paying, setPaying] = useState(false);
+  const [listo, setListo] = useState(false);
+  const [pagando, setPagando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const linePct = creditLine > 0 ? Math.min(100, Math.round((cardDebt / creditLine) * 100)) : 0;
-  const installment = cardDebt / 3;
-  const plans = [
+  const pctLinea = creditLine > 0 ? Math.min(100, Math.round((cardDebt / creditLine) * 100)) : 0;
+  const cuota = cardDebt / 3;
+  const planes = [
     { id: 'full' as const, label: t('payCard.planFull'), note: t('payCard.planFullNote'), amt: cardDebt, icon: 'check_circle' },
-    { id: 'installments' as const, label: t('payCard.planInstallments'), note: t('payCard.planInstallmentsNote', { amount: money(installment) }), amt: installment, icon: 'calendar_month' },
+    { id: 'installments' as const, label: t('payCard.planInstallments'), note: t('payCard.planInstallmentsNote', { amount: money(cuota) }), amt: cuota, icon: 'calendar_month' },
     { id: 'min' as const, label: t('payCard.planMin'), note: t('payCard.planMinNote'), amt: minPayment, icon: 'trending_down' },
   ];
 
-  const months = [t('payCard.month1'), t('payCard.month2'), t('payCard.month3')];
-  const cutDay = cutDate.split(' ')[0];
+  const meses = [t('payCard.month1'), t('payCard.month2'), t('payCard.month3')];
+  const diaCorte = cutDate.split(' ')[0];
 
-  const submit = async () => {
-    if (paying) return;
-    const amt = plans.find((p) => p.id === plan)!.amt;
-    setPaying(true);
+  const enviar = async () => {
+    if (pagando) return;
+    const monto = planes.find((opcion) => opcion.id === plan)!.amt;
+    setPagando(true);
     setError(null);
-    const result = await payCard(amt);
-    setPaying(false);
-    if (!result.ok) {
-      setError(result.message);
+    const resultado = await payCard(monto);
+    setPagando(false);
+    if (!resultado.ok) {
+      setError(resultado.message);
       return;
     }
-    setDone(true);
+    setListo(true);
   };
 
-  if (done) {
+  if (listo) {
     return (
       <Screen bg={theme.bg}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
@@ -56,9 +56,9 @@ export default function PayCardScreen() {
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {plan === 'installments'
               ? t('payCard.scheduledInstallments', { amount: money(cardDebt) })
-              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: money(plans.find((p) => p.id === plan)!.amt) })}
+              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: money(planes.find((opcion) => opcion.id === plan)!.amt) })}
           </Text>
-          <GhostButton label={t('payCard.backToCard')} onPress={() => setDone(false)} style={{ marginTop: 24, width: 220 }} />
+          <GhostButton label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
         </View>
       </Screen>
     );
@@ -80,30 +80,30 @@ export default function PayCardScreen() {
           </View>
         </View>
         <View style={{ marginTop: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,.12)', overflow: 'hidden' }}>
-          <LinearGradient colors={['#B98B33', '#E7CE92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${linePct}%`, height: 6, borderRadius: 3 }} />
+          <LinearGradient colors={['#B98B33', '#E7CE92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${pctLinea}%`, height: 6, borderRadius: 3 }} />
         </View>
         <View style={{ marginTop: 9, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: linePct, line: money(creditLine) })}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: pctLinea, line: money(creditLine) })}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.dueDate', { date: cutDate })}</Text>
         </View>
       </LinearGradient>
 
       <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('payCard.howToPay')}</Text>
       <View style={{ marginTop: 12, gap: 10 }}>
-        {plans.map((p) => {
-          const active = plan === p.id;
+        {planes.map((opcion) => {
+          const activo = plan === opcion.id;
           return (
             <Pressable
-              key={p.id}
-              onPress={() => setPlan(p.id)}
-              style={{ borderRadius: 18, borderWidth: 1.5, borderColor: active ? theme.gold : theme.line, backgroundColor: active ? theme.selBg : theme.surf, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
+              key={opcion.id}
+              onPress={() => setPlan(opcion.id)}
+              style={{ borderRadius: 18, borderWidth: 1.5, borderColor: activo ? theme.gold : theme.line, backgroundColor: activo ? theme.selBg : theme.surf, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}
             >
-              <Icon name={p.icon} size={21} color={active ? theme.gold : theme.soft} />
+              <Icon name={opcion.icon} size={21} color={activo ? theme.gold : theme.soft} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{p.label}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{p.note}</Text>
+                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{opcion.label}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{opcion.note}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: theme.ink }}>{money(p.amt)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: theme.ink }}>{money(opcion.amt)}</Text>
             </Pressable>
           );
         })}
@@ -117,9 +117,9 @@ export default function PayCardScreen() {
               <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#C9A227' }} />
               <View style={{ flex: 1 }}>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{t('payCard.installmentOf', { n })}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{n === 1 ? t('payCard.confirmPayment') : `${cutDay} de ${months[n - 1]}`}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{n === 1 ? t('payCard.confirmPayment') : `${diaCorte} de ${meses[n - 1]}`}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(installment)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(cuota)}</Text>
             </View>
           ))}
           <Text style={{ marginTop: 12, fontFamily: fonts.body, fontSize: 11, lineHeight: 16, color: theme.soft }}>{t('payCard.scheduleNote')}</Text>
@@ -130,7 +130,7 @@ export default function PayCardScreen() {
         <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
       ) : null}
 
-      <GoldButton label={paying ? t('payCard.paying') : t('payCard.confirmPayment')} disabled={paying} onPress={submit} style={{ marginTop: 20 }} />
+      <GoldButton label={pagando ? t('payCard.paying') : t('payCard.confirmPayment')} disabled={pagando} onPress={enviar} style={{ marginTop: 20 }} />
     </Screen>
   );
 }

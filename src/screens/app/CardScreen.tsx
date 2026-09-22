@@ -18,48 +18,48 @@ export default function CardScreen() {
   const { t } = useLanguage();
   const { user, cardBlocked, requestCardBlock, requestProfileOtp, revealCvv } = useAppState();
 
-  const CONTROLS = [
+  const CONTROLES = [
     { key: 'pin', icon: 'pin', label: t('card.controlPinLabel'), desc: t('card.controlPinDesc') },
     { key: 'cvv', icon: 'visibility', label: t('card.controlCvvLabel'), desc: t('card.controlCvvDesc') },
     { key: 'limits', icon: 'place', label: t('card.controlLimitsLabel'), desc: t('card.controlLimitsDesc'), go: 'Limits' as const },
     { key: 'report', icon: 'report', label: t('card.controlReportLabel'), desc: t('card.controlReportDesc'), go: 'Security' as const },
   ];
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pinOpen, setPinOpen] = useState(false);
-  const [cvvStep, setCvvStep] = useState<'closed' | 'otp' | 'shown'>('closed');
-  const [cvvCode, setCvvCode] = useState('');
-  const [cvvValue, setCvvValue] = useState('');
-  const [cvvError, setCvvError] = useState<string | null>(null);
-  const [cvvSending, setCvvSending] = useState(false);
-  const [cvvVerifying, setCvvVerifying] = useState(false);
-  const cvvInputRef = useRef<TextInput>(null);
+  const [confirmarAbierto, setConfirmarAbierto] = useState(false);
+  const [pinAbierto, setPinAbierto] = useState(false);
+  const [pasoCvv, setPasoCvv] = useState<'closed' | 'otp' | 'shown'>('closed');
+  const [codigoCvv, setCodigoCvv] = useState('');
+  const [valorCvv, setValorCvv] = useState('');
+  const [errorCvv, setErrorCvv] = useState<string | null>(null);
+  const [enviandoCvv, setEnviandoCvv] = useState(false);
+  const [verificandoCvv, setVerificandoCvv] = useState(false);
+  const refEntradaCvv = useRef<TextInput>(null);
 
-  const openControl = async (key: string) => {
-    if (key === 'pin') setPinOpen(true);
-    if (key === 'cvv') {
-      setCvvCode('');
-      setCvvError(null);
-      setCvvStep('otp');
-      setCvvSending(true);
-      const result = await requestProfileOtp();
-      setCvvSending(false);
-      if (!result.ok) setCvvError(result.message);
+  const abrirControl = async (clave: string) => {
+    if (clave === 'pin') setPinAbierto(true);
+    if (clave === 'cvv') {
+      setCodigoCvv('');
+      setErrorCvv(null);
+      setPasoCvv('otp');
+      setEnviandoCvv(true);
+      const resultado = await requestProfileOtp();
+      setEnviandoCvv(false);
+      if (!resultado.ok) setErrorCvv(resultado.message);
     }
   };
 
-  const submitCvv = async (v: string) => {
-    if (v.length !== 6 || cvvVerifying) return;
-    setCvvVerifying(true);
-    setCvvError(null);
-    const result = await revealCvv(v);
-    setCvvVerifying(false);
-    if (!result.ok) {
-      setCvvError(result.message);
-      setCvvCode('');
+  const enviarCvv = async (v: string) => {
+    if (v.length !== 6 || verificandoCvv) return;
+    setVerificandoCvv(true);
+    setErrorCvv(null);
+    const resultado = await revealCvv(v);
+    setVerificandoCvv(false);
+    if (!resultado.ok) {
+      setErrorCvv(resultado.message);
+      setCodigoCvv('');
       return;
     }
-    setCvvValue(result.cvv);
-    setCvvStep('shown');
+    setValorCvv(resultado.cvv);
+    setPasoCvv('shown');
   };
 
   return (
@@ -103,32 +103,32 @@ export default function CardScreen() {
             {cardBlocked ? t('card.blockedDesc') : t('card.unblockedDesc')}
           </Text>
         </View>
-        <Toggle value={cardBlocked} onChange={(next) => (next ? setConfirmOpen(true) : requestCardBlock(false))} />
+        <Toggle value={cardBlocked} onChange={(siguiente) => (siguiente ? setConfirmarAbierto(true) : requestCardBlock(false))} />
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 14 }}>
-        {CONTROLS.map((c, i) => (
+        {CONTROLES.map((control, i) => (
           <Pressable
-            key={c.key}
-            onPress={() => (c.go ? nav.navigate(c.go) : openControl(c.key))}
+            key={control.key}
+            onPress={() => (control.go ? nav.navigate(control.go) : abrirControl(control.key))}
             style={({ pressed }) => [
-              { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 6, marginHorizontal: -6, borderRadius: 12, borderBottomWidth: i < CONTROLS.length - 1 ? 1 : 0, borderBottomColor: theme.line },
+              { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 6, marginHorizontal: -6, borderRadius: 12, borderBottomWidth: i < CONTROLES.length - 1 ? 1 : 0, borderBottomColor: theme.line },
               pressed && { backgroundColor: theme.tint },
             ]}
           >
             <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name={c.icon} size={19} color={theme.gold} />
+              <Icon name={control.icon} size={19} color={theme.gold} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{c.label}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{c.desc}</Text>
+              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{control.label}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{control.desc}</Text>
             </View>
             <Icon name="chevron_right" size={18} color="#A6B1BD" />
           </Pressable>
         ))}
       </View>
 
-      <BottomSheet visible={confirmOpen} onClose={() => setConfirmOpen(false)}>
+      <BottomSheet visible={confirmarAbierto} onClose={() => setConfirmarAbierto(false)}>
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="gpp_maybe" size={26} color="#C2352B" />
         </View>
@@ -140,14 +140,14 @@ export default function CardScreen() {
           label={t('card.yesBlock')}
           onPress={() => {
             requestCardBlock(true);
-            setConfirmOpen(false);
+            setConfirmarAbierto(false);
           }}
           style={{ marginTop: 22 }}
         />
-        <GhostButton label={t('card.cancel')} onPress={() => setConfirmOpen(false)} style={{ marginTop: 10 }} />
+        <GhostButton label={t('card.cancel')} onPress={() => setConfirmarAbierto(false)} style={{ marginTop: 10 }} />
       </BottomSheet>
 
-      <BottomSheet visible={pinOpen} onClose={() => setPinOpen(false)}>
+      <BottomSheet visible={pinAbierto} onClose={() => setPinAbierto(false)}>
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="pin" size={24} color={theme.gold} />
         </View>
@@ -155,59 +155,59 @@ export default function CardScreen() {
         <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('card.changePinBody')}
         </Text>
-        <PrimaryButton label={t('card.understood')} onPress={() => setPinOpen(false)} style={{ marginTop: 20 }} />
+        <PrimaryButton label={t('card.understood')} onPress={() => setPinAbierto(false)} style={{ marginTop: 20 }} />
       </BottomSheet>
 
       <BottomSheet
-        visible={cvvStep !== 'closed'}
-        onShow={() => cvvInputRef.current?.focus()}
+        visible={pasoCvv !== 'closed'}
+        onShow={() => refEntradaCvv.current?.focus()}
         onClose={() => {
-          setCvvStep('closed');
-          setCvvCode('');
+          setPasoCvv('closed');
+          setCodigoCvv('');
         }}
       >
-        {cvvStep === 'otp' && (
+        {pasoCvv === 'otp' && (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.verifyIdentity')}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('card.verifyIdentityBody')}
             </Text>
-            <Pressable onPress={() => cvvInputRef.current?.focus()} style={{ marginTop: 18 }}>
-              <OtpBoxes value={cvvCode} />
+            <Pressable onPress={() => refEntradaCvv.current?.focus()} style={{ marginTop: 18 }}>
+              <OtpBoxes value={codigoCvv} />
             </Pressable>
             <TextInput
-              ref={cvvInputRef}
-              value={cvvCode}
+              ref={refEntradaCvv}
+              value={codigoCvv}
               keyboardType="number-pad"
               maxLength={6}
               onChangeText={(v) => {
-                const d = v.replace(/\D/g, '').slice(0, 6);
-                setCvvCode(d);
-                setCvvError(null);
-                if (d.length === 6) submitCvv(d);
+                const digitos = v.replace(/\D/g, '').slice(0, 6);
+                setCodigoCvv(digitos);
+                setErrorCvv(null);
+                if (digitos.length === 6) enviarCvv(digitos);
               }}
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
-            {cvvError ? (
-              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{cvvError}</Text>
-            ) : cvvSending ? (
+            {errorCvv ? (
+              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorCvv}</Text>
+            ) : enviandoCvv ? (
               <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('card.sendingCode')}</Text>
             ) : null}
             <PrimaryButton
-              label={cvvVerifying ? t('card.verifying') : t('card.verify')}
-              onPress={() => submitCvv(cvvCode)}
-              disabled={cvvCode.length !== 6 || cvvVerifying || cvvSending}
+              label={verificandoCvv ? t('card.verifying') : t('card.verify')}
+              onPress={() => enviarCvv(codigoCvv)}
+              disabled={codigoCvv.length !== 6 || verificandoCvv || enviandoCvv}
               style={{ marginTop: 18 }}
             />
           </View>
         )}
-        {cvvStep === 'shown' && (
+        {pasoCvv === 'shown' && (
           <View style={{ alignItems: 'center', paddingVertical: 6 }}>
             <Icon name="lock_open" size={30} color={theme.green} />
             <Text style={{ marginTop: 14, fontFamily: fonts.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: user.cardNumber.slice(-4) })}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{cvvValue}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{valorCvv}</Text>
             <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('card.cvvHides')}</Text>
-            <PrimaryButton label={t('card.done')} onPress={() => setCvvStep('closed')} style={{ marginTop: 18, width: '100%' }} />
+            <PrimaryButton label={t('card.done')} onPress={() => setPasoCvv('closed')} style={{ marginTop: 18, width: '100%' }} />
           </View>
         )}
       </BottomSheet>

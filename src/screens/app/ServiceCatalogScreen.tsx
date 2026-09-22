@@ -12,7 +12,7 @@ import { billsApi, Biller } from '../../lib/api';
 import { RootStackParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const CATEGORY_LABEL: Record<Biller['category'], string> = {
+const ETIQUETA_CATEGORIA: Record<Biller['category'], string> = {
   luz: 'Luz',
   agua: 'Agua',
   gas: 'Gas',
@@ -29,30 +29,30 @@ export default function ServiceCatalogScreen() {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { services } = useAppState();
-  const [catalog, setCatalog] = useState<Biller[] | null>(null);
-  const [query, setQuery] = useState('');
+  const [catalogo, setCatalogo] = useState<Biller[] | null>(null);
+  const [consulta, setConsulta] = useState('');
 
   useEffect(() => {
-    billsApi.catalog().then(setCatalog).catch(() => setCatalog([]));
+    billsApi.catalog().then(setCatalogo).catch(() => setCatalogo([]));
   }, []);
 
-  const affiliatedKeys = useMemo(() => new Set(services.map((s) => s.billerKey)), [services]);
+  const clavesAfiliadas = useMemo(() => new Set(services.map((s) => s.billerKey)), [services]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const list = catalog ?? [];
-    return q ? list.filter((b) => b.name.toLowerCase().includes(q)) : list;
-  }, [catalog, query]);
+  const filtrados = useMemo(() => {
+    const q = consulta.trim().toLowerCase();
+    const lista = catalogo ?? [];
+    return q ? lista.filter((proveedor) => proveedor.name.toLowerCase().includes(q)) : lista;
+  }, [catalogo, consulta]);
 
-  const grouped = useMemo(() => {
-    const map = new Map<Biller['category'], Biller[]>();
-    for (const b of filtered) {
-      const arr = map.get(b.category) ?? [];
-      arr.push(b);
-      map.set(b.category, arr);
+  const agrupados = useMemo(() => {
+    const mapa = new Map<Biller['category'], Biller[]>();
+    for (const proveedor of filtrados) {
+      const arreglo = mapa.get(proveedor.category) ?? [];
+      arreglo.push(proveedor);
+      mapa.set(proveedor.category, arreglo);
     }
-    return Array.from(map.entries());
-  }, [filtered]);
+    return Array.from(mapa.entries());
+  }, [filtrados]);
 
   return (
     <Screen bg={theme.bg}>
@@ -64,39 +64,39 @@ export default function ServiceCatalogScreen() {
         <Icon name="search" size={19} color={theme.soft} />
         <TextInput
           autoFocus
-          value={query}
-          onChangeText={setQuery}
+          value={consulta}
+          onChangeText={setConsulta}
           placeholder={t('serviceCatalog.searchPlaceholder')}
           placeholderTextColor={theme.soft}
           style={{ flex: 1, fontFamily: fonts.body, fontSize: 13.5, color: theme.ink }}
         />
       </View>
 
-      {catalog === null ? (
+      {catalogo === null ? (
         <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.loading')}</Text>
-      ) : filtered.length === 0 ? (
+      ) : filtrados.length === 0 ? (
         <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.noResults')}</Text>
       ) : (
-        grouped.map(([category, billers]) => (
-          <View key={category} style={{ marginTop: 20 }}>
-            <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{CATEGORY_LABEL[category]}</Text>
+        agrupados.map(([categoria, proveedores]) => (
+          <View key={categoria} style={{ marginTop: 20 }}>
+            <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{ETIQUETA_CATEGORIA[categoria]}</Text>
             <View style={{ marginTop: 10, gap: 9 }}>
-              {billers.map((b) => {
-                const affiliated = affiliatedKeys.has(b.key);
+              {proveedores.map((proveedor) => {
+                const afiliado = clavesAfiliadas.has(proveedor.key);
                 return (
                   <Pressable
-                    key={b.key}
-                    onPress={() => nav.navigate('ServiceLookup', { biller: b })}
+                    key={proveedor.key}
+                    onPress={() => nav.navigate('ServiceLookup', { biller: proveedor })}
                     style={{ borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12 }}
                   >
-                    <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: b.iconBg, alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon name={b.icon} size={19} color={b.iconFg} />
+                    <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: proveedor.iconBg, alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name={proveedor.icon} size={19} color={proveedor.iconFg} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{b.name}</Text>
-                      <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{b.fieldLabel}</Text>
+                      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{proveedor.name}</Text>
+                      <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{proveedor.fieldLabel}</Text>
                     </View>
-                    {affiliated ? (
+                    {afiliado ? (
                       <Icon name="check_circle" size={19} color={theme.green} />
                     ) : (
                       <Icon name="chevron_right" size={19} color={theme.soft} />

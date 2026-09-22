@@ -15,50 +15,50 @@ import { RootStackParamList } from '../../navigation/types';
 import { ServiceBill } from '../../state/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-type Route = RouteProp<RootStackParamList, 'ServiceLookup'>;
+type Ruta = RouteProp<RootStackParamList, 'ServiceLookup'>;
 
 export default function ServiceLookupScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { params } = useRoute<Route>();
+  const { params } = useRoute<Ruta>();
   const { biller } = params;
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { available, affiliateService, payBill } = useAppState();
 
-  const [supplyNumber, setSupplyNumber] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [numeroSuministro, setNumeroSuministro] = useState('');
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [bill, setBill] = useState<ServiceBill | null>(null);
-  const [paying, setPaying] = useState(false);
-  const [paid, setPaid] = useState(false);
+  const [recibo, setRecibo] = useState<ServiceBill | null>(null);
+  const [pagando, setPagando] = useState(false);
+  const [pagado, setPagado] = useState(false);
 
-  const lookup = async () => {
-    if (loading || !supplyNumber.trim()) return;
-    setLoading(true);
+  const consultar = async () => {
+    if (cargando || !numeroSuministro.trim()) return;
+    setCargando(true);
     setError(null);
-    const result = await affiliateService(biller.key, supplyNumber.trim());
-    setLoading(false);
-    if (!result.ok) {
-      setError(result.message);
+    const resultado = await affiliateService(biller.key, numeroSuministro.trim());
+    setCargando(false);
+    if (!resultado.ok) {
+      setError(resultado.message);
       return;
     }
-    setBill(result.bill);
+    setRecibo(resultado.bill);
   };
 
-  const submitPayment = async () => {
-    if (!bill || paying) return;
-    setPaying(true);
+  const enviarPago = async () => {
+    if (!recibo || pagando) return;
+    setPagando(true);
     setError(null);
-    const result = await payBill(bill.id);
-    setPaying(false);
-    if (!result.ok) {
-      setError(result.message);
+    const resultado = await payBill(recibo.id);
+    setPagando(false);
+    if (!resultado.ok) {
+      setError(resultado.message);
       return;
     }
-    setPaid(true);
+    setPagado(true);
   };
 
-  if (bill && paid) {
+  if (recibo && pagado) {
     return (
       <Screen bg={theme.bg}>
         <View style={{ alignItems: 'center', paddingTop: 70 }}>
@@ -67,7 +67,7 @@ export default function ServiceLookupScreen() {
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
-            {t('services.receiptPaidBody', { name: bill.name, amount: money(bill.amount) })}
+            {t('services.receiptPaidBody', { name: recibo.name, amount: money(recibo.amount) })}
           </Text>
           <GhostButton label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 24, width: 240 }} />
         </View>
@@ -85,34 +85,34 @@ export default function ServiceLookupScreen() {
         <Text style={{ fontFamily: fonts.heading, fontSize: 22, letterSpacing: -0.6, color: theme.ink }}>{biller.name}</Text>
       </View>
 
-      {!bill ? (
+      {!recibo ? (
         <View style={{ marginTop: 22 }}>
           <TextField
             label={biller.fieldLabel}
             icon="tag"
             placeholder={biller.fieldPlaceholder}
-            value={supplyNumber}
-            onChangeText={setSupplyNumber}
+            value={numeroSuministro}
+            onChangeText={setNumeroSuministro}
             autoCapitalize="none"
           />
           {error ? (
             <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
           <PrimaryButton
-            label={loading ? t('serviceLookup.checking') : t('serviceLookup.check')}
-            disabled={!supplyNumber.trim() || loading}
-            onPress={lookup}
+            label={cargando ? t('serviceLookup.checking') : t('serviceLookup.check')}
+            disabled={!numeroSuministro.trim() || cargando}
+            onPress={consultar}
             style={{ marginTop: 16 }}
           />
         </View>
-      ) : bill.paid ? (
+      ) : recibo.paid ? (
         <View style={{ marginTop: 22, borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22, alignItems: 'center' }}>
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="check_circle" size={30} color={theme.green} />
           </View>
           <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{t('serviceLookup.upToDate')}</Text>
           <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
-            {t('serviceLookup.upToDateBody', { supply: bill.supplyNumber })}
+            {t('serviceLookup.upToDateBody', { supply: recibo.supplyNumber })}
           </Text>
           <GhostButton label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 18, width: 220 }} />
         </View>
@@ -120,15 +120,15 @@ export default function ServiceLookupScreen() {
         <View style={{ marginTop: 22 }}>
           <View style={{ borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
             <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: theme.soft, letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('serviceLookup.amountDue')}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1, color: theme.ink }}>{money(bill.amount)}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1, color: theme.ink }}>{money(recibo.amount)}</Text>
             <View style={{ marginTop: 14, paddingTop: 14, borderTopWidth: 1, borderTopColor: theme.line, gap: 8 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{biller.fieldLabel}</Text>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{bill.supplyNumber}</Text>
+                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{recibo.supplyNumber}</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('services.expiry')}</Text>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{bill.expiry}</Text>
+                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{recibo.expiry}</Text>
               </View>
             </View>
           </View>
@@ -136,14 +136,14 @@ export default function ServiceLookupScreen() {
           {error ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
-          {bill.amount > available ? (
+          {recibo.amount > available ? (
             <Text style={{ marginTop: 10, fontFamily: fonts.bodyMed, fontSize: 11.5, color: '#C2352B' }}>{t('qr.insufficientBalance')}</Text>
           ) : null}
 
           <GoldButton
-            label={paying ? t('services.paying') : t('services.pay', { amount: money(bill.amount) })}
-            disabled={bill.amount > available || paying}
-            onPress={submitPayment}
+            label={pagando ? t('services.paying') : t('services.pay', { amount: money(recibo.amount) })}
+            disabled={recibo.amount > available || pagando}
+            onPress={enviarPago}
             style={{ marginTop: 16 }}
           />
         </View>
