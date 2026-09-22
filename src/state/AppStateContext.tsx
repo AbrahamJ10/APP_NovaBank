@@ -26,18 +26,18 @@ import {
 } from '../lib/api';
 import { getAccessToken, getLastEmail, getRefreshToken, saveLastAccount } from '../lib/secureTokens';
 
-const MONTHS_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const MESES_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
-function formatMemberSince(iso: string) {
-  const d = new Date(iso);
-  return `${MONTHS_ES[d.getMonth()]} ${d.getFullYear()}`;
+function formatearMiembroDesde(iso: string) {
+  const fecha = new Date(iso);
+  return `${MESES_ES[fecha.getMonth()]} ${fecha.getFullYear()}`;
 }
 
-function toLocalTx(t: ApiTransaction): Tx {
-  const created = new Date(t.createdAt);
-  const now = new Date();
-  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const daysAgo = Math.round((startOfDay(now) - startOfDay(created)) / 86_400_000);
+function aTransaccionLocal(t: ApiTransaction): Tx {
+  const creada = new Date(t.createdAt);
+  const ahora = new Date();
+  const inicioDelDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diasAtras = Math.round((inicioDelDia(ahora) - inicioDelDia(creada)) / 86_400_000);
   return {
     id: t.id,
     name: t.name,
@@ -48,17 +48,17 @@ function toLocalTx(t: ApiTransaction): Tx {
     iconBg: t.iconBg,
     iconFg: t.iconFg,
     category: t.category as Tx['category'],
-    daysAgo: Math.max(0, daysAgo),
-    time: created.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
+    daysAgo: Math.max(0, diasAtras),
+    time: creada.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
   };
 }
 
-function toLocalNotification(n: ApiNotification): NotificationItem {
-  const created = new Date(n.createdAt);
-  const now = new Date();
-  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const daysAgo = Math.round((startOfDay(now) - startOfDay(created)) / 86_400_000);
-  const group: NotificationItem['group'] = daysAgo <= 0 ? 'Hoy' : daysAgo === 1 ? 'Ayer' : 'Esta semana';
+function aNotificacionLocal(n: ApiNotification): NotificationItem {
+  const creada = new Date(n.createdAt);
+  const ahora = new Date();
+  const inicioDelDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diasAtras = Math.round((inicioDelDia(ahora) - inicioDelDia(creada)) / 86_400_000);
+  const grupo: NotificationItem['group'] = diasAtras <= 0 ? 'Hoy' : diasAtras === 1 ? 'Ayer' : 'Esta semana';
   return {
     id: n.id,
     title: n.title,
@@ -67,20 +67,20 @@ function toLocalNotification(n: ApiNotification): NotificationItem {
     iconBg: n.iconBg,
     iconFg: n.iconFg,
     unread: n.unread,
-    group,
-    time: created.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
+    group: grupo,
+    time: creada.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
   };
 }
 
-function toLocalPayee(p: ApiPayee): Payee {
+function aDestinatarioLocal(p: ApiPayee): Payee {
   return { id: p.id, name: p.name, bank: p.bank, account: p.accountNumber, initials: p.initials, inactive: p.inactive };
 }
 
-function toLocalBill(b: ApiBill): ServiceBill {
-  const due = new Date(b.dueDate);
-  const now = new Date();
-  const daysUntil = Math.ceil((due.getTime() - now.getTime()) / 86_400_000);
-  const period = due.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' });
+function aReciboLocal(b: ApiBill): ServiceBill {
+  const vencimiento = new Date(b.dueDate);
+  const ahora = new Date();
+  const diasHasta = Math.ceil((vencimiento.getTime() - ahora.getTime()) / 86_400_000);
+  const periodo = vencimiento.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' });
   return {
     id: b.id,
     billerKey: b.billerKey,
@@ -89,20 +89,20 @@ function toLocalBill(b: ApiBill): ServiceBill {
     meta: b.meta,
     icon: b.icon,
     amount: b.amount,
-    due: b.paid ? 'Al día' : `Vence ${due.getDate()} ${due.toLocaleDateString('es-PE', { month: 'short' })}`,
-    dueColor: b.paid ? 'ok' : daysUntil <= 5 ? 'warn' : 'ok',
-    period: period.charAt(0).toUpperCase() + period.slice(1),
-    expiry: due.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' }),
+    due: b.paid ? 'Al día' : `Vence ${vencimiento.getDate()} ${vencimiento.toLocaleDateString('es-PE', { month: 'short' })}`,
+    dueColor: b.paid ? 'ok' : diasHasta <= 5 ? 'warn' : 'ok',
+    period: periodo.charAt(0).toUpperCase() + periodo.slice(1),
+    expiry: vencimiento.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' }),
     consumption: b.consumption ?? '',
     paid: b.paid,
     suspended: b.suspended,
   };
 }
 
-const SESSION_CHECK_TIMEOUT_MS = 12_000;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TIEMPO_LIMITE_VERIFICACION_SESION_MS = 12_000;
+const RE_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function initialsOf(name: string) {
+function inicialesDe(name: string) {
   return (
     name
       .trim()
@@ -113,11 +113,11 @@ function initialsOf(name: string) {
   );
 }
 
-function applyApiUser(u: User, apiUser: PublicUser): User {
+function aplicarUsuarioApi(u: Usuario, apiUser: PublicUser): Usuario {
   return {
     ...u,
     name: apiUser.fullName,
-    initials: initialsOf(apiUser.fullName),
+    initials: inicialesDe(apiUser.fullName),
     email: apiUser.email,
     dni: apiUser.dni ?? u.dni,
     phone: apiUser.phone ?? u.phone,
@@ -130,7 +130,7 @@ function applyApiUser(u: User, apiUser: PublicUser): User {
   };
 }
 
-type User = {
+type Usuario = {
   name: string;
   initials: string;
   email: string;
@@ -144,7 +144,7 @@ type User = {
   cardExpiry: string;
 };
 
-type OtpPurpose = 'register' | 'transfer' | 'recover' | 'edit' | null;
+type PropositoOtp = 'register' | 'transfer' | 'recover' | 'edit' | null;
 
 export type TransferReceipt = {
   amount: number;
@@ -157,7 +157,7 @@ export type TransferReceipt = {
   reasonLabel?: string;
 };
 
-const defaultUser: User = {
+const usuarioPorDefecto: Usuario = {
   name: 'Ana Quispe Rojas',
   initials: 'AQ',
   email: 'ana.quispe@gmail.com',
@@ -171,12 +171,12 @@ const defaultUser: User = {
   cardExpiry: '09/29',
 };
 
-function genOtp() {
+function generarOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
-function fmtNow() {
-  const d = new Date();
-  return d.toLocaleDateString('es-PE') + ' · ' + d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+function formatearAhora() {
+  const fecha = new Date();
+  return fecha.toLocaleDateString('es-PE') + ' · ' + fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
 }
 
 export function useAppStateInternal() {
@@ -184,8 +184,8 @@ export function useAppStateInternal() {
 
   const [session, setSession] = useState<Session>('checking');
   const [expired, setExpired] = useState(false);
-  const [user, setUser] = useState<User>(defaultUser);
-  const [pendingUser, setPendingUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Usuario>(usuarioPorDefecto);
+  const [pendingUser, setPendingUser] = useState<Usuario | null>(null);
 
   const [available, setAvailable] = useState(0);
   const [held, setHeld] = useState(0);
@@ -207,7 +207,7 @@ export function useAppStateInternal() {
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null);
 
   const [otp, setOtp] = useState<string | null>(null);
-  const [otpPurpose, setOtpPurpose] = useState<OtpPurpose>(null);
+  const [otpPurpose, setOtpPurpose] = useState<PropositoOtp>(null);
   const [otpDeadline, setOtpDeadline] = useState<number>(0);
   const [otpContext, setOtpContext] = useState<any>(null);
 
@@ -240,8 +240,8 @@ export function useAppStateInternal() {
     try {
       const [accessToken, refreshToken] = await Promise.all([getAccessToken(), getRefreshToken()]);
       if (!accessToken && !refreshToken) return false;
-      const apiUser = await withTimeout(authApi.me(), SESSION_CHECK_TIMEOUT_MS);
-      setUser((u) => applyApiUser(u, apiUser));
+      const apiUser = await withTimeout(authApi.me(), TIEMPO_LIMITE_VERIFICACION_SESION_MS);
+      setUser((u) => aplicarUsuarioApi(u, apiUser));
       setSession('in');
       touch();
       return true;
@@ -264,7 +264,7 @@ export function useAppStateInternal() {
       cci: summary.cci,
       cardNumber: summary.cardNumber,
       cardExpiry: summary.cardExpiry,
-      memberSince: formatMemberSince(summary.memberSince),
+      memberSince: formatearMiembroDesde(summary.memberSince),
     }));
   }, []);
 
@@ -283,10 +283,10 @@ export function useAppStateInternal() {
         billsApi.list(),
       ]);
       applyAccountSummary(summary);
-      setTransactions(txs.map(toLocalTx));
-      setNotifications(notifs.map(toLocalNotification));
-      setPayees(payeeList.map(toLocalPayee));
-      setServices(billList.map(toLocalBill));
+      setTransactions(txs.map(aTransaccionLocal));
+      setNotifications(notifs.map(aNotificacionLocal));
+      setPayees(payeeList.map(aDestinatarioLocal));
+      setServices(billList.map(aReciboLocal));
     } catch {
       // Se deja lo último que se cargó tal cual — una falla pasajera aquí
       // no debería dejar en blanco la pantalla de inicio que el usuario
@@ -422,8 +422,8 @@ export function useAppStateInternal() {
   const withdrawLeft = withdraw ? Math.max(0, Math.round((withdraw.deadline - now) / 1000)) : 0;
   const withdrawExpired = !!withdraw && withdrawLeft === 0;
 
-  const startOtp = useCallback((purpose: OtpPurpose, ctx?: any) => {
-    const code = genOtp();
+  const startOtp = useCallback((purpose: PropositoOtp, ctx?: any) => {
+    const code = generarOtp();
     setOtp(code);
     setOtpPurpose(purpose);
     setOtpContext(ctx ?? null);
@@ -432,7 +432,7 @@ export function useAppStateInternal() {
   }, []);
 
   const resendOtp = useCallback(() => {
-    const code = genOtp();
+    const code = generarOtp();
     setOtp(code);
     setOtpDeadline(Date.now() + 60_000);
     return code;
@@ -443,10 +443,10 @@ export function useAppStateInternal() {
   }, [otp]);
 
   const beginRegister = useCallback((data: { name: string; email: string; dni: string; phone: string; password: string }) => {
-    const u: User = {
-      ...defaultUser,
-      name: data.name || defaultUser.name,
-      initials: initialsOf(data.name || defaultUser.name),
+    const u: Usuario = {
+      ...usuarioPorDefecto,
+      name: data.name || usuarioPorDefecto.name,
+      initials: inicialesDe(data.name || usuarioPorDefecto.name),
       email: data.email,
       dni: data.dni,
       phone: data.phone,
@@ -468,13 +468,13 @@ export function useAppStateInternal() {
         dniPhoto: dniFrontPhoto ?? undefined,
         selfie: pendingSelfie ?? undefined,
       });
-      setUser(applyApiUser(pendingUser, apiUser));
-      // applyApiUser solo transfiere nombre/correo/dni/teléfono — el número
+      setUser(aplicarUsuarioApi(pendingUser, apiUser));
+      // aplicarUsuarioApi solo transfiere nombre/correo/dni/teléfono — el número
       // de cuenta/CCI/tarjeta reales solo existen una vez que el backend
       // los crea durante register(), así que se traen ahora. De lo
       // contrario RegisterDoneScreen (que se muestra a continuación, antes
       // de que `session` llegue a 'in') mostraría los valores falsos de
-      // relleno que hubiera en defaultUser.
+      // relleno que hubiera en usuarioPorDefecto.
       await refreshAccount();
       await saveLastAccount(pendingUser.email, apiUser.fullName);
       setPendingUser(null);
@@ -493,13 +493,13 @@ export function useAppStateInternal() {
     if (blockedUntil && blockLeft > 0) return { ok: false as const, blocked: true };
 
     const trimmed = identifier.trim();
-    if (!EMAIL_RE.test(trimmed)) {
+    if (!RE_CORREO.test(trimmed)) {
       return { ok: false as const, blocked: false, message: 'Por ahora, ingresa con tu correo electrónico.' };
     }
 
     try {
       const apiUser = await authApi.login({ email: trimmed, password });
-      setUser((u) => applyApiUser(u, apiUser));
+      setUser((u) => aplicarUsuarioApi(u, apiUser));
       await saveLastAccount(trimmed, apiUser.fullName);
       setAttempts(0);
       setSession('in');
@@ -532,7 +532,7 @@ export function useAppStateInternal() {
 
     try {
       const apiUser = await authApi.faceLogin({ email, selfie: selfieBase64 });
-      setUser((u) => applyApiUser(u, apiUser));
+      setUser((u) => aplicarUsuarioApi(u, apiUser));
       await saveLastAccount(email, apiUser.fullName);
       setAttempts(0);
       setSession('in');
@@ -600,7 +600,7 @@ export function useAppStateInternal() {
   const addPayee = useCallback(async (input: { name: string; bank: string; accountNumber: string }) => {
     try {
       const created = await payeesApi.create(input);
-      const payee = toLocalPayee(created);
+      const payee = aDestinatarioLocal(created);
       setPayees((p) => [...p, payee]);
       return payee;
     } catch {
@@ -617,7 +617,7 @@ export function useAppStateInternal() {
           name: res.payee.name,
           bank: res.payee.bank,
           account: res.payee.accountNumber,
-          initials: initialsOf(res.payee.name),
+          initials: inicialesDe(res.payee.name),
         };
         const created = new Date(res.createdAt);
         const receipt: TransferReceipt = {
@@ -643,7 +643,7 @@ export function useAppStateInternal() {
             payee,
             concept,
             reference: '',
-            date: fmtNow(),
+            date: formatearAhora(),
             rejected: true,
             reasonCode: typeof details?.reasonCode === 'string' ? details.reasonCode : undefined,
             reasonLabel: typeof details?.reasonLabel === 'string' ? details.reasonLabel : err.message,
@@ -683,7 +683,7 @@ export function useAppStateInternal() {
   const confirmEmailChange = useCallback(async (newEmail: string, otpCode: string) => {
     try {
       const apiUser = await profileApi.updateEmail(newEmail, otpCode);
-      setUser((u) => applyApiUser(u, apiUser));
+      setUser((u) => aplicarUsuarioApi(u, apiUser));
       await saveLastAccount(apiUser.email, apiUser.fullName);
       return { ok: true as const };
     } catch (err) {
@@ -694,7 +694,7 @@ export function useAppStateInternal() {
   const confirmPhoneChange = useCallback(async (newPhone: string, otpCode: string) => {
     try {
       const apiUser = await profileApi.updatePhone(newPhone, otpCode);
-      setUser((u) => applyApiUser(u, apiUser));
+      setUser((u) => aplicarUsuarioApi(u, apiUser));
       return { ok: true as const };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo actualizar el teléfono. Intenta de nuevo.' };
@@ -760,7 +760,7 @@ export function useAppStateInternal() {
     try {
       const bill = await billsApi.affiliate(billerKey, supplyNumber);
       refreshAccount(); // pulls the (new or existing) bill into `services` too
-      return { ok: true as const, bill: toLocalBill(bill) };
+      return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo consultar el servicio. Intenta de nuevo.' };
     }
@@ -770,7 +770,7 @@ export function useAppStateInternal() {
     try {
       const bill = await billsApi.suspend(billId);
       refreshAccount();
-      return { ok: true as const, bill: toLocalBill(bill) };
+      return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo suspender el servicio. Intenta de nuevo.' };
     }
@@ -780,7 +780,7 @@ export function useAppStateInternal() {
     try {
       const bill = await billsApi.resume(billId);
       refreshAccount();
-      return { ok: true as const, bill: toLocalBill(bill) };
+      return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo reactivar el servicio. Intenta de nuevo.' };
     }
