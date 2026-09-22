@@ -46,7 +46,7 @@ export function ScreenTitle({
   showLanguageSwitch?: boolean;
 }) {
   const { theme } = useTheme();
-  const heading = (
+  const encabezado = (
     <View style={{ flex: 1 }}>
       {eyebrow ? (
         <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>
@@ -61,12 +61,12 @@ export function ScreenTitle({
   );
 
   if (!showLanguageSwitch) {
-    return <View style={{ marginBottom: 4 }}>{heading}</View>;
+    return <View style={{ marginBottom: 4 }}>{encabezado}</View>;
   }
 
   return (
     <View style={{ marginBottom: 4, flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
-      {heading}
+      {encabezado}
       <LanguageSwitch />
     </View>
   );
@@ -105,16 +105,16 @@ export function Chip({ label, active, onPress }: { label: string; active?: boole
 
 export function Badge({ label, tone = 'gold' }: { label: string; tone?: 'gold' | 'green' | 'red' | 'neutral' }) {
   const { theme } = useTheme();
-  const map = {
+  const mapaColores = {
     gold: { bg: theme.selBg, fg: theme.gold },
     green: { bg: theme.okBg, fg: theme.green },
     red: { bg: theme.warnBg, fg: theme.red },
     neutral: { bg: theme.tint, fg: theme.mid },
   } as const;
-  const c = map[tone];
+  const colores = mapaColores[tone];
   return (
-    <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: c.bg, alignSelf: 'flex-start' }}>
-      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 10.5, color: c.fg }}>{label}</Text>
+    <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: colores.bg, alignSelf: 'flex-start' }}>
+      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 10.5, color: colores.fg }}>{label}</Text>
     </View>
   );
 }
@@ -140,11 +140,11 @@ export function Avatar({ initials, size = 42 }: { initials: string; size?: numbe
 
 export function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   const { theme } = useTheme();
-  const anim = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const animacion = useRef(new Animated.Value(value ? 1 : 0)).current;
   useEffect(() => {
-    Animated.timing(anim, { toValue: value ? 1 : 0, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
+    Animated.timing(animacion, { toValue: value ? 1 : 0, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
   }, [value]);
-  const translateX = anim.interpolate({ inputRange: [0, 1], outputRange: [0, 24] });
+  const trasladoX = animacion.interpolate({ inputRange: [0, 1], outputRange: [0, 24] });
   return (
     <Pressable
       onPress={() => onChange(!value)}
@@ -162,7 +162,7 @@ export function Toggle({ value, onChange }: { value: boolean; onChange: (v: bool
           height: 26,
           borderRadius: 13,
           backgroundColor: '#fff',
-          transform: [{ translateX }],
+          transform: [{ translateX: trasladoX }],
           shadowColor: '#000',
           shadowOpacity: 0.22,
           shadowRadius: 5,
@@ -176,12 +176,12 @@ export function Toggle({ value, onChange }: { value: boolean; onChange: (v: bool
 
 export function OtpBoxes({ value, length = 6 }: { value: string; length?: number }) {
   const { theme } = useTheme();
-  const chars = value.split('');
+  const caracteres = value.split('');
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
       {Array.from({ length }).map((_, i) => {
-        const filled = i < chars.length;
-        const active = i === chars.length;
+        const lleno = i < caracteres.length;
+        const activo = i === caracteres.length;
         return (
           <View
             key={i}
@@ -190,13 +190,13 @@ export function OtpBoxes({ value, length = 6 }: { value: string; length?: number
               height: 60,
               borderRadius: 14,
               borderWidth: 1.5,
-              borderColor: active || filled ? theme.gold : theme.line,
-              backgroundColor: filled ? theme.selBg : theme.surf,
+              borderColor: activo || lleno ? theme.gold : theme.line,
+              backgroundColor: lleno ? theme.selBg : theme.surf,
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 23, color: theme.ink }}>{chars[i] ?? ''}</Text>
+            <Text style={{ fontFamily: fonts.headingBold, fontSize: 23, color: theme.ink }}>{caracteres[i] ?? ''}</Text>
           </View>
         );
       })}

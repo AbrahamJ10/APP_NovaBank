@@ -18,58 +18,58 @@ type Props = {
 // más puede toparse con esa falla de compilación.
 export default function SimpleSlider({ minimumValue, maximumValue, step = 1, value, onValueChange, onSlidingComplete }: Props) {
   const { theme } = useTheme();
-  const [trackWidth, setTrackWidth] = useState(0);
-  const widthRef = useRef(0);
-  const lastValueRef = useRef(value);
+  const [anchoPista, setAnchoPista] = useState(0);
+  const anchoRef = useRef(0);
+  const ultimoValorRef = useRef(value);
 
-  const clampToStep = (raw: number) => {
-    const stepped = Math.round(raw / step) * step;
-    return Math.max(minimumValue, Math.min(maximumValue, stepped));
+  const ajustarAPaso = (crudo: number) => {
+    const escalonado = Math.round(crudo / step) * step;
+    return Math.max(minimumValue, Math.min(maximumValue, escalonado));
   };
 
-  const updateFromX = (x: number) => {
-    if (widthRef.current <= 0) return value;
-    const pct = Math.max(0, Math.min(1, x / widthRef.current));
-    const raw = minimumValue + pct * (maximumValue - minimumValue);
-    const next = clampToStep(raw);
-    lastValueRef.current = next;
-    onValueChange(next);
-    return next;
+  const actualizarDesdeX = (x: number) => {
+    if (anchoRef.current <= 0) return value;
+    const porcentaje = Math.max(0, Math.min(1, x / anchoRef.current));
+    const crudo = minimumValue + porcentaje * (maximumValue - minimumValue);
+    const siguiente = ajustarAPaso(crudo);
+    ultimoValorRef.current = siguiente;
+    onValueChange(siguiente);
+    return siguiente;
   };
 
-  const pan = useRef(
+  const panorama = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (e) => updateFromX(e.nativeEvent.locationX),
-      onPanResponderMove: (e) => updateFromX(e.nativeEvent.locationX),
-      onPanResponderRelease: () => onSlidingComplete?.(lastValueRef.current),
-      onPanResponderTerminate: () => onSlidingComplete?.(lastValueRef.current),
+      onPanResponderGrant: (e) => actualizarDesdeX(e.nativeEvent.locationX),
+      onPanResponderMove: (e) => actualizarDesdeX(e.nativeEvent.locationX),
+      onPanResponderRelease: () => onSlidingComplete?.(ultimoValorRef.current),
+      onPanResponderTerminate: () => onSlidingComplete?.(ultimoValorRef.current),
     })
   ).current;
 
-  const pct = (value - minimumValue) / (maximumValue - minimumValue);
-  const thumbSize = 24;
+  const porcentaje = (value - minimumValue) / (maximumValue - minimumValue);
+  const tamanoPerilla = 24;
 
   return (
     <View
       style={{ height: 32, justifyContent: 'center', width: '100%' }}
       onLayout={(e) => {
-        widthRef.current = e.nativeEvent.layout.width;
-        setTrackWidth(e.nativeEvent.layout.width);
+        anchoRef.current = e.nativeEvent.layout.width;
+        setAnchoPista(e.nativeEvent.layout.width);
       }}
-      {...pan.panHandlers}
+      {...panorama.panHandlers}
     >
       <View style={{ height: 6, borderRadius: 3, backgroundColor: theme.line, overflow: 'hidden' }}>
-        <View style={{ height: 6, borderRadius: 3, backgroundColor: '#C9A227', width: `${pct * 100}%` }} />
+        <View style={{ height: 6, borderRadius: 3, backgroundColor: '#C9A227', width: `${porcentaje * 100}%` }} />
       </View>
       <View
         style={{
           position: 'absolute',
-          left: Math.max(0, trackWidth * pct - thumbSize / 2),
-          width: thumbSize,
-          height: thumbSize,
-          borderRadius: thumbSize / 2,
+          left: Math.max(0, anchoPista * porcentaje - tamanoPerilla / 2),
+          width: tamanoPerilla,
+          height: tamanoPerilla,
+          borderRadius: tamanoPerilla / 2,
           backgroundColor: '#C9A227',
           borderWidth: 3,
           borderColor: theme.surf,

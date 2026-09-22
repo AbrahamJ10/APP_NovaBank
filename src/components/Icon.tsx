@@ -6,15 +6,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 // Material Icons (kebab-case, y un puñado de nombres son directamente
 // distintos). Esto le permite a cada pantalla seguir usando el nombre de
 // ícono original del mockup.
-const ALIASES: Record<string, string> = {
+const ALIAS: Record<string, string> = {
   shield_lock: 'security',
   emergency_home: 'emergency',
   local_atm: 'local-atm',
 };
 
-export function symbolToGlyph(name: string) {
-  if (ALIASES[name]) return ALIASES[name];
-  return name.replace(/_/g, '-');
+export function symbolToGlyph(nombre: string) {
+  if (ALIAS[nombre]) return ALIAS[nombre];
+  return nombre.replace(/_/g, '-');
 }
 
 type Props = {
