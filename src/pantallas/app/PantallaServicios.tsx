@@ -153,7 +153,7 @@ export default function PantallaServicios() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{t('services.savings')}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{t('services.disponible', { amount: dinero(disponible) })}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{t('services.available', { amount: dinero(disponible) })}</Text>
           </View>
           <Icono name="check_circle" size={19} color={tema.dorado} />
         </View>

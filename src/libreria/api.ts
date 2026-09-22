@@ -51,7 +51,7 @@ export type PublicUser = {
   dni: string | null;
 };
 
-type AuthResponse = { usuario: PublicUser; accessToken: string; refreshToken: string };
+type AuthResponse = { user: PublicUser; accessToken: string; refreshToken: string };
 
 async function rawRequest(path: string, options: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, {
@@ -163,11 +163,11 @@ export type AccountSummary = {
   cardExpiry: string;
   availableBalance: number;
   heldBalance: number;
-  lineaCredito: number;
-  deudaTarjeta: number;
-  pagoMinimo: number;
-  fechaCorte: string;
-  tarjetaBloqueada: boolean;
+  creditLine: number;
+  cardDebt: number;
+  minPayment: number;
+  cutDate: string;
+  cardBlocked: boolean;
   memberSince: string;
 };
 
@@ -176,7 +176,7 @@ export const accountApi = {
     return authedRequest('/api/account');
   },
 
-  async setCardBlocked(blocked: boolean): Promise<{ tarjetaBloqueada: boolean }> {
+  async setCardBlocked(blocked: boolean): Promise<{ cardBlocked: boolean }> {
     return authedRequest('/api/account/card-block', { method: 'POST', body: JSON.stringify({ blocked }) });
   },
 
@@ -204,7 +204,7 @@ export type ApiTransaction = {
 
 export const transactionsApi = {
   async list(limit = 50): Promise<ApiTransaction[]> {
-    const data: { items: ApiTransaction[] } = await authedRequest(`/api/transacciones?limit=${limit}`);
+    const data: { items: ApiTransaction[] } = await authedRequest(`/api/transactions?limit=${limit}`);
     return data.items;
   },
 };
@@ -222,20 +222,20 @@ export type ApiNotification = {
 
 export const notificationsApi = {
   async list(limit = 50): Promise<ApiNotification[]> {
-    const data: { items: ApiNotification[] } = await authedRequest(`/api/notificaciones?limit=${limit}`);
+    const data: { items: ApiNotification[] } = await authedRequest(`/api/notifications?limit=${limit}`);
     return data.items;
   },
 
   async markAllRead() {
-    await authedRequest('/api/notificaciones/read-all', { method: 'POST' });
+    await authedRequest('/api/notifications/read-all', { method: 'POST' });
   },
 
   async markRead(id: string) {
-    await authedRequest(`/api/notificaciones/${id}/read`, { method: 'POST' });
+    await authedRequest(`/api/notifications/${id}/read`, { method: 'POST' });
   },
 
   async deleteAll() {
-    await authedRequest('/api/notificaciones', { method: 'DELETE' });
+    await authedRequest('/api/notifications', { method: 'DELETE' });
   },
 };
 
@@ -244,18 +244,18 @@ export type ApiPayee = {
   name: string;
   bank: string;
   accountNumber: string;
-  iniciales: string;
+  initials: string;
   inactive: boolean;
 };
 
 export const payeesApi = {
   async list(): Promise<ApiPayee[]> {
-    const data: { items: ApiPayee[] } = await authedRequest('/api/destinatarios');
+    const data: { items: ApiPayee[] } = await authedRequest('/api/payees');
     return data.items;
   },
 
   async create(input: { name: string; bank: string; accountNumber: string }): Promise<ApiPayee> {
-    return authedRequest('/api/destinatarios', { method: 'POST', body: JSON.stringify(input) });
+    return authedRequest('/api/payees', { method: 'POST', body: JSON.stringify(input) });
   },
 };
 
@@ -284,19 +284,19 @@ export const profileApi = {
   },
 
   async updateEmail(newEmail: string, otpCode: string): Promise<PublicUser> {
-    const data: { usuario: PublicUser } = await authedRequest('/api/profile/email', {
+    const data: { user: PublicUser } = await authedRequest('/api/profile/email', {
       method: 'POST',
       body: JSON.stringify({ newEmail, otpCode }),
     });
-    return data.usuario;
+    return data.user;
   },
 
   async updatePhone(newPhone: string, otpCode: string): Promise<PublicUser> {
-    const data: { usuario: PublicUser } = await authedRequest('/api/profile/phone', {
+    const data: { user: PublicUser } = await authedRequest('/api/profile/phone', {
       method: 'POST',
       body: JSON.stringify({ newPhone, otpCode }),
     });
-    return data.usuario;
+    return data.user;
   },
 
   async updatePassword(currentPassword: string, newPassword: string, otpCode: string) {
@@ -307,17 +307,17 @@ export const profileApi = {
   },
 };
 
-export type SecurityAlerts = { compra: boolean; retiro: boolean; iniciarSesion: boolean; promo: boolean };
-export type SecurityLimits = { limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean };
+export type SecurityAlerts = { compra: boolean; retiro: boolean; login: boolean; promo: boolean };
+export type SecurityLimits = { limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean };
 export type SecuritySession = { id: string; device: string; ip: string | null; createdAt: string; current: boolean };
 
 export const securityApi = {
   async getAlerts(): Promise<SecurityAlerts> {
-    return authedRequest('/api/security/alertas');
+    return authedRequest('/api/security/alerts');
   },
 
   async updateAlerts(alertas: SecurityAlerts): Promise<SecurityAlerts> {
-    return authedRequest('/api/security/alertas', { method: 'PUT', body: JSON.stringify(alertas) });
+    return authedRequest('/api/security/alerts', { method: 'PUT', body: JSON.stringify(alertas) });
   },
 
   async getLimits(): Promise<SecurityLimits> {
@@ -329,7 +329,7 @@ export const securityApi = {
   },
 
   async listSessions(refreshToken: string): Promise<SecuritySession[]> {
-    const data: { items: SecuritySession[] } = await authedRequest('/api/security/sesiones', {
+    const data: { items: SecuritySession[] } = await authedRequest('/api/security/sessions', {
       method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
@@ -337,11 +337,11 @@ export const securityApi = {
   },
 
   async revocarSesion(id: string) {
-    await authedRequest(`/api/security/sesiones/${id}`, { method: 'DELETE' });
+    await authedRequest(`/api/security/sessions/${id}`, { method: 'DELETE' });
   },
 
   async revocarOtrasSesiones(refreshToken: string) {
-    await authedRequest('/api/security/sesiones/revoke-others', { method: 'POST', body: JSON.stringify({ refreshToken }) });
+    await authedRequest('/api/security/sessions/revoke-others', { method: 'POST', body: JSON.stringify({ refreshToken }) });
   },
 };
 
@@ -454,19 +454,19 @@ export const authApi = {
   }) {
     const data: AuthResponse = await rawRequest('/api/auth/register', { method: 'POST', body: JSON.stringify(input) });
     await guardarTokens(data.accessToken, data.refreshToken);
-    return data.usuario;
+    return data.user;
   },
 
   async iniciarSesion(input: { email: string; password: string }) {
-    const data: AuthResponse = await rawRequest('/api/auth/iniciarSesion', { method: 'POST', body: JSON.stringify(input) });
+    const data: AuthResponse = await rawRequest('/api/auth/login', { method: 'POST', body: JSON.stringify(input) });
     await guardarTokens(data.accessToken, data.refreshToken);
-    return data.usuario;
+    return data.user;
   },
 
   async faceLogin(input: { email: string; selfie: string }) {
-    const data: AuthResponse = await rawRequest('/api/auth/face-iniciarSesion', { method: 'POST', body: JSON.stringify(input) });
+    const data: AuthResponse = await rawRequest('/api/auth/face-login', { method: 'POST', body: JSON.stringify(input) });
     await guardarTokens(data.accessToken, data.refreshToken);
-    return data.usuario;
+    return data.user;
   },
 
   async me(): Promise<PublicUser> {
@@ -485,7 +485,7 @@ export const authApi = {
     const refreshToken = await obtenerTokenRefresco();
     await limpiarTokens();
     if (refreshToken) {
-      await rawRequest('/api/auth/cerrarSesion', { method: 'POST', body: JSON.stringify({ refreshToken }) }).catch(() => {});
+      await rawRequest('/api/auth/logout', { method: 'POST', body: JSON.stringify({ refreshToken }) }).catch(() => {});
     }
   },
 };

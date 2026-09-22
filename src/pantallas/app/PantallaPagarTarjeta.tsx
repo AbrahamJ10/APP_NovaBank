@@ -56,7 +56,7 @@ export default function PantallaPagarTarjeta() {
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio }}>
             {plan === 'installments'
               ? t('payCard.scheduledInstallments', { amount: dinero(deudaTarjeta) })
-              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.pagoMinimo'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
+              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
           </Text>
           <BotonFantasma label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
         </View>

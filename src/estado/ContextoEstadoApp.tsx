@@ -73,7 +73,7 @@ function aNotificacionLocal(n: ApiNotification): NotificationItem {
 }
 
 function aDestinatarioLocal(p: ApiPayee): Payee {
-  return { id: p.id, name: p.name, bank: p.bank, account: p.accountNumber, iniciales: p.iniciales, inactive: p.inactive };
+  return { id: p.id, name: p.name, bank: p.bank, account: p.accountNumber, iniciales: p.initials, inactive: p.inactive };
 }
 
 function aReciboLocal(b: ApiBill): ServiceBill {
@@ -215,7 +215,7 @@ export function usarEstadoAppInterno() {
   const [limiteCajero, setLimiteCajero] = useState(700);
   const [geoPeru, setGeoPeru] = useState(true);
   const [geoInternacional, setGeoInternacional] = useState(false);
-  const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, retiro: true, iniciarSesion: true, promo: false });
+  const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, retiro: true, login: true, promo: false });
   const [sesiones, setSessions] = useState<SecuritySession[]>([]);
 
   const [retiro, setWithdraw] = useState<{ id: string; code: string; qr: string; deadline: number; amount: number } | null>(null);
@@ -253,11 +253,11 @@ export function usarEstadoAppInterno() {
   const applyAccountSummary = useCallback((summary: AccountSummary) => {
     setAvailable(summary.availableBalance);
     setHeld(summary.heldBalance);
-    setCreditLine(summary.lineaCredito);
-    setCardDebt(summary.deudaTarjeta);
-    setMinPayment(summary.pagoMinimo);
-    setCutDate(summary.fechaCorte);
-    setCardBlocked(summary.tarjetaBloqueada);
+    setCreditLine(summary.creditLine);
+    setCardDebt(summary.cardDebt);
+    setMinPayment(summary.minPayment);
+    setCutDate(summary.cutDate);
+    setCardBlocked(summary.cardBlocked);
     setUser((u) => ({
       ...u,
       accountNumber: summary.accountNumber,
@@ -312,10 +312,10 @@ export function usarEstadoAppInterno() {
         refreshToken ? securityApi.listSessions(refreshToken) : Promise.resolve([]),
       ]);
       setAlerts(alertsRes);
-      setLimiteEnLinea(limitsRes.limiteEnLinea);
-      setLimiteCajero(limitsRes.limiteCajero);
+      setLimiteEnLinea(limitsRes.limitOnline);
+      setLimiteCajero(limitsRes.limitAtm);
       setGeoPeru(limitsRes.geoPeru);
-      setGeoInternacional(limitsRes.geoInternacional);
+      setGeoInternacional(limitsRes.geoIntl);
       setSessions(sessionsRes);
     } catch {
       // Se deja lo último que se cargó tal cual.
@@ -335,11 +335,16 @@ export function usarEstadoAppInterno() {
 
   const guardarLimites = useCallback(async (next: { limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean }) => {
     try {
-      const saved = await securityApi.updateLimits(next);
-      setLimiteEnLinea(saved.limiteEnLinea);
-      setLimiteCajero(saved.limiteCajero);
+      const saved = await securityApi.updateLimits({
+        limitOnline: next.limiteEnLinea,
+        limitAtm: next.limiteCajero,
+        geoPeru: next.geoPeru,
+        geoIntl: next.geoInternacional,
+      });
+      setLimiteEnLinea(saved.limitOnline);
+      setLimiteCajero(saved.limitAtm);
       setGeoPeru(saved.geoPeru);
-      setGeoInternacional(saved.geoInternacional);
+      setGeoInternacional(saved.geoIntl);
     } catch {
       // El slider/interruptor ya refleja el valor intentado localmente; una
       // falla silenciosa aquí solo significa que no se guardó esta vez.
@@ -562,7 +567,7 @@ export function usarEstadoAppInterno() {
     setCardBlocked(next); // optimistic — reconciled from the server response
     try {
       const res = await accountApi.setCardBlocked(next);
-      setCardBlocked(res.tarjetaBloqueada);
+      setCardBlocked(res.cardBlocked);
       return { ok: true as const };
     } catch (err) {
       setCardBlocked(!next); // revert on failure

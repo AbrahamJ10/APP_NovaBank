@@ -76,9 +76,9 @@ export default function PantallaInicio() {
 
         <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: 'rgba(255,255,255,.07)', borderWidth: 1, borderColor: 'rgba(217,190,122,.22)', padding: 18, flexDirection: 'row', flexWrap: 'wrap' }}>
           <MiniEstadistica label={t('home.heldBalance')} value={dinero(retenido)} />
-          <MiniEstadistica label={t('home.lineaCredito')} value={dinero(lineaCredito)} />
-          <MiniEstadistica label={t('home.pagoMinimo')} value={dinero(pagoMinimo)} />
-          <MiniEstadistica label={t('home.fechaCorte')} value={fechaCorte} />
+          <MiniEstadistica label={t('home.creditLine')} value={dinero(lineaCredito)} />
+          <MiniEstadistica label={t('home.minPayment')} value={dinero(pagoMinimo)} />
+          <MiniEstadistica label={t('home.cutDate')} value={fechaCorte} />
         </View>
       </LinearGradient>
 
@@ -116,7 +116,7 @@ export default function PantallaInicio() {
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{usuario.cardNumber.slice(-4)}</Text>
             <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.65)' }}>
-              {t('home.cardStatus', { status: tarjetaBloqueada ? t('home.tarjetaBloqueada') : t('home.cardActive') })}
+              {t('home.cardStatus', { status: tarjetaBloqueada ? t('home.cardBlocked') : t('home.cardActive') })}
             </Text>
           </View>
           <Icono name="chevron_right" size={20} color="rgba(255,255,255,.7)" />

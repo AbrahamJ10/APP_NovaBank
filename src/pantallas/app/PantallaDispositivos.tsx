@@ -57,7 +57,7 @@ export default function PantallaDispositivos() {
                 onPress={() => revocarSesion(sesion.id)}
                 style={{ marginTop: 14, height: 44, borderRadius: 13, backgroundColor: tema.rojo, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
-                <Icono name="cerrarSesion" size={18} color="#fff" />
+                <Icono name="logout" size={18} color="#fff" />
                 <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: '#fff' }}>{t('devices.closeSession')}</Text>
               </Pressable>
             )}

@@ -176,7 +176,7 @@ export default function PantallaPerfil() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, paddingHorizontal: 16 }}>
-        <FilaPerfil icono="password" etiqueta={t('profile.cambiarContrasena')} descripcion={t('profile.changePasswordDesc')} alPresionar={() => setPwAbierto(true)} />
+        <FilaPerfil icono="password" etiqueta={t('profile.changePassword')} descripcion={t('profile.changePasswordDesc')} alPresionar={() => setPwAbierto(true)} />
         <FilaPerfil
           icono="fingerprint"
           etiqueta={t('profile.faceId')}
@@ -187,7 +187,7 @@ export default function PantallaPerfil() {
         <FilaPerfil icono="description" etiqueta={t('profile.accountStatement')} descripcion={t('profile.accountStatementDesc')} alPresionar={() => nav.navigate('Reports')} ultimo />
       </View>
 
-      <BotonPeligroContorno label={t('profile.cerrarSesion')} icon="cerrarSesion" onPress={cerrarSesion} style={{ marginTop: 16 }} />
+      <BotonPeligroContorno label={t('profile.logout')} icon="logout" onPress={cerrarSesion} style={{ marginTop: 16 }} />
 
       <HojaInferior visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
         {editando ? (
