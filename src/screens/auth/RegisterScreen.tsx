@@ -13,8 +13,8 @@ import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-function useRule(regex: RegExp, value: string) {
-  return regex.test(value);
+function cumpleRegla(regex: RegExp, valor: string) {
+  return regex.test(valor);
 }
 
 export default function RegisterScreen() {
@@ -30,13 +30,13 @@ export default function RegisterScreen() {
   const [apellidoMaterno, setApellidoMaterno] = useState('');
   const [dni, setDni] = useState('');
 
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [pass, setPass] = useState('');
-  const [passVisible, setPassVisible] = useState(false);
-  const [confirmPass, setConfirmPass] = useState('');
-  const [confirmPassVisible, setConfirmPassVisible] = useState(false);
-  const [accepted, setAccepted] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [contrasenaVisible, setContrasenaVisible] = useState(false);
+  const [confirmarContrasena, setConfirmarContrasena] = useState('');
+  const [confirmarContrasenaVisible, setConfirmarContrasenaVisible] = useState(false);
+  const [aceptado, setAceptado] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -50,27 +50,27 @@ export default function RegisterScreen() {
     }, [scannedDni])
   );
 
-  const emailValid = useRule(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, email);
-  const phoneValid = useRule(/^\d{9}$/, phone);
-  const identityReady = nombres.length > 0 && apellidoPaterno.length > 0 && /^\d{8}$/.test(dni);
+  const correoValido = cumpleRegla(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, correo);
+  const telefonoValido = cumpleRegla(/^\d{9}$/, telefono);
+  const identidadLista = nombres.length > 0 && apellidoPaterno.length > 0 && /^\d{8}$/.test(dni);
 
-  const ruleLen = pass.length >= 10;
-  const ruleNum = /\d/.test(pass);
-  const ruleUp = /[A-Z]/.test(pass);
-  const ruleLow = /[a-z]/.test(pass);
-  const score = [ruleLen, ruleNum, ruleUp, ruleLow].filter(Boolean).length;
-  const strength =
-    score <= 1 ? { label: score === 0 ? '' : t('register.strengthWeak'), color: '#C2352B', pct: `${score * 25}%` } :
-    score === 2 ? { label: t('register.strengthMedium'), color: '#B07D07', pct: '50%' } :
-    score === 3 ? { label: t('register.strengthGood'), color: '#B07D07', pct: '75%' } :
+  const reglaLargo = contrasena.length >= 10;
+  const reglaNumero = /\d/.test(contrasena);
+  const reglaMayuscula = /[A-Z]/.test(contrasena);
+  const reglaMinuscula = /[a-z]/.test(contrasena);
+  const puntaje = [reglaLargo, reglaNumero, reglaMayuscula, reglaMinuscula].filter(Boolean).length;
+  const fortaleza =
+    puntaje <= 1 ? { label: puntaje === 0 ? '' : t('register.strengthWeak'), color: '#C2352B', pct: `${puntaje * 25}%` } :
+    puntaje === 2 ? { label: t('register.strengthMedium'), color: '#B07D07', pct: '50%' } :
+    puntaje === 3 ? { label: t('register.strengthGood'), color: '#B07D07', pct: '75%' } :
     { label: t('register.strengthStrong'), color: '#21A26B', pct: '100%' };
 
-  const confirmPassValid = confirmPass.length > 0 && confirmPass === pass;
-  const canContinue = identityReady && emailValid && phoneValid && score === 4 && confirmPassValid && accepted;
+  const confirmacionValida = confirmarContrasena.length > 0 && confirmarContrasena === contrasena;
+  const puedeContinuar = identidadLista && correoValido && telefonoValido && puntaje === 4 && confirmacionValida && aceptado;
 
-  const onContinue = () => {
-    const fullName = [nombres, apellidoPaterno, apellidoMaterno].filter(Boolean).join(' ');
-    beginRegister({ name: fullName, email, dni, phone, password: pass });
+  const alContinuar = () => {
+    const nombreCompleto = [nombres, apellidoPaterno, apellidoMaterno].filter(Boolean).join(' ');
+    beginRegister({ name: nombreCompleto, email: correo, dni, phone: telefono, password: contrasena });
     nav.navigate('RegisterFace');
   };
 
@@ -93,84 +93,84 @@ export default function RegisterScreen() {
           label={t('register.email')}
           icon="mail"
           placeholder="tucorreo@gmail.com"
-          value={email}
-          onChangeText={setEmail}
+          value={correo}
+          onChangeText={setCorreo}
           autoCapitalize="none"
           keyboardType="email-address"
-          status={email.length === 0 ? 'default' : emailValid ? 'success' : 'error'}
+          status={correo.length === 0 ? 'default' : correoValido ? 'success' : 'error'}
         />
         <TextField
           label={t('register.phone')}
           icon="call"
           placeholder="987 214 550"
-          value={phone}
-          onChangeText={(v) => setPhone(v.replace(/\D/g, '').slice(0, 9))}
+          value={telefono}
+          onChangeText={(v) => setTelefono(v.replace(/\D/g, '').slice(0, 9))}
           keyboardType="phone-pad"
-          status={phone.length === 0 ? 'default' : phoneValid ? 'success' : 'error'}
+          status={telefono.length === 0 ? 'default' : telefonoValido ? 'success' : 'error'}
         />
         <View>
           <TextField
             label={t('register.password')}
             icon="lock"
             placeholder={t('register.passwordPlaceholder')}
-            value={pass}
-            onChangeText={setPass}
-            secureTextEntry={!passVisible}
-            rightIcon={passVisible ? 'visibility_off' : 'visibility'}
-            onRightIconPress={() => setPassVisible((v) => !v)}
+            value={contrasena}
+            onChangeText={setContrasena}
+            secureTextEntry={!contrasenaVisible}
+            rightIcon={contrasenaVisible ? 'visibility_off' : 'visibility'}
+            onRightIconPress={() => setContrasenaVisible((v) => !v)}
           />
           <View style={{ marginTop: 10, gap: 6 }}>
-            <RuleLine ok={ruleLen} label={t('register.ruleLen')} />
-            <RuleLine ok={ruleNum} label={t('register.ruleNum')} />
-            <RuleLine ok={ruleUp} label={t('register.ruleUp')} />
-            <RuleLine ok={ruleLow} label={t('register.ruleLow')} />
+            <LineaRegla ok={reglaLargo} label={t('register.ruleLen')} />
+            <LineaRegla ok={reglaNumero} label={t('register.ruleNum')} />
+            <LineaRegla ok={reglaMayuscula} label={t('register.ruleUp')} />
+            <LineaRegla ok={reglaMinuscula} label={t('register.ruleLow')} />
           </View>
           <View style={{ marginTop: 12, height: 6, borderRadius: 3, backgroundColor: theme.line, overflow: 'hidden' }}>
-            <View style={{ height: 6, borderRadius: 3, backgroundColor: strength.color, width: strength.pct as any }} />
+            <View style={{ height: 6, borderRadius: 3, backgroundColor: fortaleza.color, width: fortaleza.pct as any }} />
           </View>
-          {strength.label ? <Text style={{ marginTop: 6, fontFamily: fonts.bodyBold, fontSize: 11.5, color: strength.color }}>{strength.label}</Text> : null}
+          {fortaleza.label ? <Text style={{ marginTop: 6, fontFamily: fonts.bodyBold, fontSize: 11.5, color: fortaleza.color }}>{fortaleza.label}</Text> : null}
         </View>
 
         <TextField
           label={t('register.confirmPassword')}
           icon="lock"
           placeholder={t('register.confirmPasswordPlaceholder')}
-          value={confirmPass}
-          onChangeText={setConfirmPass}
-          secureTextEntry={!confirmPassVisible}
-          rightIcon={confirmPassVisible ? 'visibility_off' : 'visibility'}
-          onRightIconPress={() => setConfirmPassVisible((v) => !v)}
-          status={confirmPass.length === 0 ? 'default' : confirmPassValid ? 'success' : 'error'}
-          hint={confirmPass.length > 0 && !confirmPassValid ? t('register.passwordMismatch') : undefined}
+          value={confirmarContrasena}
+          onChangeText={setConfirmarContrasena}
+          secureTextEntry={!confirmarContrasenaVisible}
+          rightIcon={confirmarContrasenaVisible ? 'visibility_off' : 'visibility'}
+          onRightIconPress={() => setConfirmarContrasenaVisible((v) => !v)}
+          status={confirmarContrasena.length === 0 ? 'default' : confirmacionValida ? 'success' : 'error'}
+          hint={confirmarContrasena.length > 0 && !confirmacionValida ? t('register.passwordMismatch') : undefined}
         />
       </View>
 
-      <Pressable onPress={() => setAccepted((a) => !a)} style={{ marginTop: 22, flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+      <Pressable onPress={() => setAceptado((a) => !a)} style={{ marginTop: 22, flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
         <View
           style={{
             width: 20,
             height: 20,
             borderRadius: 6,
-            backgroundColor: accepted ? '#133A63' : 'transparent',
-            borderWidth: accepted ? 0 : 1.5,
+            backgroundColor: aceptado ? '#133A63' : 'transparent',
+            borderWidth: aceptado ? 0 : 1.5,
             borderColor: theme.line,
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          {accepted ? <Icon name="check" size={15} color="#fff" /> : null}
+          {aceptado ? <Icon name="check" size={15} color="#fff" /> : null}
         </View>
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
           {t('register.termsPrefix')}<Text style={{ color: '#C9A227' }}>{t('register.termsLink')}</Text>{t('register.termsSuffix')}
         </Text>
       </Pressable>
 
-      <PrimaryButton label={t('register.continue')} iconRight="arrow_forward" disabled={!canContinue} onPress={onContinue} style={{ marginTop: 22 }} />
+      <PrimaryButton label={t('register.continue')} iconRight="arrow_forward" disabled={!puedeContinuar} onPress={alContinuar} style={{ marginTop: 22 }} />
     </Screen>
   );
 }
 
-function RuleLine({ ok, label }: { ok: boolean; label: string }) {
+function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
   const { theme } = useTheme();
   const color = ok ? '#21A26B' : theme.soft;
   return (
