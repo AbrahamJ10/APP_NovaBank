@@ -17,7 +17,7 @@ export default function SpendScreen() {
   const { t } = useLanguage();
   const { transactions } = useAppState();
 
-  const CAT_META: Record<string, { label: string; color: string; icon: string }> = {
+  const META_CATEGORIA: Record<string, { label: string; color: string; icon: string }> = {
     compras: { label: t('spend.catCompras'), color: '#2C6FD1', icon: 'shopping_cart' },
     transferencias: { label: t('spend.catTransferencias'), color: '#133A63', icon: 'swap_horiz' },
     qr: { label: t('spend.catQr'), color: '#D2691E', icon: 'qr_code_2' },
@@ -26,30 +26,30 @@ export default function SpendScreen() {
     pago_tarjeta: { label: t('spend.catPagoTarjeta'), color: '#7C3AED', icon: 'credit_card' },
   };
 
-  const monthTx = transactions.filter((tx) => tx.kind === 'debit' && tx.daysAgo <= 31);
-  const total = monthTx.reduce((s, tx) => s + tx.amount, 0);
+  const txMes = transactions.filter((tx) => tx.kind === 'debit' && tx.daysAgo <= 31);
+  const total = txMes.reduce((s, tx) => s + tx.amount, 0);
 
-  const byCategory = useMemo(() => {
-    const map = new Map<string, number>();
-    monthTx.forEach((tx) => map.set(tx.category, (map.get(tx.category) ?? 0) + tx.amount));
-    return Array.from(map.entries())
-      .map(([cat, amt]) => ({ cat, amt, pct: total > 0 ? amt / total : 0 }))
+  const porCategoria = useMemo(() => {
+    const mapa = new Map<string, number>();
+    txMes.forEach((tx) => mapa.set(tx.category, (mapa.get(tx.category) ?? 0) + tx.amount));
+    return Array.from(mapa.entries())
+      .map(([categoria, monto]) => ({ cat: categoria, amt: monto, pct: total > 0 ? monto / total : 0 }))
       .sort((a, b) => b.amt - a.amt);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monthTx, total]);
+  }, [txMes, total]);
 
-  const topMerchants = useMemo(() => {
-    const map = new Map<string, { amt: number; n: number }>();
-    monthTx.forEach((tx) => {
-      const cur = map.get(tx.name) ?? { amt: 0, n: 0 };
-      map.set(tx.name, { amt: cur.amt + tx.amount, n: cur.n + 1 });
+  const comerciosTop = useMemo(() => {
+    const mapa = new Map<string, { amt: number; n: number }>();
+    txMes.forEach((tx) => {
+      const actual = mapa.get(tx.name) ?? { amt: 0, n: 0 };
+      mapa.set(tx.name, { amt: actual.amt + tx.amount, n: actual.n + 1 });
     });
-    return Array.from(map.entries())
-      .map(([name, v]) => ({ name, ...v }))
+    return Array.from(mapa.entries())
+      .map(([name, valor]) => ({ name, ...valor }))
       .sort((a, b) => b.amt - a.amt)
       .slice(0, 3);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monthTx]);
+  }, [txMes]);
 
   return (
     <Screen bg={theme.bg}>
@@ -73,10 +73,10 @@ export default function SpendScreen() {
             </View>
           </View>
           <View style={{ flex: 1, gap: 9 }}>
-            {byCategory.map(({ cat, pct }) => (
+            {porCategoria.map(({ cat, pct }) => (
               <View key={cat} style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}>
-                <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: CAT_META[cat]?.color ?? '#999' }} />
-                <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.72)' }}>{CAT_META[cat]?.label ?? cat}</Text>
+                <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: META_CATEGORIA[cat]?.color ?? '#999' }} />
+                <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.72)' }}>{META_CATEGORIA[cat]?.label ?? cat}</Text>
                 <Text style={{ fontFamily: fonts.headingBold, fontSize: 11.5, color: '#fff' }}>{Math.round(pct * 100)}%</Text>
               </View>
             ))}
@@ -87,14 +87,14 @@ export default function SpendScreen() {
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.byCategory')}</Text>
         <View style={{ marginTop: 16, gap: 14 }}>
-          {byCategory.map(({ cat, amt, pct }) => (
+          {porCategoria.map(({ cat, amt, pct }) => (
             <View key={cat}>
               <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{CAT_META[cat]?.label ?? cat}</Text>
+                <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{META_CATEGORIA[cat]?.label ?? cat}</Text>
                 <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(amt)}</Text>
               </View>
               <View style={{ marginTop: 8, height: 6, borderRadius: 3, backgroundColor: theme.tint, overflow: 'hidden' }}>
-                <View style={{ height: 6, borderRadius: 3, backgroundColor: CAT_META[cat]?.color ?? '#999', width: `${Math.max(4, pct * 100)}%` }} />
+                <View style={{ height: 6, borderRadius: 3, backgroundColor: META_CATEGORIA[cat]?.color ?? '#999', width: `${Math.max(4, pct * 100)}%` }} />
               </View>
             </View>
           ))}
@@ -104,16 +104,16 @@ export default function SpendScreen() {
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('spend.topMerchants')}</Text>
         <View style={{ marginTop: 14, gap: 15 }}>
-          {topMerchants.map((merchant) => (
-            <View key={merchant.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          {comerciosTop.map((comercio) => (
+            <View key={comercio.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: '#123A63', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: fonts.displaySemi, fontSize: 15, color: '#E7CE92' }}>{merchant.name.slice(0, 1)}</Text>
+                <Text style={{ fontFamily: fonts.displaySemi, fontSize: 15, color: '#E7CE92' }}>{comercio.name.slice(0, 1)}</Text>
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{merchant.name}</Text>
-                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{merchant.n} {merchant.n > 1 ? t('spend.operations') : t('spend.operation')}</Text>
+                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{comercio.name}</Text>
+                <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{comercio.n} {comercio.n > 1 ? t('spend.operations') : t('spend.operation')}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(merchant.amt)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(comercio.amt)}</Text>
             </View>
           ))}
         </View>
@@ -122,7 +122,7 @@ export default function SpendScreen() {
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: '#0E2C4E', padding: 20, flexDirection: 'row', gap: 12 }}>
         <Icon name="insights" size={20} color="#E7CE92" />
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 19, color: 'rgba(255,255,255,.82)' }}>
-          {t('spend.summary', { total: money(total), count: monthTx.length })}
+          {t('spend.summary', { total: money(total), count: txMes.length })}
         </Text>
       </View>
     </Screen>

@@ -14,13 +14,13 @@ import { RootStackParamList } from '../../navigation/types';
 import { ServiceBill } from '../../state/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-type Action = { id: string; label: string; run: () => void | Promise<void> };
-type Msg = { id: string; from: 'agent' | 'user'; text: string; actions?: Action[] };
+type Accion = { id: string; label: string; run: () => void | Promise<void> };
+type Mensaje = { id: string; from: 'agent' | 'user'; text: string; actions?: Accion[] };
 
-let seq = 0;
-function nextId(prefix: string) {
-  seq += 1;
-  return `${prefix}${seq}`;
+let secuencia = 0;
+function siguienteId(prefijo: string) {
+  secuencia += 1;
+  return `${prefijo}${secuencia}`;
 }
 
 export default function ConciergeScreen() {
@@ -45,190 +45,190 @@ export default function ConciergeScreen() {
     resumeBill,
   } = useAppState();
 
-  const [messages, setMessages] = useState<Msg[]>([
-    { id: nextId('a'), from: 'agent', text: t('concierge.greeting', { name: user.name.split(' ')[0] }), actions: mainMenu() },
+  const [mensajes, setMensajes] = useState<Mensaje[]>([
+    { id: siguienteId('a'), from: 'agent', text: t('concierge.greeting', { name: user.name.split(' ')[0] }), actions: menuPrincipal() },
   ]);
-  const [draft, setDraft] = useState('');
-  const [busy, setBusy] = useState(false);
-  const scrollRef = useRef<ScrollView>(null);
+  const [borrador, setBorrador] = useState('');
+  const [ocupado, setOcupado] = useState(false);
+  const refScroll = useRef<ScrollView>(null);
 
-  function pushAgent(text: string, actions?: Action[]) {
-    setMessages((m) => [...m, { id: nextId('a'), from: 'agent', text, actions }]);
-    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
+  function enviarAgente(text: string, actions?: Accion[]) {
+    setMensajes((m) => [...m, { id: siguienteId('a'), from: 'agent', text, actions }]);
+    setTimeout(() => refScroll.current?.scrollToEnd({ animated: true }), 50);
   }
 
-  function pushUser(text: string) {
-    setMessages((m) => [...m, { id: nextId('u'), from: 'user', text }]);
+  function enviarUsuario(text: string) {
+    setMensajes((m) => [...m, { id: siguienteId('u'), from: 'user', text }]);
   }
 
-  function mainMenu(): Action[] {
+  function menuPrincipal(): Accion[] {
     return [
-      { id: 'card', label: t('concierge.menuCard'), run: showCardMenu },
-      { id: 'services', label: t('concierge.menuServices'), run: showServicesMenu },
-      { id: 'balance', label: t('concierge.menuBalance'), run: showBalance },
-      { id: 'security', label: t('concierge.menuSecurity'), run: showSecurityInfo },
+      { id: 'card', label: t('concierge.menuCard'), run: mostrarMenuTarjeta },
+      { id: 'services', label: t('concierge.menuServices'), run: mostrarMenuServicios },
+      { id: 'balance', label: t('concierge.menuBalance'), run: mostrarSaldo },
+      { id: 'security', label: t('concierge.menuSecurity'), run: mostrarInfoSeguridad },
     ];
   }
 
-  function backAction(): Action {
-    return { id: 'back', label: t('concierge.back'), run: () => pushAgent(t('concierge.menuTitle'), mainMenu()) };
+  function accionVolver(): Accion {
+    return { id: 'back', label: t('concierge.back'), run: () => enviarAgente(t('concierge.menuTitle'), menuPrincipal()) };
   }
 
   // --- Bloqueo de tarjeta ---
-  function showCardMenu() {
-    pushAgent(cardBlocked ? t('concierge.cardStatusBlocked') : t('concierge.cardStatusActive'), [
+  function mostrarMenuTarjeta() {
+    enviarAgente(cardBlocked ? t('concierge.cardStatusBlocked') : t('concierge.cardStatusActive'), [
       cardBlocked
-        ? { id: 'unblock', label: t('concierge.actionUnblockCard'), run: () => toggleCard(false) }
-        : { id: 'block', label: t('concierge.actionBlockCard'), run: () => toggleCard(true) },
-      backAction(),
+        ? { id: 'unblock', label: t('concierge.actionUnblockCard'), run: () => alternarTarjeta(false) }
+        : { id: 'block', label: t('concierge.actionBlockCard'), run: () => alternarTarjeta(true) },
+      accionVolver(),
     ]);
   }
 
-  async function toggleCard(block: boolean) {
-    pushUser(block ? t('concierge.actionBlockCard') : t('concierge.actionUnblockCard'));
-    setBusy(true);
-    const result = await requestCardBlock(block);
-    setBusy(false);
-    if (!result.ok) {
-      pushAgent(t('concierge.actionFailed', { message: result.message }), [backAction()]);
+  async function alternarTarjeta(bloquear: boolean) {
+    enviarUsuario(bloquear ? t('concierge.actionBlockCard') : t('concierge.actionUnblockCard'));
+    setOcupado(true);
+    const resultado = await requestCardBlock(bloquear);
+    setOcupado(false);
+    if (!resultado.ok) {
+      enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
       return;
     }
-    pushAgent(block ? t('concierge.cardBlockedDone') : t('concierge.cardUnblockedDone'), [backAction()]);
+    enviarAgente(bloquear ? t('concierge.cardBlockedDone') : t('concierge.cardUnblockedDone'), [accionVolver()]);
   }
 
   // --- Servicios y deudas ---
-  function showServicesMenu() {
+  function mostrarMenuServicios() {
     if (services.length === 0) {
-      pushAgent(t('concierge.servicesEmpty'), [backAction()]);
+      enviarAgente(t('concierge.servicesEmpty'), [accionVolver()]);
       return;
     }
-    pushAgent(
+    enviarAgente(
       t('concierge.servicesIntro'),
-      services.map((s) => ({ id: s.id, label: `${s.name} · ${s.paid ? t('concierge.upToDateShort') : money(s.amount)}`, run: () => showServiceDetail(s) }))
-        .concat([backAction()])
+      services.map((servicio) => ({ id: servicio.id, label: `${servicio.name} · ${servicio.paid ? t('concierge.upToDateShort') : money(servicio.amount)}`, run: () => mostrarDetalleServicio(servicio) }))
+        .concat([accionVolver()])
     );
   }
 
-  function showServiceDetail(s: ServiceBill) {
-    pushUser(s.name);
-    if (s.suspended) {
-      pushAgent(t('concierge.serviceStatusSuspended', { name: s.name }), [
-        { id: 'resume', label: t('concierge.actionResume'), run: () => doResume(s) },
-        backAction(),
+  function mostrarDetalleServicio(servicio: ServiceBill) {
+    enviarUsuario(servicio.name);
+    if (servicio.suspended) {
+      enviarAgente(t('concierge.serviceStatusSuspended', { name: servicio.name }), [
+        { id: 'resume', label: t('concierge.actionResume'), run: () => realizarReanudacion(servicio) },
+        accionVolver(),
       ]);
       return;
     }
-    if (s.paid) {
-      pushAgent(t('concierge.serviceStatusPaid', { name: s.name }), [
-        { id: 'suspend', label: t('concierge.actionSuspend'), run: () => doSuspend(s) },
-        backAction(),
+    if (servicio.paid) {
+      enviarAgente(t('concierge.serviceStatusPaid', { name: servicio.name }), [
+        { id: 'suspend', label: t('concierge.actionSuspend'), run: () => realizarSuspension(servicio) },
+        accionVolver(),
       ]);
       return;
     }
-    pushAgent(t('concierge.serviceStatusDue', { name: s.name, amount: money(s.amount), date: s.expiry }), [
-      { id: 'pay', label: t('concierge.actionPayNow'), run: () => confirmPay(s) },
-      { id: 'suspend', label: t('concierge.actionSuspend'), run: () => doSuspend(s) },
-      backAction(),
+    enviarAgente(t('concierge.serviceStatusDue', { name: servicio.name, amount: money(servicio.amount), date: servicio.expiry }), [
+      { id: 'pay', label: t('concierge.actionPayNow'), run: () => confirmarPago(servicio) },
+      { id: 'suspend', label: t('concierge.actionSuspend'), run: () => realizarSuspension(servicio) },
+      accionVolver(),
     ]);
   }
 
-  function confirmPay(s: ServiceBill) {
-    pushUser(t('concierge.actionPayNow'));
-    if (s.amount > available) {
-      pushAgent(t('concierge.cannotAffordService', { name: s.name }), [backAction()]);
+  function confirmarPago(servicio: ServiceBill) {
+    enviarUsuario(t('concierge.actionPayNow'));
+    if (servicio.amount > available) {
+      enviarAgente(t('concierge.cannotAffordService', { name: servicio.name }), [accionVolver()]);
       return;
     }
-    pushAgent(t('concierge.payConfirm', { amount: money(s.amount), name: s.name }), [
-      { id: 'yes', label: t('concierge.yes'), run: () => doPay(s) },
-      { id: 'no', label: t('concierge.no'), run: () => pushAgent(t('concierge.menuTitle'), mainMenu()) },
+    enviarAgente(t('concierge.payConfirm', { amount: money(servicio.amount), name: servicio.name }), [
+      { id: 'yes', label: t('concierge.yes'), run: () => realizarPago(servicio) },
+      { id: 'no', label: t('concierge.no'), run: () => enviarAgente(t('concierge.menuTitle'), menuPrincipal()) },
     ]);
   }
 
-  async function doPay(s: ServiceBill) {
-    pushUser(t('concierge.yes'));
-    setBusy(true);
-    const result = await payBill(s.id);
-    setBusy(false);
-    if (!result.ok) {
-      pushAgent(t('concierge.actionFailed', { message: result.message }), [backAction()]);
+  async function realizarPago(servicio: ServiceBill) {
+    enviarUsuario(t('concierge.yes'));
+    setOcupado(true);
+    const resultado = await payBill(servicio.id);
+    setOcupado(false);
+    if (!resultado.ok) {
+      enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
       return;
     }
-    pushAgent(t('concierge.paidDone', { amount: money(s.amount), name: s.name }), [backAction()]);
+    enviarAgente(t('concierge.paidDone', { amount: money(servicio.amount), name: servicio.name }), [accionVolver()]);
   }
 
-  async function doSuspend(s: ServiceBill) {
-    pushUser(t('concierge.actionSuspend'));
-    setBusy(true);
-    const result = await suspendBill(s.id);
-    setBusy(false);
-    if (!result.ok) {
-      pushAgent(t('concierge.actionFailed', { message: result.message }), [backAction()]);
+  async function realizarSuspension(servicio: ServiceBill) {
+    enviarUsuario(t('concierge.actionSuspend'));
+    setOcupado(true);
+    const resultado = await suspendBill(servicio.id);
+    setOcupado(false);
+    if (!resultado.ok) {
+      enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
       return;
     }
-    pushAgent(t('concierge.suspendedDone', { name: s.name }), [backAction()]);
+    enviarAgente(t('concierge.suspendedDone', { name: servicio.name }), [accionVolver()]);
   }
 
-  async function doResume(s: ServiceBill) {
-    pushUser(t('concierge.actionResume'));
-    setBusy(true);
-    const result = await resumeBill(s.id);
-    setBusy(false);
-    if (!result.ok) {
-      pushAgent(t('concierge.actionFailed', { message: result.message }), [backAction()]);
+  async function realizarReanudacion(servicio: ServiceBill) {
+    enviarUsuario(t('concierge.actionResume'));
+    setOcupado(true);
+    const resultado = await resumeBill(servicio.id);
+    setOcupado(false);
+    if (!resultado.ok) {
+      enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
       return;
     }
-    pushAgent(t('concierge.resumedDone', { name: s.name }), [backAction()]);
+    enviarAgente(t('concierge.resumedDone', { name: servicio.name }), [accionVolver()]);
   }
 
   // --- Saldo y movimientos ---
-  function showBalance() {
-    pushAgent(t('concierge.balanceInfo', { available: money(available), debt: money(cardDebt), min: money(minPayment), line: money(creditLine) }), [
-      { id: 'movements', label: t('concierge.actionShowMovements'), run: showMovements },
-      backAction(),
+  function mostrarSaldo() {
+    enviarAgente(t('concierge.balanceInfo', { available: money(available), debt: money(cardDebt), min: money(minPayment), line: money(creditLine) }), [
+      { id: 'movements', label: t('concierge.actionShowMovements'), run: mostrarMovimientos },
+      accionVolver(),
     ]);
   }
 
-  function showMovements() {
-    pushUser(t('concierge.actionShowMovements'));
+  function mostrarMovimientos() {
+    enviarUsuario(t('concierge.actionShowMovements'));
     if (transactions.length === 0) {
-      pushAgent(t('concierge.noMovements'), [backAction()]);
+      enviarAgente(t('concierge.noMovements'), [accionVolver()]);
       return;
     }
-    const lines = transactions.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${money(tx.amount)} · ${tx.name}`).join('\n');
-    pushAgent(`${t('concierge.recentMovements')}\n${lines}`, [backAction()]);
+    const lineas = transactions.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${money(tx.amount)} · ${tx.name}`).join('\n');
+    enviarAgente(`${t('concierge.recentMovements')}\n${lineas}`, [accionVolver()]);
   }
 
   // --- Seguridad ---
-  async function showSecurityInfo() {
-    pushAgent(t('concierge.securityLoading'));
+  async function mostrarInfoSeguridad() {
+    enviarAgente(t('concierge.securityLoading'));
     await loadSecurity();
-    pushAgent(t('concierge.securityInfo', { count: String(sessions.length), online: money(limitOnline), atm: money(limitAtm) }), [
+    enviarAgente(t('concierge.securityInfo', { count: String(sessions.length), online: money(limitOnline), atm: money(limitAtm) }), [
       { id: 'goSecurity', label: t('concierge.actionGoSecurity'), run: () => nav.navigate('Security') },
-      backAction(),
+      accionVolver(),
     ]);
   }
 
-  // --- Free text ---
-  function handleFreeText(text: string) {
-    const q = text.toLowerCase();
-    if (/blo(que|c)|tarjeta|card/.test(q)) return showCardMenu();
-    if (/servici|deuda|factura|pagar|suspend|pausar|bill/.test(q)) return showServicesMenu();
-    if (/saldo|dinero|movimiento|balance/.test(q)) return showBalance();
-    if (/segur|dispositivo|sesion|limite|security|device/.test(q)) return showSecurityInfo();
-    pushAgent(t('concierge.notUnderstood'), mainMenu());
+  // --- Texto libre ---
+  function manejarTextoLibre(texto: string) {
+    const consulta = texto.toLowerCase();
+    if (/blo(que|c)|tarjeta|card/.test(consulta)) return mostrarMenuTarjeta();
+    if (/servici|deuda|factura|pagar|suspend|pausar|bill/.test(consulta)) return mostrarMenuServicios();
+    if (/saldo|dinero|movimiento|balance/.test(consulta)) return mostrarSaldo();
+    if (/segur|dispositivo|sesion|limite|security|device/.test(consulta)) return mostrarInfoSeguridad();
+    enviarAgente(t('concierge.notUnderstood'), menuPrincipal());
   }
 
-  const send = () => {
-    const text = draft.trim();
-    if (!text || busy) return;
-    pushUser(text);
-    setDraft('');
-    setTimeout(() => handleFreeText(text), 350);
+  const enviar = () => {
+    const texto = borrador.trim();
+    if (!texto || ocupado) return;
+    enviarUsuario(texto);
+    setBorrador('');
+    setTimeout(() => manejarTextoLibre(texto), 350);
   };
 
-  const runAction = (a: Action) => {
-    if (busy) return;
-    a.run();
+  const ejecutarAccion = (accion: Accion) => {
+    if (ocupado) return;
+    accion.run();
   };
 
   return (
@@ -249,34 +249,34 @@ export default function ConciergeScreen() {
             </View>
           </View>
 
-          <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 20 }} contentContainerStyle={{ paddingHorizontal: 22, gap: 10, paddingBottom: 10 }}>
-            {messages.map((m) => (
-              <View key={m.id} style={{ alignSelf: m.from === 'user' ? 'flex-end' : 'flex-start', maxWidth: '86%' }}>
+          <ScrollView ref={refScroll} style={{ flex: 1, marginTop: 20 }} contentContainerStyle={{ paddingHorizontal: 22, gap: 10, paddingBottom: 10 }}>
+            {mensajes.map((mensaje) => (
+              <View key={mensaje.id} style={{ alignSelf: mensaje.from === 'user' ? 'flex-end' : 'flex-start', maxWidth: '86%' }}>
                 <View
                   style={{
-                    backgroundColor: m.from === 'user' ? '#C9A227' : 'rgba(255,255,255,.09)',
-                    borderWidth: m.from === 'user' ? 0 : 1,
+                    backgroundColor: mensaje.from === 'user' ? '#C9A227' : 'rgba(255,255,255,.09)',
+                    borderWidth: mensaje.from === 'user' ? 0 : 1,
                     borderColor: 'rgba(217,190,122,.16)',
                     borderRadius: 20,
-                    borderBottomRightRadius: m.from === 'user' ? 6 : 20,
-                    borderBottomLeftRadius: m.from === 'agent' ? 6 : 20,
+                    borderBottomRightRadius: mensaje.from === 'user' ? 6 : 20,
+                    borderBottomLeftRadius: mensaje.from === 'agent' ? 6 : 20,
                     padding: 15,
                   }}
                 >
-                  <Text style={{ fontFamily: fonts.bodyMed, fontSize: 13.5, lineHeight: 20, color: m.from === 'user' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{m.text}</Text>
+                  <Text style={{ fontFamily: fonts.bodyMed, fontSize: 13.5, lineHeight: 20, color: mensaje.from === 'user' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{mensaje.text}</Text>
                 </View>
-                {m.actions && m.actions.length > 0 ? (
+                {mensaje.actions && mensaje.actions.length > 0 ? (
                   <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                    {m.actions.map((a) => (
+                    {mensaje.actions.map((accion) => (
                       <Pressable
-                        key={a.id}
-                        onPress={() => runAction(a)}
+                        key={accion.id}
+                        onPress={() => ejecutarAccion(accion)}
                         style={({ pressed }) => [
                           { paddingHorizontal: 14, height: 36, borderRadius: 18, borderWidth: 1, borderColor: 'rgba(217,190,122,.35)', alignItems: 'center', justifyContent: 'center' },
                           pressed && { backgroundColor: 'rgba(217,190,122,.16)' },
                         ]}
                       >
-                        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 12, color: '#E7CE92' }}>{a.label}</Text>
+                        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 12, color: '#E7CE92' }}>{accion.label}</Text>
                       </Pressable>
                     ))}
                   </View>
@@ -288,15 +288,15 @@ export default function ConciergeScreen() {
           <View style={{ paddingHorizontal: 22, paddingTop: 10, paddingBottom: 16 }}>
             <View style={{ height: 52, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', gap: 10, paddingLeft: 16, paddingRight: 8 }}>
               <TextInput
-                value={draft}
-                onChangeText={setDraft}
+                value={borrador}
+                onChangeText={setBorrador}
                 placeholder={t('concierge.inputPlaceholder')}
                 placeholderTextColor="rgba(255,255,255,.45)"
                 style={{ flex: 1, fontSize: 13.5, color: '#fff' }}
-                onSubmitEditing={send}
-                editable={!busy}
+                onSubmitEditing={enviar}
+                editable={!ocupado}
               />
-              <Pressable onPress={send} disabled={busy} style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#C9A227', alignItems: 'center', justifyContent: 'center', opacity: busy ? 0.6 : 1 }}>
+              <Pressable onPress={enviar} disabled={ocupado} style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#C9A227', alignItems: 'center', justifyContent: 'center', opacity: ocupado ? 0.6 : 1 }}>
                 <Icon name="send" size={19} color="#071B31" />
               </Pressable>
             </View>
