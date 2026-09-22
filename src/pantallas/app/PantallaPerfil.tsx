@@ -204,22 +204,22 @@ export default function PantallaPerfil() {
                 keyboardType={editando.field === 'phone' ? 'number-pad' : 'email-address'}
               />
             </View>
-            <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 16 }}>
+            <View style={{ position: 'relative', marginTop: 16 }}>
               <CasillasOtp value={codigo} />
-            </Pressable>
-            <TextInput
-              ref={refEntrada}
-              value={codigo}
-              keyboardType="number-pad"
-              maxLength={6}
-              onChangeText={(v) => {
-                const digitos = v.replace(/\D/g, '').slice(0, 6);
-                setCodigo(digitos);
-                setErrorCodigo(null);
-                if (digitos.length === 6) enviarCambio(digitos);
-              }}
-              style={{ position: 'absolute', opacity: 0, height: 0 }}
-            />
+              <TextInput
+                ref={refEntrada}
+                value={codigo}
+                keyboardType="number-pad"
+                maxLength={6}
+                onChangeText={(v) => {
+                  const digitos = v.replace(/\D/g, '').slice(0, 6);
+                  setCodigo(digitos);
+                  setErrorCodigo(null);
+                  if (digitos.length === 6) enviarCambio(digitos);
+                }}
+                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 }}
+              />
+            </View>
             {errorEnvio ? (
               <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
             ) : errorCodigo ? (
@@ -292,23 +292,23 @@ export default function PantallaPerfil() {
             <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: tema.medio }}>
               {t('profile.confirmChangeSubtitle')}
             </Text>
-            <Pressable onPress={() => refEntradaPw.current?.focus()} style={{ marginTop: 18 }}>
+            <View style={{ position: 'relative', marginTop: 18 }}>
               <CasillasOtp value={pwCodigo} />
-            </Pressable>
-            <TextInput
-              ref={refEntradaPw}
-              value={pwCodigo}
-              autoFocus
-              keyboardType="number-pad"
-              maxLength={6}
-              onChangeText={(v) => {
-                const digitos = v.replace(/\D/g, '').slice(0, 6);
-                setPwCodigo(digitos);
-                setPwErrorCodigo(null);
-                if (digitos.length === 6) enviarOtpPassword(digitos);
-              }}
-              style={{ position: 'absolute', opacity: 0, height: 0 }}
-            />
+              <TextInput
+                ref={refEntradaPw}
+                value={pwCodigo}
+                autoFocus
+                keyboardType="number-pad"
+                maxLength={6}
+                onChangeText={(v) => {
+                  const digitos = v.replace(/\D/g, '').slice(0, 6);
+                  setPwCodigo(digitos);
+                  setPwErrorCodigo(null);
+                  if (digitos.length === 6) enviarOtpPassword(digitos);
+                }}
+                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 }}
+              />
+            </View>
             {pwErrorCodigo ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{pwErrorCodigo}</Text> : null}
             <BotonPrimario
               label={pwEnviando ? t('profile.verifying') : t('profile.confirm')}

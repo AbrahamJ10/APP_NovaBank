@@ -235,24 +235,24 @@ export default function PantallaTransferencia() {
           <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: tema.medio }}>
             {t('transfer.tokenSubtitleEmail', { amount: dinero(montoNum) })}
           </Text>
-          <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
+          <View style={{ position: 'relative', marginTop: 24 }}>
             <CasillasOtp value={codigo} />
-          </Pressable>
-          <TextInput
-            ref={refEntrada}
-            value={codigo}
-            autoFocus
-            editable={!enviandoCodigo}
-            keyboardType="number-pad"
-            maxLength={6}
-            onChangeText={(v) => {
-              const digitos = v.replace(/\D/g, '').slice(0, 6);
-              setCodigo(digitos);
-              setErrorCodigo(null);
-              if (digitos.length === 6) enviarCodigo(digitos);
-            }}
-            style={{ position: 'absolute', opacity: 0, height: 0 }}
-          />
+            <TextInput
+              ref={refEntrada}
+              value={codigo}
+              autoFocus
+              editable={!enviandoCodigo}
+              keyboardType="number-pad"
+              maxLength={6}
+              onChangeText={(v) => {
+                const digitos = v.replace(/\D/g, '').slice(0, 6);
+                setCodigo(digitos);
+                setErrorCodigo(null);
+                if (digitos.length === 6) enviarCodigo(digitos);
+              }}
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 }}
+            />
+          </View>
           {enviandoCodigo ? (
             <Text style={{ marginTop: 8, fontFamily: fuentes.bodyMed, fontSize: 12, color: tema.medio }}>{t('transfer.verifying')}</Text>
           ) : errorCodigo ? (

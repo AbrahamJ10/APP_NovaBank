@@ -28,6 +28,7 @@ export default function PantallaRegistroRostro() {
   const [mensajeFalla, setMensajeFalla] = useState('');
   const camaraRef = useRef<CameraView>(null);
   const escaneoY = useRef(new Animated.Value(0)).current;
+  const intentoEnCursoRef = useRef(false);
 
   useEffect(() => {
     if (etapa !== 'scanning') return;
@@ -47,6 +48,7 @@ export default function PantallaRegistroRostro() {
   }, [etapa]);
 
   const iniciarEscaneo = async () => {
+    if (intentoEnCursoRef.current) return;
     if (!permiso?.granted) {
       const res = await solicitarPermiso();
       if (!res.granted) return;
@@ -55,6 +57,8 @@ export default function PantallaRegistroRostro() {
   };
 
   const capturar = async () => {
+    if (intentoEnCursoRef.current) return;
+    intentoEnCursoRef.current = true;
     try {
       const foto = await camaraRef.current?.takePictureAsync({ quality: 0.6, base64: true, skipProcessing: true });
       setEtapa('checking');
@@ -97,6 +101,8 @@ export default function PantallaRegistroRostro() {
     } catch (error) {
       setMensajeFalla(error instanceof ApiError ? error.message : t('registerFace.failGeneric'));
       setEtapa('fail');
+    } finally {
+      intentoEnCursoRef.current = false;
     }
   };
 

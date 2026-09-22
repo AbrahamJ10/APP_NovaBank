@@ -182,22 +182,22 @@ export default function PantallaRecuperar() {
           <InsigniaIcono name="sms" />
           <Text style={estilos(tema).title}>{t('recover.title2')}</Text>
           <Text style={estilos(tema).sub}>{t('recover.sub2')}</Text>
-          <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
+          <View style={{ position: 'relative', marginTop: 24 }}>
             <CasillasOtp value={codigo} />
-          </Pressable>
-          <TextInput
-            ref={refEntrada}
-            value={codigo}
-            onChangeText={(v) => {
-              const digitos = v.replace(/\D/g, '').slice(0, 6);
-              setCodigo(digitos);
-              if (digitos.length === 6) setPaso(3);
-            }}
-            keyboardType="number-pad"
-            maxLength={6}
-            autoFocus
-            style={{ position: 'absolute', opacity: 0, height: 0 }}
-          />
+            <TextInput
+              ref={refEntrada}
+              value={codigo}
+              onChangeText={(v) => {
+                const digitos = v.replace(/\D/g, '').slice(0, 6);
+                setCodigo(digitos);
+                if (digitos.length === 6) setPaso(3);
+              }}
+              keyboardType="number-pad"
+              maxLength={6}
+              autoFocus
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 }}
+            />
+          </View>
           <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: tema.medio }}>
             {otpRestante > 0 ? (
               <>

@@ -186,22 +186,23 @@ export default function PantallaRegistro() {
                   <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: tema.medio }}>
                     {t('register.codeSentTo', { email: correo })}
                   </Text>
-                  <Pressable onPress={() => refEntradaCodigo.current?.focus()}>
+                  <View style={{ position: 'relative' }}>
                     <CasillasOtp value={codigoOtp} />
-                  </Pressable>
-                  <TextInput
-                    ref={refEntradaCodigo}
-                    value={codigoOtp}
-                    keyboardType="number-pad"
-                    maxLength={6}
-                    onChangeText={(v) => {
-                      const digitos = v.replace(/\D/g, '').slice(0, 6);
-                      setCodigoOtp(digitos);
-                      setErrorCodigo(null);
-                      if (digitos.length === 6) verificarCodigo(digitos);
-                    }}
-                    style={{ position: 'absolute', opacity: 0, height: 0 }}
-                  />
+                    <TextInput
+                      ref={refEntradaCodigo}
+                      value={codigoOtp}
+                      keyboardType="number-pad"
+                      maxLength={6}
+                      autoFocus
+                      onChangeText={(v) => {
+                        const digitos = v.replace(/\D/g, '').slice(0, 6);
+                        setCodigoOtp(digitos);
+                        setErrorCodigo(null);
+                        if (digitos.length === 6) verificarCodigo(digitos);
+                      }}
+                      style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 }}
+                    />
+                  </View>
                   {errorCodigo ? (
                     <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12, color: '#C2352B' }}>{errorCodigo}</Text>
                   ) : null}
