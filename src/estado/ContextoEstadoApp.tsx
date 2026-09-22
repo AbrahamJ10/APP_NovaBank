@@ -464,7 +464,6 @@ export function usarEstadoAppInterno() {
       password: data.password,
     };
     setPendingUser(u);
-    setOtpCorreoVerificado(null);
   }, []);
 
   // Verificación temprana del correo, hecha en el propio formulario de
