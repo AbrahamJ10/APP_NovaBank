@@ -53,7 +53,7 @@ export default function PantallaInicio() {
             <Icono name={oscuro ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
           <Pressable onPress={() => nav.navigate('Notifications' as never)} style={estilosH.iconBtn}>
-            <Icono name="notificaciones" size={20} color="#fff" />
+            <Icono name="notifications" size={20} color="#fff" />
             <View style={estilosH.dot} />
           </Pressable>
         </View>
