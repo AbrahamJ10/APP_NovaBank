@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, ImageStyle, StyleProp } from 'react-native';
 
-// logo1 = compact mark, used everywhere inside the app (headers, cards, login…)
-// logo2 = full lockup with wordmark, reserved for the splash / welcome moment.
+// logo1 = marca compacta, usada en toda la app (encabezados, tarjetas, login…)
+// logo2 = versión completa con el nombre, reservada para el splash / bienvenida.
 const logo1 = require('../../img/logo1.jpg');
 const logo2 = require('../../img/logo2.jpg');
 

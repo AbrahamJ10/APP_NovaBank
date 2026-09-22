@@ -1,10 +1,11 @@
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 
-// The mockup was authored against Material Symbols Rounded (Google, uses
-// snake_case names). @expo/vector-icons ships the classic Material Icons
-// font instead (kebab-case, and a handful of names differ outright). This
-// keeps every screen able to reference the original mockup icon name.
+// El mockup se hizo contra Material Symbols Rounded (Google, usa nombres
+// snake_case). @expo/vector-icons trae en cambio la fuente clásica de
+// Material Icons (kebab-case, y un puñado de nombres son directamente
+// distintos). Esto le permite a cada pantalla seguir usando el nombre de
+// ícono original del mockup.
 const ALIASES: Record<string, string> = {
   shield_lock: 'security',
   emergency_home: 'emergency',

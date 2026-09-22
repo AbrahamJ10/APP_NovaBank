@@ -1,5 +1,5 @@
-// NovaBank design tokens — ported 1:1 from the Qubank desktop/web mockups (Canvas.dc.html)
-// Primary brand navy stays fixed across themes; surfaces/text switch between light and dark.
+// Tokens de diseño de NovaBank — trasladados 1:1 desde los mockups de escritorio/web de Qubank (Canvas.dc.html)
+// El azul marino principal de la marca se mantiene fijo entre temas; las superficies/textos cambian entre claro y oscuro.
 
 export const BRAND = {
   navy: '#133A63',

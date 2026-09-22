@@ -18,14 +18,15 @@ import { useLanguage } from '../../i18n/LanguageContext';
 type Phase = 'front' | 'back';
 type Status = 'idle' | 'busy' | 'retry' | 'success';
 
-const TIPS_THRESHOLD = 2; // show extra help after this many failed attempts
+const TIPS_THRESHOLD = 2; // muestra ayuda extra después de este número de intentos fallidos
 
-// A single screen (and a single CameraView instance) handles both sides of
-// the DNI. Two separate screens each mounting their own CameraView caused
-// the camera preview to go black when navigating front → back: the native
-// camera session from the first screen wasn't released before the second
-// tried to acquire it. Keeping one camera alive and just switching the
-// capture mode avoids that handoff entirely.
+// Una sola pantalla (y una sola instancia de CameraView) maneja ambos
+// lados del DNI. Dos pantallas separadas, cada una montando su propio
+// CameraView, hacían que la vista previa de la cámara se pusiera negra al
+// navegar de frente → reverso: la sesión de cámara nativa de la primera
+// pantalla no se liberaba antes de que la segunda intentara adquirirla.
+// Mantener una sola cámara viva y solo cambiar el modo de captura evita
+// por completo ese traspaso.
 export default function DniCaptureScreen() {
   const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   const { t } = useLanguage();
@@ -42,8 +43,8 @@ export default function DniCaptureScreen() {
   const frontDniRef = useRef<string | null>(null);
   const backLocked = useRef(false);
 
-  // Discard anything captured so far so a half-finished scan never leaks
-  // into a later attempt.
+  // Se descarta todo lo capturado hasta ahora para que un escaneo a medias
+  // nunca se filtre a un intento posterior.
   const discardAndGoBack = () => {
     setDniFrontPhoto(null);
     setFrontDniNumber(null);

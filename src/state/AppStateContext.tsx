@@ -121,10 +121,11 @@ function applyApiUser(u: User, apiUser: PublicUser): User {
     email: apiUser.email,
     dni: apiUser.dni ?? u.dni,
     phone: apiUser.phone ?? u.phone,
-    // The server never returns the password (it's hashed) — this field is
-    // only a transient holding spot on `pendingUser` during registration
-    // (see beginRegister/completeRegister below), always blank on the real
-    // authenticated user. Real password changes go through profileApi.
+    // El servidor nunca devuelve la contraseña (está hasheada) — este campo
+    // es solo un lugar transitorio en `pendingUser` durante el registro
+    // (ver beginRegister/completeRegister abajo), siempre vacío en el
+    // usuario autenticado real. Los cambios reales de contraseña pasan por
+    // profileApi.
     password: '',
   };
 }
@@ -229,11 +230,12 @@ export function useAppStateInternal() {
     if (expired) setExpired(false);
   }, [expired]);
 
-  // Shared by the cold-start check below and by the login screen's
-  // biometric button: if a still-valid session is sitting in storage, this
-  // is what actually restores it. Biometric success alone never talks to
-  // the backend — it just gates whether this runs, same as typing a
-  // password would gate a fresh login() call.
+  // Compartido por la verificación de arranque en frío de abajo y por el
+  // botón biométrico de la pantalla de login: si hay una sesión todavía
+  // válida guardada, esto es lo que en realidad la restaura. El éxito
+  // biométrico por sí solo nunca habla con el backend — solo controla si
+  // esto se ejecuta, igual que escribir una contraseña controlaría una
+  // llamada nueva a login().
   const restoreSession = useCallback(async (): Promise<boolean> => {
     try {
       const [accessToken, refreshToken] = await Promise.all([getAccessToken(), getRefreshToken()]);
@@ -266,9 +268,10 @@ export function useAppStateInternal() {
     }));
   }, []);
 
-  // Pulls the real balance/card/transactions ledger from the backend —
-  // called once the session is actually in (see the effect below), and
-  // exposed so any screen that changes the account can ask for a fresh copy.
+  // Trae el saldo/tarjeta/historial de transacciones reales del backend —
+  // se llama una vez que la sesión ya está activa (ver el efecto de abajo),
+  // y se expone para que cualquier pantalla que cambie la cuenta pueda
+  // pedir una copia fresca.
   const refreshAccount = useCallback(async () => {
     setAccountLoading(true);
     try {
@@ -285,8 +288,9 @@ export function useAppStateInternal() {
       setPayees(payeeList.map(toLocalPayee));
       setServices(billList.map(toLocalBill));
     } catch {
-      // Leave whatever was last loaded in place — a transient failure here
-      // shouldn't blank out the home screen the user is looking at.
+      // Se deja lo último que se cargó tal cual — una falla pasajera aquí
+      // no debería dejar en blanco la pantalla de inicio que el usuario
+      // está viendo.
     } finally {
       setAccountLoading(false);
     }
@@ -296,9 +300,9 @@ export function useAppStateInternal() {
     if (session === 'in') refreshAccount();
   }, [session, refreshAccount]);
 
-  // Security Center data (alerts/limits/sessions) is only fetched when a
-  // screen that actually shows it mounts, rather than on every
-  // refreshAccount — it doesn't back anything on the Home screen.
+  // Los datos de Centro de Seguridad (alertas/límites/sesiones) solo se
+  // piden cuando se monta una pantalla que realmente los muestra, en vez de
+  // en cada refreshAccount — no respaldan nada en la pantalla de Inicio.
   const loadSecurity = useCallback(async () => {
     try {
       const refreshToken = await getRefreshToken();
@@ -314,7 +318,7 @@ export function useAppStateInternal() {
       setGeoIntl(limitsRes.geoIntl);
       setSessions(sessionsRes);
     } catch {
-      // Leave whatever was last loaded in place.
+      // Se deja lo último que se cargó tal cual.
     }
   }, []);
 
@@ -337,8 +341,8 @@ export function useAppStateInternal() {
       setGeoPeru(saved.geoPeru);
       setGeoIntl(saved.geoIntl);
     } catch {
-      // Slider/toggle already reflects the attempted value locally; a
-      // silent failure here just means it didn't persist this time.
+      // El slider/interruptor ya refleja el valor intentado localmente; una
+      // falla silenciosa aquí solo significa que no se guardó esta vez.
     }
   }, []);
 
@@ -362,23 +366,25 @@ export function useAppStateInternal() {
     }
   }, [loadSecurity]);
 
-  // On cold start (and any time the app comes back from being closed or
-  // backgrounded), always land on the login screen rather than silently
-  // re-entering — same as any real banking app. A still-valid session sits
-  // untouched in storage and the login screen shows its quick, name +
-  // fingerprint mode for it (see restoreSession above), but actually
-  // resuming it always takes an explicit fingerprint tap or password.
+  // En un arranque en frío (y cada vez que la app vuelve de estar cerrada
+  // o en segundo plano), siempre se aterriza en la pantalla de login en
+  // vez de volver a entrar en silencio — igual que cualquier app bancaria
+  // real. Una sesión todavía válida queda intacta en el almacenamiento y
+  // la pantalla de login muestra su modo rápido de nombre + huella para
+  // ella (ver restoreSession arriba), pero retomarla de verdad siempre
+  // requiere un toque explícito de huella o la contraseña.
   useEffect(() => {
     setSession('out');
   }, []);
 
-  // Inactivity watchdog: a lightweight interval that only touches state when
-  // the 3-minute idle threshold is actually crossed, so normal typing never
-  // triggers a re-render from this check. Tokens are left alone here on
-  // purpose — this only locks the UI (drops to the login screen's quick,
-  // fingerprint-eligible mode), it doesn't revoke the underlying session,
-  // since the account is still "logged in" as far as the backend is
-  // concerned and a valid device biometric should be enough to resume it.
+  // Vigilante de inactividad: un intervalo ligero que solo toca el estado
+  // cuando de verdad se cruza el umbral de 3 minutos de inactividad, para
+  // que escribir normalmente nunca dispare un re-render por esta
+  // verificación. Los tokens se dejan intactos a propósito aquí — esto solo
+  // bloquea la interfaz (cae al modo rápido con huella de la pantalla de
+  // login), no revoca la sesión de fondo, ya que la cuenta sigue "con
+  // sesión iniciada" en lo que respecta al backend y una huella válida del
+  // dispositivo debería bastar para retomarla.
   useEffect(() => {
     if (session !== 'in') return;
     const id = setInterval(() => {
@@ -391,10 +397,11 @@ export function useAppStateInternal() {
     return () => clearInterval(id);
   }, [session]);
 
-  // `now` only needs to tick while a countdown is actually visible somewhere
-  // (OTP resend, login lockout, cardless withdrawal code). Ticking it always
-  // was re-rendering every screen every second, including mid-keystroke on
-  // plain forms with no timer at all.
+  // `now` solo necesita avanzar mientras haya de verdad una cuenta
+  // regresiva visible en algún lado (reenvío de OTP, bloqueo de login,
+  // código de retiro sin tarjeta). Hacerlo avanzar siempre re-renderizaba
+  // cada pantalla cada segundo, incluso a mitad de tecleo en formularios
+  // simples sin ningún temporizador.
   const hasActiveTimer = otpDeadline > Date.now() || !!blockedUntil || !!withdraw;
   useEffect(() => {
     if (!hasActiveTimer) return;
@@ -462,11 +469,12 @@ export function useAppStateInternal() {
         selfie: pendingSelfie ?? undefined,
       });
       setUser(applyApiUser(pendingUser, apiUser));
-      // applyApiUser only carries over name/email/dni/phone — the real
-      // account number/CCI/card only exist once the backend creates them
-      // during register(), so pull them in now. Otherwise RegisterDoneScreen
-      // (shown next, before `session` ever becomes 'in') would render
-      // whatever fake placeholder values were sitting in defaultUser.
+      // applyApiUser solo transfiere nombre/correo/dni/teléfono — el número
+      // de cuenta/CCI/tarjeta reales solo existen una vez que el backend
+      // los crea durante register(), así que se traen ahora. De lo
+      // contrario RegisterDoneScreen (que se muestra a continuación, antes
+      // de que `session` llegue a 'in') mostraría los valores falsos de
+      // relleno que hubiera en defaultUser.
       await refreshAccount();
       await saveLastAccount(pendingUser.email, apiUser.fullName);
       setPendingUser(null);
@@ -510,9 +518,10 @@ export function useAppStateInternal() {
     }
   }, [attempts, blockLeft, blockedUntil, touch]);
 
-  // Face ID quick login: compares a fresh selfie against the reference
-  // photos saved during registration (DNI photo + registration selfie),
-  // for whichever account last signed in successfully on this device.
+  // Login rápido con Face ID: compara una selfie nueva contra las fotos de
+  // referencia guardadas durante el registro (foto del DNI + selfie del
+  // registro), para la cuenta que haya iniciado sesión con éxito por
+  // última vez en este dispositivo.
   const loginWithFace = useCallback(async (selfieBase64: string) => {
     if (blockedUntil && blockLeft > 0) return { ok: false as const, reason: 'blocked' as const };
 
@@ -561,9 +570,10 @@ export function useAppStateInternal() {
     }
   }, []);
 
-  // Real "lock everything": blocks the card server-side (same endpoint as
-  // the Card screen's toggle) and revokes every other active session, so a
-  // lost/stolen phone can't keep using a session opened elsewhere.
+  // "Bloquear todo" real: bloquea la tarjeta del lado del servidor (el
+  // mismo endpoint que el interruptor de la pantalla de Tarjeta) y revoca
+  // cualquier otra sesión activa, para que un celular perdido/robado no
+  // pueda seguir usando una sesión abierta en otro lado.
   const openPanic = useCallback(() => {
     setPanicMode(true);
     requestCardBlock(true);
@@ -574,8 +584,9 @@ export function useAppStateInternal() {
     requestCardBlock(false);
   }, [requestCardBlock]);
 
-  // Only drives the local resend-countdown UI (see startRecover above) —
-  // the real code is sent and verified against the backend.
+  // Solo controla la cuenta regresiva local de reenvío en la interfaz (ver
+  // startRecover arriba) — el código real se envía y se verifica contra el
+  // backend.
   const requestTransferOtp = useCallback(async () => {
     try {
       await transfersApi.requestOtp();
@@ -617,9 +628,10 @@ export function useAppStateInternal() {
           date: `${created.toLocaleDateString('es-PE')} · ${created.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}`,
           rejected: false,
         };
-        // Re-fetch rather than patch state locally — this is the one place
-        // that actually moved real money, so the balance/history shown
-        // afterward should come straight back from the ledger, not a guess.
+        // Se vuelve a pedir en vez de parchar el estado localmente — este
+        // es el único lugar que de verdad movió dinero real, así que el
+        // saldo/historial mostrado después debe venir directo del libro
+        // contable, no de una suposición.
         refreshAccount();
         return { ok: true as const, receipt };
       } catch (err) {
@@ -645,17 +657,19 @@ export function useAppStateInternal() {
     [payees, refreshAccount]
   );
 
-  // Only drives the local resend countdown UI now — the real code is sent
-  // and verified against the backend (see authApi.requestPasswordReset /
-  // confirmPasswordReset), this no longer generates a usable code itself.
+  // Ahora solo controla la cuenta regresiva local de reenvío en la
+  // interfaz — el código real se envía y se verifica contra el backend
+  // (ver authApi.requestPasswordReset / confirmPasswordReset), esto ya no
+  // genera un código utilizable por sí mismo.
   const startRecover = useCallback((identifier: string) => {
     startOtp('recover', { identifier });
   }, [startOtp]);
 
-  // Profile field changes (email/phone/password) are confirmed with a real
-  // code emailed to the account's current address — this only drives the
-  // local resend-countdown UI, the code itself is generated and checked
-  // server-side.
+  // Los cambios de campos del perfil (correo/teléfono/contraseña) se
+  // confirman con un código real enviado por correo a la dirección actual
+  // de la cuenta — esto solo controla la cuenta regresiva local de reenvío
+  // en la interfaz, el código en sí se genera y se revisa del lado del
+  // servidor.
   const requestProfileOtp = useCallback(async () => {
     try {
       await profileApi.requestOtp();
@@ -696,10 +710,10 @@ export function useAppStateInternal() {
     }
   }, []);
 
-  // Cardless withdrawal: the amount is really debited server-side the
-  // moment a code is generated (there's no real ATM network here to redeem
-  // against later) — cancelling issues a real refund, renewing rotates the
-  // code without moving money again.
+  // Retiro sin tarjeta: el monto de verdad se debita del lado del servidor
+  // en el momento en que se genera un código (aquí no hay una red de
+  // cajeros real contra la cual canjearlo después) — cancelar emite un
+  // reembolso real, renovar rota el código sin mover dinero de nuevo.
   const generateWithdraw = useCallback(async (amount: number) => {
     try {
       const w = await withdrawalsApi.create(amount);
@@ -728,7 +742,7 @@ export function useAppStateInternal() {
       const w = await withdrawalsApi.renew(withdraw.id);
       setWithdraw({ id: w.id, code: w.code, qr: `NOVABANK|WD|${w.code}|${w.amount}`, deadline: new Date(w.expiresAt).getTime(), amount: w.amount });
     } catch {
-      // leave the expired state as-is; the button stays available to retry
+      // se deja el estado expirado tal cual; el botón sigue disponible para reintentar
     }
   }, [withdraw]);
 

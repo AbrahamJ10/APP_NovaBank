@@ -40,9 +40,9 @@ export function ScreenTitle({
   eyebrow?: string;
   title: string;
   note?: string;
-  // Only screens that reach ScreenTitle without a BackButton above them
-  // need this — BackButton already carries its own LanguageSwitch, so
-  // passing this alongside one would just show it twice.
+  // Solo lo necesitan las pantallas que llegan a ScreenTitle sin un
+  // BackButton arriba — BackButton ya trae su propio LanguageSwitch, así
+  // que pasar esto junto con uno solo lo mostraría dos veces.
   showLanguageSwitch?: boolean;
 }) {
   const { theme } = useTheme();

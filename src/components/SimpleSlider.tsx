@@ -11,10 +11,11 @@ type Props = {
   onSlidingComplete?: (v: number) => void;
 };
 
-// Native slider libraries drag in CMake/C++ codegen, which was tripping
-// Windows' 260-char path limit inside this deeply-nested OneDrive project.
-// This is a dependency-free equivalent: plain View + PanResponder, no
-// native module, so it can never hit that build failure again.
+// Las librerías nativas de slider arrastran generación de código CMake/C++,
+// lo que chocaba con el límite de 260 caracteres de ruta de Windows dentro
+// de este proyecto de OneDrive tan anidado. Este es un equivalente sin
+// dependencias: solo View + PanResponder, sin módulo nativo, así que nunca
+// más puede toparse con esa falla de compilación.
 export default function SimpleSlider({ minimumValue, maximumValue, step = 1, value, onValueChange, onSlidingComplete }: Props) {
   const { theme } = useTheme();
   const [trackWidth, setTrackWidth] = useState(0);

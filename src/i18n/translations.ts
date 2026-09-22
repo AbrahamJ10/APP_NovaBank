@@ -1,7 +1,7 @@
 export type Language = 'es' | 'en';
 
-// Flat dot-namespaced keys, one screen per prefix — every screen reads its
-// strings through this table now (ES/EN kept in sync).
+// Claves planas con espacio de nombres por puntos, un prefijo por pantalla
+// — ahora cada pantalla lee sus textos de esta tabla (ES/EN sincronizados).
 export const translations: Record<Language, Record<string, string>> = {
   es: {
     // tabs

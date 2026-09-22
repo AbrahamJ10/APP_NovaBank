@@ -1,11 +1,12 @@
 import { auditApi, AuditClientEvent } from './api';
 
-// Client-observed telemetry (screen views, button taps) the backend can't
-// see for itself — batched in memory and flushed periodically to
-// POST /api/audit/events, which requires an authenticated session (see
-// modules/audit on the backend). Best-effort: a failed flush just drops the
-// batch rather than retrying forever, so this can never block or crash the
-// app it's instrumenting.
+// Telemetría observada por el cliente (vistas de pantalla, toques de
+// botón) que el backend no puede ver por sí mismo — se acumula en memoria
+// y se envía periódicamente a POST /api/audit/events, que exige una sesión
+// autenticada (ver modules/audit en el backend). Mejor esfuerzo: un envío
+// fallido simplemente descarta el lote en vez de reintentar para siempre,
+// así que esto nunca puede bloquear ni tumbar la app que está
+// instrumentando.
 const FLUSH_INTERVAL_MS = 8000;
 const MAX_QUEUE = 50;
 
@@ -19,7 +20,7 @@ async function flush() {
   try {
     await auditApi.sendEvents(batch);
   } catch {
-    // Dropped — offline or session expired, not worth retrying.
+    // Descartado — sin conexión o sesión expirada, no vale la pena reintentar.
   }
 }
 
@@ -29,8 +30,9 @@ export function trackEvent(action: string, opts?: { screen?: string; success?: b
   if (queue.length >= MAX_QUEUE) flush();
 }
 
-// Called once the user is authenticated — no point queuing events (or
-// hitting an endpoint that will just 401) while logged out.
+// Se llama una vez que el usuario está autenticado — no tiene sentido
+// encolar eventos (o pegarle a un endpoint que solo va a dar 401) mientras
+// está desconectado.
 export function startAuditTracking() {
   if (enabled) return;
   enabled = true;

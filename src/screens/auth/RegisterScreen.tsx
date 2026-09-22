@@ -23,8 +23,8 @@ export default function RegisterScreen() {
   const { t } = useLanguage();
   const { beginRegister, scannedDni, setScannedDni } = useAppState();
 
-  // Pulled from the DNI scan/RENIEC lookup done earlier in the flow — read
-  // only, the user never types these.
+  // Vienen del escaneo del DNI/consulta a RENIEC hecha antes en el flujo —
+  // solo lectura, el usuario nunca los escribe.
   const [nombres, setNombres] = useState('');
   const [apellidoPaterno, setApellidoPaterno] = useState('');
   const [apellidoMaterno, setApellidoMaterno] = useState('');

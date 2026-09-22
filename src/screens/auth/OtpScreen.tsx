@@ -15,10 +15,11 @@ import { verificationApi } from '../../lib/api';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const RESEND_COOLDOWN_S = 60;
-// Matches the backend's own OTP expiry (otp.service.ts, OTP_TTL_MS) — the
-// code was just requested right before this screen was pushed, so the
-// window starts now and closes exactly when the code stops being valid
-// server-side. Don't let someone sit on this screen indefinitely.
+// Coincide con la expiración propia del OTP del backend (otp.service.ts,
+// OTP_TTL_MS) — el código se acaba de pedir justo antes de que se abriera
+// esta pantalla, así que la ventana empieza ahora y se cierra exactamente
+// cuando el código deja de ser válido del lado del servidor. No se debe
+// dejar que alguien se quede en esta pantalla indefinidamente.
 const FLOW_TTL_MS = 10 * 60 * 1000;
 
 export default function OtpScreen() {

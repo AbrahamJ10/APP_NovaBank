@@ -17,19 +17,20 @@ import { ApiError, authApi } from '../../lib/api';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// The backend's generic "Datos inválidos" (400) covers any Zod validation
-// failure — this pulls out the specific field message when present, so a
-// mismatch between this screen's rules and the backend's is never a dead
-// end for whoever hits it.
+// El "Datos inválidos" (400) genérico del backend cubre cualquier falla de
+// validación de Zod — esto extrae el mensaje específico del campo cuando
+// existe, para que un desajuste entre las reglas de esta pantalla y las
+// del backend nunca sea un callejón sin salida para quien lo encuentre.
 function describeApiError(err: unknown, fallback: string): string {
   if (!(err instanceof ApiError)) return fallback;
   const fieldErrors = (err.details as any)?.fieldErrors as Record<string, string[]> | undefined;
   const firstField = fieldErrors && Object.values(fieldErrors).find((msgs) => msgs?.length);
   return firstField?.[0] ?? err.message ?? fallback;
 }
-// Matches the backend's own OTP expiry (otp.service.ts, OTP_TTL_MS) — once
-// a code is requested, the whole "enter code + set new password" window
-// closes at the same time the code itself stops being valid server-side.
+// Coincide con la expiración propia del OTP del backend (otp.service.ts,
+// OTP_TTL_MS) — una vez que se pide un código, toda la ventana de "ingresa
+// el código + pon la nueva contraseña" se cierra en el mismo momento en
+// que el código deja de ser válido del lado del servidor.
 const FLOW_TTL_MS = 10 * 60 * 1000;
 
 export default function RecoverScreen() {
@@ -55,8 +56,9 @@ export default function RecoverScreen() {
 
   const email = identifier.trim().toLowerCase();
 
-  // Once a code is out, cap how long someone can sit on this screen with a
-  // live pending reset — ticks only while it's actually relevant.
+  // Una vez que un código sale, se limita cuánto tiempo alguien puede
+  // quedarse en esta pantalla con un restablecimiento pendiente activo —
+  // solo avanza mientras de verdad sea relevante.
   useEffect(() => {
     if (!flowDeadline || (step !== 2 && step !== 3)) return;
     const id = setInterval(() => setNow(Date.now()), 1000);

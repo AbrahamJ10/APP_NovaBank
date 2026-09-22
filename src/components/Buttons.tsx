@@ -65,9 +65,10 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
   const translateX = sheen.interpolate({ inputRange: [0, 1], outputRange: [-width * 0.7, width * 1.4] });
 
   if (disabled) {
-    // Matches PrimaryButton's disabled look (flat grey, no shadow) — a
-    // half-opacity gold gradient with its shine animation still running
-    // read as broken/glitchy rather than "can't tap this".
+    // Coincide con el aspecto deshabilitado de PrimaryButton (gris plano,
+    // sin sombra) — un degradado dorado a media opacidad con su animación
+    // de brillo todavía corriendo se leía como roto/con glitch en vez de
+    // "no se puede tocar esto".
     return (
       <Pressable disabled onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.base, { backgroundColor: '#9AA7B4' }, style]}>
         {loading ? (

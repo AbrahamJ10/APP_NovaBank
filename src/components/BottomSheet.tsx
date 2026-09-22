@@ -14,11 +14,12 @@ export default function BottomSheet({
 }: {
   visible: boolean;
   onClose: () => void;
-  // Fires once the slide-in animation finishes — autoFocus on a TextInput
-  // mounted at the same time as the Modal itself is unreliable on Android
-  // (the native modal window doesn't reliably have input focus yet), so any
-  // sheet that needs to focus an input on open should do it from here
-  // instead of the input's own autoFocus prop.
+  // Se dispara cuando termina la animación de deslizamiento — autoFocus en
+  // un TextInput montado al mismo tiempo que el Modal es poco confiable en
+  // Android (la ventana modal nativa no siempre tiene el foco de entrada
+  // todavía), así que cualquier hoja que necesite enfocar un campo al
+  // abrirse debe hacerlo desde aquí en vez de con el prop autoFocus propio
+  // del campo.
   onShow?: () => void;
   children: React.ReactNode;
 }) {

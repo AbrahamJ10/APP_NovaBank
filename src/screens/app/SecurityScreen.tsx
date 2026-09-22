@@ -52,8 +52,9 @@ export default function SecurityScreen() {
 
   const tasks = [
     { icon: 'fingerprint', done: faceIdOn, label: t('security.taskFaceId'), desc: faceIdOn ? t('security.taskFaceIdDesc') : t('security.taskFaceIdDescOff') },
-    // Always true, not a stub: every transfer and profile change already
-    // requires a real email OTP app-wide — there's no "off" state to check.
+    // Siempre true, no es un relleno: toda transferencia y cambio de perfil
+    // ya exige un OTP real por correo en toda la app — no hay un estado
+    // "apagado" que verificar.
     { icon: 'password', done: true, label: t('security.taskTwoStep'), desc: t('security.taskTwoStepDesc') },
     {
       icon: 'gpp_maybe',

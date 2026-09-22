@@ -86,13 +86,13 @@ export default function RegisterFaceScreen() {
         return;
       }
 
-      // Stash the selfie now so it can be sent along with the final
-      // register() call and stored as a Face ID reference photo.
+      // Se guarda la selfie ahora para poder enviarla junto con la llamada
+      // final a register() y guardarla como foto de referencia de Face ID.
       setPendingSelfie(photo.base64);
 
-      // The face is already verified at this point — a failure sending the
-      // OTP email afterward is a separate problem and must not be shown as
-      // "we couldn't verify you".
+      // El rostro ya está verificado en este punto — una falla enviando el
+      // correo con el OTP después es un problema aparte y no debe mostrarse
+      // como "no pudimos verificarte".
       await sendOtp();
     } catch (err) {
       setFailMsg(err instanceof ApiError ? err.message : t('registerFace.failGeneric'));

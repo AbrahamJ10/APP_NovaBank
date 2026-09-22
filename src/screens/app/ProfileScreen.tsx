@@ -26,9 +26,10 @@ export default function ProfileScreen() {
   const { t } = useLanguage();
   const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = useAppState();
 
-  // Mirrors LoginScreen's own check — Face ID here means "this device's
-  // native fingerprint/face unlock is actually enrolled and can quick-login
-  // this account", not some separate per-account setting.
+  // Refleja la misma verificación de LoginScreen — Face ID aquí significa
+  // "el desbloqueo nativo por huella/rostro de este dispositivo de verdad
+  // está registrado y puede hacer login rápido de esta cuenta", no alguna
+  // configuración separada por cuenta.
   const [faceIdOn, setFaceIdOn] = useState(false);
   useEffect(() => {
     Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), getLastAccount()])

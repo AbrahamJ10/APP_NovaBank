@@ -78,9 +78,10 @@ export default function LoginScreen() {
         cancelLabel: t('login.bioCancel'),
       });
       if (!result.success) return;
-      // A successful device unlock only proves it's this phone's owner — it
-      // still has to be paired with a session that's actually valid, same
-      // as the silent restore on cold start.
+      // Un desbloqueo exitoso del dispositivo solo prueba que es el dueño
+      // de este celular — igual tiene que combinarse con una sesión que de
+      // verdad sea válida, igual que la restauración silenciosa en el
+      // arranque en frío.
       const restored = await restoreSession();
       if (!restored) setBioMessage(t('login.bioSessionExpired'));
     } finally {

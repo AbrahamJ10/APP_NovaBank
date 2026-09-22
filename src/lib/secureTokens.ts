@@ -27,10 +27,11 @@ export async function clearTokens() {
   ]);
 }
 
-// Remembers which account last signed in successfully on this device, so
-// Face ID quick-login knows whose reference photos to compare against, and
-// the login screen can greet a returning user by name and skip asking for
-// their email again (only the password, like most banking apps do).
+// Recuerda qué cuenta inició sesión con éxito por última vez en este
+// dispositivo, para que el login rápido con Face ID sepa contra las fotos
+// de referencia de quién comparar, y la pantalla de login pueda saludar a
+// un usuario que regresa por su nombre y saltarse pedir el correo de nuevo
+// (solo la contraseña, como hacen la mayoría de apps bancarias).
 export async function saveLastEmail(email: string) {
   await SecureStore.setItemAsync(LAST_EMAIL_KEY, email);
 }

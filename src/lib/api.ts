@@ -9,19 +9,21 @@ if (!API_URL) {
   console.warn('EXPO_PUBLIC_API_URL no está configurada — revisa el archivo .env');
 }
 
-// HTTP header values must be ASCII with no control characters — a raw OEM
-// device-name string isn't guaranteed to be either, and an invalid header
-// value throws inside fetch/XMLHttpRequest on RN, which would break every
-// single API call app-wide. Strip anything outside a safe printable-ASCII
-// range before it ever reaches a header.
+// Los valores de header HTTP deben ser ASCII sin caracteres de control —
+// un string de nombre de dispositivo tal cual lo da el fabricante no tiene
+// esa garantía, y un valor de header inválido lanza una excepción dentro
+// de fetch/XMLHttpRequest en RN, lo que rompería cada llamada a la API en
+// toda la app. Se filtra todo lo que esté fuera de un rango ASCII
+// imprimible seguro antes de que llegue a un header.
 function sanitizeHeaderValue(value: string, maxLength = 60): string {
   const cleaned = value.replace(/[^\x20-\x7E]/g, '').trim();
   return (cleaned || 'Desconocido').slice(0, maxLength);
 }
 
-// Sent on every request so the backend's audit trail (see auditoria table)
-// can attribute each action to a real device/platform/app version, not just
-// an IP. Computed once — these never change during the app's lifetime.
+// Se envía en cada solicitud para que el rastro de auditoría del backend
+// (ver tabla auditoria) pueda atribuir cada acción a un dispositivo/
+// plataforma/versión de app reales, no solo a una IP. Se calcula una sola
+// vez — nunca cambian durante la vida de la app.
 const DEVICE_HEADERS: Record<string, string> = {
   'X-Device-Model': sanitizeHeaderValue(
     [Device.manufacturer, Device.modelName].filter(Boolean).join(' ') || Device.deviceName || 'Desconocido'
@@ -36,8 +38,9 @@ export class ApiError extends Error {
   }
 }
 
-// Thrown when the refresh token itself is invalid/expired — the caller must
-// send the user back to the login screen, there's no automatic recovery.
+// Se lanza cuando el refresh token en sí es inválido/expiró — quien llama
+// debe mandar al usuario de vuelta a la pantalla de login, no hay
+// recuperación automática.
 export class SessionExpiredError extends Error {}
 
 export type PublicUser = {
@@ -65,9 +68,9 @@ async function rawRequest(path: string, options: RequestInit) {
   return body;
 }
 
-// One in-flight refresh at a time, shared by every caller that hits a 401
-// concurrently, so we don't burn through refresh-token rotations racing
-// each other.
+// Un solo refresh en vuelo a la vez, compartido por cada quien que reciba
+// un 401 al mismo tiempo, para no gastar rotaciones de refresh token
+// compitiendo entre sí.
 let refreshPromise: Promise<string> | null = null;
 
 async function refreshAccessToken(): Promise<string> {
@@ -113,9 +116,10 @@ async function authedRequest(path: string, options: RequestInit = {}) {
   }
 }
 
-// Render's free tier can take up to ~50s to wake a sleeping instance — used
-// to bound the startup session check so the app doesn't hang on a cold
-// backend and instead falls back to the login screen.
+// El plan gratuito de Render puede tardar hasta ~50s en despertar una
+// instancia dormida — se usa para acotar la verificación de sesión al
+// arrancar, para que la app no se quede colgada con un backend frío y en
+// vez de eso caiga a la pantalla de login.
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('timeout')), ms);

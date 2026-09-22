@@ -4,9 +4,10 @@ export type FaceFailReason = 'no-face' | 'multiple-faces' | 'eyes-closed' | 'err
 
 export type FaceCheckResult = { ok: true; face: Face } | { ok: false; reason: FaceFailReason };
 
-// Runs real on-device face detection (Google ML Kit) against a captured
-// still frame and applies simple, honest liveness-adjacent checks: exactly
-// one face must be present and both eyes must read as open.
+// Ejecuta detección facial real en el propio dispositivo (Google ML Kit)
+// contra un fotograma capturado y aplica verificaciones simples y honestas
+// cercanas a prueba de vida: debe haber exactamente un rostro presente y
+// ambos ojos deben leerse como abiertos.
 export async function runFaceCheck(uri: string): Promise<FaceCheckResult> {
   try {
     const faces = await FaceDetection.detect(uri, {

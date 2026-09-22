@@ -5,11 +5,13 @@ import { useLanguage } from '../i18n/LanguageContext';
 import Icon from './Icon';
 import { fonts } from '../theme/tokens';
 
-// Inline (not floating) language pill meant to sit inside a screen's own
-// header row — usually paired with BackButton on the opposite side — so it
-// never overlaps whatever else that screen already has in its corners.
-// `compact` drops the ES/EN label to a bare square icon button, for headers
-// already tight on space (e.g. Home's avatar/name/dark-mode/bell row).
+// Píldora de idioma en línea (no flotante) pensada para ir dentro de la
+// propia fila de encabezado de una pantalla — usualmente emparejada con
+// BackButton en el lado opuesto — para que nunca se superponga con lo que
+// esa pantalla ya tenga en sus esquinas. `compact` reduce la etiqueta
+// ES/EN a un simple botón cuadrado con ícono, para encabezados ya
+// apretados de espacio (ej. la fila de avatar/nombre/modo oscuro/campana
+// de Inicio).
 export default function LanguageSwitch({ dark, compact }: { dark?: boolean; compact?: boolean }) {
   const { theme } = useTheme();
   const { language, toggle } = useLanguage();

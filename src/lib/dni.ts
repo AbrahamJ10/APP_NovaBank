@@ -1,9 +1,11 @@
-// Real-world Peruvian DNI (RENIEC) back-of-card barcode is a PDF417 symbol.
-// Its payload is "@"-delimited plain text. Layout has shifted across card
-// revisions, so we parse defensively: try the commonly documented field
-// order used by the current blue DNIe, and always fall back to pulling an
-// 8-digit national ID out of the raw payload so scanning still succeeds
-// against any real card even if a field shifts.
+// El código de barras del reverso del DNI peruano real (RENIEC) es un
+// símbolo PDF417. Su contenido es texto plano delimitado por "@". El
+// formato ha cambiado entre revisiones de la tarjeta, así que se procesa a
+// la defensiva: se intenta el orden de campos comúnmente documentado que
+// usa el DNIe azul actual, y siempre se recurre como respaldo a extraer un
+// documento nacional de 8 dígitos del contenido crudo, para que el escaneo
+// siga funcionando contra cualquier tarjeta real aunque un campo cambie de
+// lugar.
 export type DniData = {
   raw: string;
   dni?: string;

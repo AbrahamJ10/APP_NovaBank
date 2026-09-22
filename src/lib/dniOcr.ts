@@ -2,12 +2,12 @@ import TextRecognition, { TextRecognitionResult } from '@react-native-ml-kit/tex
 
 export type DniFrontAnalysis = {
   dni: string | null;
-  birthDate: string | null; // normalized DD/MM/YYYY
+  birthDate: string | null; // normalizado DD/MM/YYYY
   age: number | null;
 };
 
-// Accepts "DD MM YYYY" (electronic DNI), "DD/MM/YYYY" or "DD-MM-YYYY" (blue
-// DNI / re-OCR variance).
+// Acepta "DD MM YYYY" (DNI electrónico), "DD/MM/YYYY" o "DD-MM-YYYY" (DNI
+// azul / variación del OCR).
 const DATE_RE = /\b(\d{2})[\s\/\-.](\d{2})[\s\/\-.](\d{4})\b/g;
 const EIGHT_DIGITS_RE = /\b\d{8}\b/;
 const DNI_LABEL_RE = /\bCUI\b|\bDNI\b/i;
@@ -38,13 +38,14 @@ function findAllValidDates(text: string): ParsedDate[] {
   return dates;
 }
 
-// ML Kit's block/line order is not reliable reading order on multi-column ID
-// layouts — the birth date can appear textually far from its own label, or
-// even before it. Instead of hunting for the "NACIMIENTO" label (which also
-// gets OCR'd with stray accents, e.g. "nacimíento"), collect every date-like
-// value on the card and classify by year: DNI always carries exactly three
-// dates — birth (oldest), issuance (recent), expiry (future) — regardless of
-// where the text landed.
+// El orden de bloques/líneas de ML Kit no es un orden de lectura confiable
+// en diseños de identificación a varias columnas — la fecha de nacimiento
+// puede aparecer textualmente lejos de su propia etiqueta, o incluso antes.
+// En vez de perseguir la etiqueta "NACIMIENTO" (que también sale con
+// acentos raros en el OCR, ej. "nacimíento"), se recolecta todo valor con
+// forma de fecha en la tarjeta y se clasifica por año: el DNI siempre trae
+// exactamente tres fechas — nacimiento (la más antigua), emisión (reciente),
+// vencimiento (futura) — sin importar dónde haya caído el texto.
 function pickBirthDate(dates: ParsedDate[]): ParsedDate | null {
   const nowYear = new Date().getFullYear();
   const plausible = dates.filter((d) => d.yyyy <= nowYear);
@@ -53,13 +54,13 @@ function pickBirthDate(dates: ParsedDate[]): ParsedDate | null {
 }
 
 function findDniNumber(lines: string[], excludeDigits: Set<string>): string | null {
-  // Prefer a number sitting on the same line as the CUI/DNI label.
+  // Se prefiere un número que esté en la misma línea que la etiqueta CUI/DNI.
   for (const line of lines) {
     if (!DNI_LABEL_RE.test(line)) continue;
     const match = line.match(EIGHT_DIGITS_RE);
     if (match && !excludeDigits.has(match[0])) return match[0];
   }
-  // Fall back to any 8-digit run that isn't one of the card's dates.
+  // Como respaldo, cualquier secuencia de 8 dígitos que no sea una de las fechas de la tarjeta.
   for (const line of lines) {
     const match = line.match(EIGHT_DIGITS_RE);
     if (match && !excludeDigits.has(match[0])) return match[0];
@@ -81,10 +82,11 @@ export function calculateAge(dateStr: string): number | null {
   return age;
 }
 
-// The front of both the blue (manual) and electronic Peruvian DNI prints the
-// 8-digit document number and the birth date in large type — read with
-// on-device OCR so we don't depend solely on the back's PDF417 barcode, and
-// can gate registration on being 18+.
+// El anverso tanto del DNI azul (manual) como del electrónico peruano
+// imprime el número de documento de 8 dígitos y la fecha de nacimiento en
+// letra grande — se lee con OCR en el propio dispositivo para no depender
+// solo del código de barras PDF417 del reverso, y poder exigir 18+ años
+// para el registro.
 export async function analyzeDniFront(uri: string): Promise<DniFrontAnalysis> {
   try {
     const result = await TextRecognition.recognize(uri);
