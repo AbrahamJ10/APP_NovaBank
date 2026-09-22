@@ -11,7 +11,7 @@ import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -65,7 +65,7 @@ export default function HomeScreen() {
           </Pressable>
         </View>
         <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
-          {ocultar ? enmascarar(money(available)) : money(available)}
+          {ocultar ? enmascarar(dinero(available)) : dinero(available)}
         </Text>
         <View style={{ marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 22, height: 1, backgroundColor: 'rgba(217,190,122,.7)' }} />
@@ -75,9 +75,9 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: 'rgba(255,255,255,.07)', borderWidth: 1, borderColor: 'rgba(217,190,122,.22)', padding: 18, flexDirection: 'row', flexWrap: 'wrap' }}>
-          <MiniEstadistica label={t('home.heldBalance')} value={money(held)} />
-          <MiniEstadistica label={t('home.creditLine')} value={money(creditLine)} />
-          <MiniEstadistica label={t('home.minPayment')} value={money(minPayment)} />
+          <MiniEstadistica label={t('home.heldBalance')} value={dinero(held)} />
+          <MiniEstadistica label={t('home.creditLine')} value={dinero(creditLine)} />
+          <MiniEstadistica label={t('home.minPayment')} value={dinero(minPayment)} />
           <MiniEstadistica label={t('home.cutDate')} value={cutDate} />
         </View>
       </LinearGradient>

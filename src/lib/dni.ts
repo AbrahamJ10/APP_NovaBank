@@ -6,7 +6,7 @@
 // documento nacional de 8 dígitos del contenido crudo, para que el escaneo
 // siga funcionando contra cualquier tarjeta real aunque un campo cambie de
 // lugar.
-export type DniData = {
+export type DatosDni = {
   raw: string;
   dni?: string;
   apellidoPaterno?: string;
@@ -15,7 +15,7 @@ export type DniData = {
   fullName?: string;
 };
 
-export function analizarCodigoBarrasDni(crudo: string): DniData {
+export function analizarCodigoBarrasDni(crudo: string): DatosDni {
   const limpio = crudo.trim();
   const partes = limpio.split('@');
 

@@ -7,7 +7,7 @@ import { BotonFantasma, BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -24,7 +24,7 @@ export default function PayCardScreen() {
   const cuota = cardDebt / 3;
   const planes = [
     { id: 'full' as const, label: t('payCard.planFull'), note: t('payCard.planFullNote'), amt: cardDebt, icon: 'check_circle' },
-    { id: 'installments' as const, label: t('payCard.planInstallments'), note: t('payCard.planInstallmentsNote', { amount: money(cuota) }), amt: cuota, icon: 'calendar_month' },
+    { id: 'installments' as const, label: t('payCard.planInstallments'), note: t('payCard.planInstallmentsNote', { amount: dinero(cuota) }), amt: cuota, icon: 'calendar_month' },
     { id: 'min' as const, label: t('payCard.planMin'), note: t('payCard.planMinNote'), amt: minPayment, icon: 'trending_down' },
   ];
 
@@ -55,8 +55,8 @@ export default function PayCardScreen() {
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('payCard.scheduled')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {plan === 'installments'
-              ? t('payCard.scheduledInstallments', { amount: money(cardDebt) })
-              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: money(planes.find((opcion) => opcion.id === plan)!.amt) })}
+              ? t('payCard.scheduledInstallments', { amount: dinero(cardDebt) })
+              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
           </Text>
           <BotonFantasma label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
         </View>
@@ -72,18 +72,18 @@ export default function PayCardScreen() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('payCard.periodDebt')}</Text>
-            <Text style={{ marginTop: 7, fontFamily: fonts.heading, fontSize: 34, letterSpacing: -1.3, color: '#fff' }}>{money(cardDebt)}</Text>
+            <Text style={{ marginTop: 7, fontFamily: fonts.heading, fontSize: 34, letterSpacing: -1.3, color: '#fff' }}>{dinero(cardDebt)}</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: 'rgba(255,255,255,.5)' }}>{t('payCard.minimumPayment')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fonts.headingBold, fontSize: 15, color: '#fff' }}>{money(minPayment)}</Text>
+            <Text style={{ marginTop: 6, fontFamily: fonts.headingBold, fontSize: 15, color: '#fff' }}>{dinero(minPayment)}</Text>
           </View>
         </View>
         <View style={{ marginTop: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,.12)', overflow: 'hidden' }}>
           <LinearGradient colors={['#B98B33', '#E7CE92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${pctLinea}%`, height: 6, borderRadius: 3 }} />
         </View>
         <View style={{ marginTop: 9, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: pctLinea, line: money(creditLine) })}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: pctLinea, line: dinero(creditLine) })}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.dueDate', { date: cutDate })}</Text>
         </View>
       </LinearGradient>
@@ -103,7 +103,7 @@ export default function PayCardScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{opcion.label}</Text>
                 <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{opcion.note}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: theme.ink }}>{money(opcion.amt)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: theme.ink }}>{dinero(opcion.amt)}</Text>
             </Pressable>
           );
         })}
@@ -119,7 +119,7 @@ export default function PayCardScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.ink }}>{t('payCard.installmentOf', { n })}</Text>
                 <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{n === 1 ? t('payCard.confirmPayment') : `${diaCorte} de ${meses[n - 1]}`}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(cuota)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(cuota)}</Text>
             </View>
           ))}
           <Text style={{ marginTop: 12, fontFamily: fonts.body, fontSize: 11, lineHeight: 16, color: theme.soft }}>{t('payCard.scheduleNote')}</Text>

@@ -7,7 +7,7 @@ import { BotonVolver } from '../../components/Primitivas';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -67,7 +67,7 @@ export default function SpendScreen() {
                 adjustsFontSizeToFit
                 minimumFontScale={0.6}
               >
-                {money(total)}
+                {dinero(total)}
               </Text>
               <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 8.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('spend.spent')}</Text>
             </View>
@@ -91,7 +91,7 @@ export default function SpendScreen() {
             <View key={cat}>
               <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
                 <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{META_CATEGORIA[cat]?.label ?? cat}</Text>
-                <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(amt)}</Text>
+                <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(amt)}</Text>
               </View>
               <View style={{ marginTop: 8, height: 6, borderRadius: 3, backgroundColor: theme.tint, overflow: 'hidden' }}>
                 <View style={{ height: 6, borderRadius: 3, backgroundColor: META_CATEGORIA[cat]?.color ?? '#999', width: `${Math.max(4, pct * 100)}%` }} />
@@ -113,7 +113,7 @@ export default function SpendScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{comercio.name}</Text>
                 <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{comercio.n} {comercio.n > 1 ? t('spend.operations') : t('spend.operation')}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{money(comercio.amt)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{dinero(comercio.amt)}</Text>
             </View>
           ))}
         </View>
@@ -122,7 +122,7 @@ export default function SpendScreen() {
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: '#0E2C4E', padding: 20, flexDirection: 'row', gap: 12 }}>
         <Icono name="insights" size={20} color="#E7CE92" />
         <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 19, color: 'rgba(255,255,255,.82)' }}>
-          {t('spend.summary', { total: money(total), count: txMes.length })}
+          {t('spend.summary', { total: dinero(total), count: txMes.length })}
         </Text>
       </View>
     </Pantalla>

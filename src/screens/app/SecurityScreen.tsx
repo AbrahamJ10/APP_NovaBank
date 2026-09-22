@@ -14,7 +14,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
-import { getLastAccount } from '../../lib/secureTokens';
+import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 const RADIO = 46;
 const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
@@ -32,7 +32,7 @@ export default function SecurityScreen() {
 
   const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
-    Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), getLastAccount()])
+    Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), obtenerUltimaCuenta()])
       .then(([hw, enrolled, remembered]) => setFaceIdActivo(hw && enrolled && !!remembered))
       .catch(() => setFaceIdActivo(false));
   }, []);

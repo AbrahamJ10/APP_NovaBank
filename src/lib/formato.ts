@@ -1,4 +1,4 @@
-export function money(n: number) {
+export function dinero(n: number) {
   return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
@@ -8,12 +8,12 @@ export function mmss(segundosTotales: number) {
   return `${minutos}:${String(segundos).padStart(2, '0')}`;
 }
 
-export function maskEmail(correo: string) {
+export function enmascararCorreo(correo: string) {
   const [nombre, dominio] = correo.split('@');
   if (!dominio) return correo;
   return `${nombre.slice(0, 4)}···@${dominio}`;
 }
 
-export function maskPhone(telefono: string) {
+export function enmascararTelefono(telefono: string) {
   return `+51 ··· ${telefono.slice(-3)}`;
 }

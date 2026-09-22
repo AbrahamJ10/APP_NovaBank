@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
-import { clearTokens, getAccessToken, getRefreshToken, saveTokens } from './secureTokens';
+import { limpiarTokens, obtenerTokenAcceso, obtenerTokenRefresco, guardarTokens } from './tokensSeguros';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -76,17 +76,17 @@ let refreshPromise: Promise<string> | null = null;
 async function refreshAccessToken(): Promise<string> {
   if (!refreshPromise) {
     refreshPromise = (async () => {
-      const refreshToken = await getRefreshToken();
+      const refreshToken = await obtenerTokenRefresco();
       if (!refreshToken) throw new SessionExpiredError('No hay sesión activa');
       try {
         const data: AuthResponse = await rawRequest('/api/auth/refresh', {
           method: 'POST',
           body: JSON.stringify({ refreshToken }),
         });
-        await saveTokens(data.accessToken, data.refreshToken);
+        await guardarTokens(data.accessToken, data.refreshToken);
         return data.accessToken;
       } catch (err) {
-        await clearTokens();
+        await limpiarTokens();
         throw new SessionExpiredError('Tu sesión expiró, inicia sesión nuevamente');
       }
     })().finally(() => {
@@ -97,7 +97,7 @@ async function refreshAccessToken(): Promise<string> {
 }
 
 async function authedRequest(path: string, options: RequestInit = {}) {
-  let accessToken = await getAccessToken();
+  let accessToken = await obtenerTokenAcceso();
 
   const attempt = (token: string | null) =>
     rawRequest(path, {
@@ -453,19 +453,19 @@ export const authApi = {
     selfie?: string;
   }) {
     const data: AuthResponse = await rawRequest('/api/auth/register', { method: 'POST', body: JSON.stringify(input) });
-    await saveTokens(data.accessToken, data.refreshToken);
+    await guardarTokens(data.accessToken, data.refreshToken);
     return data.user;
   },
 
   async login(input: { email: string; password: string }) {
     const data: AuthResponse = await rawRequest('/api/auth/login', { method: 'POST', body: JSON.stringify(input) });
-    await saveTokens(data.accessToken, data.refreshToken);
+    await guardarTokens(data.accessToken, data.refreshToken);
     return data.user;
   },
 
   async faceLogin(input: { email: string; selfie: string }) {
     const data: AuthResponse = await rawRequest('/api/auth/face-login', { method: 'POST', body: JSON.stringify(input) });
-    await saveTokens(data.accessToken, data.refreshToken);
+    await guardarTokens(data.accessToken, data.refreshToken);
     return data.user;
   },
 
@@ -482,8 +482,8 @@ export const authApi = {
   },
 
   async logout() {
-    const refreshToken = await getRefreshToken();
-    await clearTokens();
+    const refreshToken = await obtenerTokenRefresco();
+    await limpiarTokens();
     if (refreshToken) {
       await rawRequest('/api/auth/logout', { method: 'POST', body: JSON.stringify({ refreshToken }) }).catch(() => {});
     }

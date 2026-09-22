@@ -11,7 +11,7 @@ import { BotonDorado, BotonFantasma } from '../../components/Botones';
 import { fonts } from '../../theme/tokens';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
-import { faceFailMessage, runFaceCheck } from '../../lib/faceDetect';
+import { mensajeFalloRostro, ejecutarChequeoRostro } from '../../lib/deteccionRostro';
 import { ApiError, verificationApi } from '../../lib/api';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -64,10 +64,10 @@ export default function RegisterFaceScreen() {
         return;
       }
 
-      const pruebaVida = await runFaceCheck(foto.uri);
+      const pruebaVida = await ejecutarChequeoRostro(foto.uri);
       console.log('[registerFace] liveness:', pruebaVida);
       if (!pruebaVida.ok) {
-        setMensajeFalla(faceFailMessage(pruebaVida.reason, t));
+        setMensajeFalla(mensajeFalloRostro(pruebaVida.reason, t));
         setEtapa('fail');
         return;
       }

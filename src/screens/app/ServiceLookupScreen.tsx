@@ -9,7 +9,7 @@ import { BotonFantasma, BotonDorado, BotonPrimario } from '../../components/Boto
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { RootStackParamList } from '../../navigation/types';
 import { ServiceBill } from '../../state/types';
@@ -67,7 +67,7 @@ export default function ServiceLookupScreen() {
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
-            {t('services.receiptPaidBody', { name: recibo.name, amount: money(recibo.amount) })}
+            {t('services.receiptPaidBody', { name: recibo.name, amount: dinero(recibo.amount) })}
           </Text>
           <BotonFantasma label={t('serviceLookup.backToServices')} onPress={() => nav.navigate('Services')} style={{ marginTop: 24, width: 240 }} />
         </View>
@@ -120,7 +120,7 @@ export default function ServiceLookupScreen() {
         <View style={{ marginTop: 22 }}>
           <View style={{ borderRadius: 22, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
             <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: theme.soft, letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('serviceLookup.amountDue')}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1, color: theme.ink }}>{money(recibo.amount)}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1, color: theme.ink }}>{dinero(recibo.amount)}</Text>
             <View style={{ marginTop: 14, paddingTop: 14, borderTopWidth: 1, borderTopColor: theme.line, gap: 8 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={{ fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{biller.fieldLabel}</Text>
@@ -141,7 +141,7 @@ export default function ServiceLookupScreen() {
           ) : null}
 
           <BotonDorado
-            label={pagando ? t('services.paying') : t('services.pay', { amount: money(recibo.amount) })}
+            label={pagando ? t('services.paying') : t('services.pay', { amount: dinero(recibo.amount) })}
             disabled={recibo.amount > available || pagando}
             onPress={enviarPago}
             style={{ marginTop: 16 }}

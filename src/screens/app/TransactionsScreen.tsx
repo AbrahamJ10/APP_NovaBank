@@ -9,7 +9,7 @@ import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { Tx } from '../../state/types';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -58,7 +58,7 @@ export default function TransactionsScreen() {
       message: [
         `NovaBank`,
         `${tx.name} — ${tx.meta}`,
-        `${tx.kind === 'credit' ? '+' : '-'}${money(tx.amount)}`,
+        `${tx.kind === 'credit' ? '+' : '-'}${dinero(tx.amount)}`,
         `${cuando} · ${tx.time}`,
         `${t('transactions.referenceLabel')}: ${('NV-' + tx.id).toUpperCase()}`,
       ].join('\n'),
@@ -138,7 +138,7 @@ export default function TransactionsScreen() {
             </View>
             <Text style={{ marginTop: 18, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1.2, color: seleccionada.kind === 'credit' ? theme.green : theme.red }}>
               {seleccionada.kind === 'credit' ? '+' : '−'}
-              {money(seleccionada.amount)}
+              {dinero(seleccionada.amount)}
             </Text>
             <View style={{ marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 11, paddingVertical: 5, borderRadius: 20, backgroundColor: theme.tint }}>
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.gold }}>{t('transactions.completed')}</Text>

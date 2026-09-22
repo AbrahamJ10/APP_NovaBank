@@ -16,7 +16,7 @@ import { fonts } from '../../theme/tokens';
 import { useAppState } from '../../state/AppStateContext';
 import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
-import { getLastAccount } from '../../lib/secureTokens';
+import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
 
@@ -32,7 +32,7 @@ export default function ProfileScreen() {
   // configuración separada por cuenta.
   const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
-    Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), getLastAccount()])
+    Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), obtenerUltimaCuenta()])
       .then(([hw, enrolled, remembered]) => setFaceIdActivo(hw && enrolled && !!remembered))
       .catch(() => setFaceIdActivo(false));
   }, []);

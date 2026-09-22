@@ -5,22 +5,22 @@ const REFRESH_KEY = 'novabank_refresh_token';
 const LAST_EMAIL_KEY = 'novabank_last_email';
 const LAST_NAME_KEY = 'novabank_last_name';
 
-export async function saveTokens(accessToken: string, refreshToken: string) {
+export async function guardarTokens(accessToken: string, refreshToken: string) {
   await Promise.all([
     SecureStore.setItemAsync(ACCESS_KEY, accessToken),
     SecureStore.setItemAsync(REFRESH_KEY, refreshToken),
   ]);
 }
 
-export async function getAccessToken() {
+export async function obtenerTokenAcceso() {
   return SecureStore.getItemAsync(ACCESS_KEY);
 }
 
-export async function getRefreshToken() {
+export async function obtenerTokenRefresco() {
   return SecureStore.getItemAsync(REFRESH_KEY);
 }
 
-export async function clearTokens() {
+export async function limpiarTokens() {
   await Promise.all([
     SecureStore.deleteItemAsync(ACCESS_KEY),
     SecureStore.deleteItemAsync(REFRESH_KEY),
@@ -32,22 +32,22 @@ export async function clearTokens() {
 // de referencia de quién comparar, y la pantalla de login pueda saludar a
 // un usuario que regresa por su nombre y saltarse pedir el correo de nuevo
 // (solo la contraseña, como hacen la mayoría de apps bancarias).
-export async function saveLastEmail(email: string) {
+export async function guardarUltimoCorreo(email: string) {
   await SecureStore.setItemAsync(LAST_EMAIL_KEY, email);
 }
 
-export async function getLastEmail() {
+export async function obtenerUltimoCorreo() {
   return SecureStore.getItemAsync(LAST_EMAIL_KEY);
 }
 
-export async function saveLastAccount(email: string, fullName: string) {
+export async function guardarUltimaCuenta(email: string, fullName: string) {
   await Promise.all([
     SecureStore.setItemAsync(LAST_EMAIL_KEY, email),
     SecureStore.setItemAsync(LAST_NAME_KEY, fullName),
   ]);
 }
 
-export async function getLastAccount() {
+export async function obtenerUltimaCuenta() {
   const [email, fullName] = await Promise.all([
     SecureStore.getItemAsync(LAST_EMAIL_KEY),
     SecureStore.getItemAsync(LAST_NAME_KEY),
@@ -56,7 +56,7 @@ export async function getLastAccount() {
   return { email, fullName };
 }
 
-export async function clearLastAccount() {
+export async function limpiarUltimaCuenta() {
   await Promise.all([
     SecureStore.deleteItemAsync(LAST_EMAIL_KEY),
     SecureStore.deleteItemAsync(LAST_NAME_KEY),

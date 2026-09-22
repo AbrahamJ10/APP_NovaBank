@@ -1,14 +1,14 @@
 import FaceDetection, { Face } from '@react-native-ml-kit/face-detection';
 
-export type FaceFailReason = 'no-face' | 'multiple-faces' | 'eyes-closed' | 'error';
+export type RazonFalloRostro = 'no-face' | 'multiple-faces' | 'eyes-closed' | 'error';
 
-export type FaceCheckResult = { ok: true; face: Face } | { ok: false; reason: FaceFailReason };
+export type ResultadoChequeoRostro = { ok: true; face: Face } | { ok: false; reason: RazonFalloRostro };
 
 // Ejecuta detección facial real en el propio dispositivo (Google ML Kit)
 // contra un fotograma capturado y aplica verificaciones simples y honestas
 // cercanas a prueba de vida: debe haber exactamente un rostro presente y
 // ambos ojos deben leerse como abiertos.
-export async function runFaceCheck(uri: string): Promise<FaceCheckResult> {
+export async function ejecutarChequeoRostro(uri: string): Promise<ResultadoChequeoRostro> {
   try {
     const faces = await FaceDetection.detect(uri, {
       performanceMode: 'accurate',
@@ -31,7 +31,7 @@ export async function runFaceCheck(uri: string): Promise<FaceCheckResult> {
   }
 }
 
-export function faceFailMessage(reason: FaceFailReason, t: (key: string) => string) {
+export function mensajeFalloRostro(reason: RazonFalloRostro, t: (key: string) => string) {
   switch (reason) {
     case 'no-face':
       return t('faceDetect.noFace');

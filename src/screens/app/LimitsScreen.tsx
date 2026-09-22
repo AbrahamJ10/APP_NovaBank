@@ -7,7 +7,7 @@ import { BotonVolver, Interruptor } from '../../components/Primitivas';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -39,7 +39,7 @@ export default function LimitsScreen() {
       <View style={{ marginTop: 18, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('limits.onlinePurchases')}</Text>
-          <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{money(limitOnline)}</Text>
+          <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limitOnline)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
           <DeslizadorSimple
@@ -52,16 +52,16 @@ export default function LimitsScreen() {
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(EN_LINEA_MIN)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{dinero(EN_LINEA_MIN)}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('limits.dailyCap')}</Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(EN_LINEA_MAX)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{dinero(EN_LINEA_MAX)}</Text>
         </View>
       </View>
 
       <View style={{ marginTop: 14, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('limits.atmWithdrawals')}</Text>
-          <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{money(limitAtm)}</Text>
+          <Text style={{ fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limitAtm)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
           <DeslizadorSimple
@@ -74,9 +74,9 @@ export default function LimitsScreen() {
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(CAJERO_MIN)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{dinero(CAJERO_MIN)}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('limits.dailyCap')}</Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(CAJERO_MAX)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{dinero(CAJERO_MAX)}</Text>
         </View>
       </View>
 

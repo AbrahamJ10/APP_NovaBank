@@ -862,7 +862,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'transfer.fee': 'Fee',
     'transfer.total': 'Total',
     'transfer.sent': 'Transfer sent',
-    'transfer.sentSubtitle': 'The money arrived instantly.',
+    'transfer.sentSubtitle': 'The dinero arrived instantly.',
     'transfer.completedBadge': 'COMPLETED',
     'transfer.recipientLabel': 'Recipient',
     'transfer.bankLabel': 'Bank',

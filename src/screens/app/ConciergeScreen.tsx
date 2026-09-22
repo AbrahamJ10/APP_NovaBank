@@ -8,7 +8,7 @@ import { BotonVolver } from '../../components/Primitivas';
 import { MarcaLogo } from '../../components/Logo';
 import Icono from '../../components/Icono';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { RootStackParamList } from '../../navigation/types';
 import { ServiceBill } from '../../state/types';
@@ -104,7 +104,7 @@ export default function ConciergeScreen() {
     }
     enviarAgente(
       t('concierge.servicesIntro'),
-      services.map((servicio) => ({ id: servicio.id, label: `${servicio.name} · ${servicio.paid ? t('concierge.upToDateShort') : money(servicio.amount)}`, run: () => mostrarDetalleServicio(servicio) }))
+      services.map((servicio) => ({ id: servicio.id, label: `${servicio.name} · ${servicio.paid ? t('concierge.upToDateShort') : dinero(servicio.amount)}`, run: () => mostrarDetalleServicio(servicio) }))
         .concat([accionVolver()])
     );
   }
@@ -125,7 +125,7 @@ export default function ConciergeScreen() {
       ]);
       return;
     }
-    enviarAgente(t('concierge.serviceStatusDue', { name: servicio.name, amount: money(servicio.amount), date: servicio.expiry }), [
+    enviarAgente(t('concierge.serviceStatusDue', { name: servicio.name, amount: dinero(servicio.amount), date: servicio.expiry }), [
       { id: 'pay', label: t('concierge.actionPayNow'), run: () => confirmarPago(servicio) },
       { id: 'suspend', label: t('concierge.actionSuspend'), run: () => realizarSuspension(servicio) },
       accionVolver(),
@@ -138,7 +138,7 @@ export default function ConciergeScreen() {
       enviarAgente(t('concierge.cannotAffordService', { name: servicio.name }), [accionVolver()]);
       return;
     }
-    enviarAgente(t('concierge.payConfirm', { amount: money(servicio.amount), name: servicio.name }), [
+    enviarAgente(t('concierge.payConfirm', { amount: dinero(servicio.amount), name: servicio.name }), [
       { id: 'yes', label: t('concierge.yes'), run: () => realizarPago(servicio) },
       { id: 'no', label: t('concierge.no'), run: () => enviarAgente(t('concierge.menuTitle'), menuPrincipal()) },
     ]);
@@ -153,7 +153,7 @@ export default function ConciergeScreen() {
       enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
       return;
     }
-    enviarAgente(t('concierge.paidDone', { amount: money(servicio.amount), name: servicio.name }), [accionVolver()]);
+    enviarAgente(t('concierge.paidDone', { amount: dinero(servicio.amount), name: servicio.name }), [accionVolver()]);
   }
 
   async function realizarSuspension(servicio: ServiceBill) {
@@ -182,7 +182,7 @@ export default function ConciergeScreen() {
 
   // --- Saldo y movimientos ---
   function mostrarSaldo() {
-    enviarAgente(t('concierge.balanceInfo', { available: money(available), debt: money(cardDebt), min: money(minPayment), line: money(creditLine) }), [
+    enviarAgente(t('concierge.balanceInfo', { available: dinero(available), debt: dinero(cardDebt), min: dinero(minPayment), line: dinero(creditLine) }), [
       { id: 'movements', label: t('concierge.actionShowMovements'), run: mostrarMovimientos },
       accionVolver(),
     ]);
@@ -194,7 +194,7 @@ export default function ConciergeScreen() {
       enviarAgente(t('concierge.noMovements'), [accionVolver()]);
       return;
     }
-    const lineas = transactions.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${money(tx.amount)} · ${tx.name}`).join('\n');
+    const lineas = transactions.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${dinero(tx.amount)} · ${tx.name}`).join('\n');
     enviarAgente(`${t('concierge.recentMovements')}\n${lineas}`, [accionVolver()]);
   }
 
@@ -202,7 +202,7 @@ export default function ConciergeScreen() {
   async function mostrarInfoSeguridad() {
     enviarAgente(t('concierge.securityLoading'));
     await loadSecurity();
-    enviarAgente(t('concierge.securityInfo', { count: String(sessions.length), online: money(limitOnline), atm: money(limitAtm) }), [
+    enviarAgente(t('concierge.securityInfo', { count: String(sessions.length), online: dinero(limitOnline), atm: dinero(limitAtm) }), [
       { id: 'goSecurity', label: t('concierge.actionGoSecurity'), run: () => nav.navigate('Security') },
       accionVolver(),
     ]);

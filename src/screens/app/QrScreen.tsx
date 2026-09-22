@@ -12,7 +12,7 @@ import { BotonDorado, BotonFantasma, BotonPrimario } from '../../components/Boto
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -179,7 +179,7 @@ export default function QrScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: '#fff' }}>{tx.name}</Text>
                 <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.5)' }}>{tx.daysAgo === 0 ? t('qr.today') : t('qr.daysAgo', { n: tx.daysAgo })}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#FF8C7A' }}>−{money(tx.amount)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#FF8C7A' }}>−{dinero(tx.amount)}</Text>
             </View>
           ))}
         </View>
@@ -196,7 +196,7 @@ export default function QrScreen() {
               <CampoTexto label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
             </View>
             <Text style={{ marginTop: 6, fontFamily: fonts.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
-              {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: money(available) })}
+              {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: dinero(available) })}
             </Text>
             {error ? (
               <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
@@ -215,7 +215,7 @@ export default function QrScreen() {
               <Icono name="check" size={36} color="#21A26B" />
             </View>
             <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19 }}>{t('qr.paymentDone')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: money(montoNum) })}</Text>
+            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: dinero(montoNum) })}</Text>
             <BotonPrimario label={t('qr.done')} onPress={cerrarHoja} style={{ marginTop: 18, width: '100%' }} />
           </View>
         ) : null}

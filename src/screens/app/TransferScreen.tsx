@@ -11,7 +11,7 @@ import Icono from '../../components/Icono';
 import { MarcaLogo } from '../../components/Logo';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money, mmss } from '../../lib/format';
+import { dinero, mmss } from '../../lib/formato';
 import { useAppState, TransferReceipt } from '../../state/AppStateContext';
 import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -61,7 +61,7 @@ export default function TransferScreen() {
     Share.share({
       message: [
         `NovaBank · ${t('transfer.completedBadge')}`,
-        money(r.amount),
+        dinero(r.amount),
         `${t('transfer.recipientLabel')}: ${r.payee.name}`,
         `${t('transfer.bankLabel')}: ${r.payee.bank} ${r.payee.account}`,
         `${t('transfer.dateLabel')}: ${r.date}`,
@@ -194,7 +194,7 @@ export default function TransferScreen() {
             />
           </View>
           <Text style={{ marginTop: 7, fontFamily: fonts.bodyMed, fontSize: 11.5, color: insuficiente ? '#C2352B' : theme.soft }}>
-            {insuficiente ? t('transfer.insufficient', { available: money(available) }) : t('transfer.availableAmount', { available: money(available) })}
+            {insuficiente ? t('transfer.insufficient', { available: dinero(available) }) : t('transfer.availableAmount', { available: dinero(available) })}
           </Text>
 
           <Text style={{ marginTop: 18, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.concept')}</Text>
@@ -233,7 +233,7 @@ export default function TransferScreen() {
           <BotonVolver onPress={() => setPaso('form')} />
           <Text style={{ fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('transfer.confirmToken')}</Text>
           <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
-            {t('transfer.tokenSubtitleEmail', { amount: money(montoNum) })}
+            {t('transfer.tokenSubtitleEmail', { amount: dinero(montoNum) })}
           </Text>
           <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 24 }}>
             <CasillasOtp value={codigo} />
@@ -276,7 +276,7 @@ export default function TransferScreen() {
             <View style={{ height: 1, backgroundColor: theme.line, marginVertical: 6 }} />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.total')}</Text>
-              <Text style={{ fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{money(montoNum)}</Text>
+              <Text style={{ fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{dinero(montoNum)}</Text>
             </View>
           </View>
         </View>
@@ -300,7 +300,7 @@ export default function TransferScreen() {
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 10.5, color: '#21A26B' }}>{t('transfer.completedBadge')}</Text>
               </View>
             </View>
-            <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{money(comprobante.amount)}</Text>
+            <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1.1, color: theme.ink }}>{dinero(comprobante.amount)}</Text>
             <View style={{ marginTop: 16, gap: 10 }}>
               <Fila label={t('transfer.recipientLabel')} value={comprobante.payee.name} />
               <Fila label={t('transfer.bankLabel')} value={`${comprobante.payee.bank} ${comprobante.payee.account}`} />
@@ -334,8 +334,8 @@ export default function TransferScreen() {
             <View style={{ marginTop: 14, gap: 10 }}>
               <Fila label={t('transfer.reasonLabel')} value={comprobante.reasonLabel ?? ''} />
               <Fila label={t('transfer.codeLabel')} value={comprobante.reasonCode ?? ''} />
-              <Fila label={t('transfer.amountLabel')} value={money(comprobante.amount)} />
-              <Fila label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: money(available) })}</Text>} />
+              <Fila label={t('transfer.amountLabel')} value={dinero(comprobante.amount)} />
+              <Fila label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: dinero(available) })}</Text>} />
             </View>
           </View>
 

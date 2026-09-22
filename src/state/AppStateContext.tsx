@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { NotificationItem, Payee, ServiceBill, Session, Tx } from './types';
-import { DniData } from '../lib/dni';
+import { DatosDni } from '../lib/dni';
 import {
   AccountSummary,
   accountApi,
@@ -24,7 +24,7 @@ import {
   withdrawalsApi,
   withTimeout,
 } from '../lib/api';
-import { getAccessToken, getLastEmail, getRefreshToken, saveLastAccount } from '../lib/secureTokens';
+import { obtenerTokenAcceso, obtenerUltimoCorreo, obtenerTokenRefresco, guardarUltimaCuenta } from '../lib/tokensSeguros';
 
 const MESES_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
@@ -219,7 +219,7 @@ export function useAppStateInternal() {
   const [sessions, setSessions] = useState<SecuritySession[]>([]);
 
   const [withdraw, setWithdraw] = useState<{ id: string; code: string; qr: string; deadline: number; amount: number } | null>(null);
-  const [scannedDni, setScannedDni] = useState<DniData | null>(null);
+  const [scannedDni, setScannedDni] = useState<DatosDni | null>(null);
   const [dniFrontPhoto, setDniFrontPhoto] = useState<string | null>(null);
   const [frontDniNumber, setFrontDniNumber] = useState<string | null>(null);
   const [pendingSelfie, setPendingSelfie] = useState<string | null>(null);
@@ -238,7 +238,7 @@ export function useAppStateInternal() {
   // llamada nueva a login().
   const restoreSession = useCallback(async (): Promise<boolean> => {
     try {
-      const [accessToken, refreshToken] = await Promise.all([getAccessToken(), getRefreshToken()]);
+      const [accessToken, refreshToken] = await Promise.all([obtenerTokenAcceso(), obtenerTokenRefresco()]);
       if (!accessToken && !refreshToken) return false;
       const apiUser = await withTimeout(authApi.me(), TIEMPO_LIMITE_VERIFICACION_SESION_MS);
       setUser((u) => aplicarUsuarioApi(u, apiUser));
@@ -305,7 +305,7 @@ export function useAppStateInternal() {
   // en cada refreshAccount — no respaldan nada en la pantalla de Inicio.
   const loadSecurity = useCallback(async () => {
     try {
-      const refreshToken = await getRefreshToken();
+      const refreshToken = await obtenerTokenRefresco();
       const [alertsRes, limitsRes, sessionsRes] = await Promise.all([
         securityApi.getAlerts(),
         securityApi.getLimits(),
@@ -356,7 +356,7 @@ export function useAppStateInternal() {
   }, [loadSecurity]);
 
   const revokeOtherSessions = useCallback(async () => {
-    const refreshToken = await getRefreshToken();
+    const refreshToken = await obtenerTokenRefresco();
     if (!refreshToken) return;
     setSessions((s) => s.filter((x) => x.current)); // optimistic
     try {
@@ -476,7 +476,7 @@ export function useAppStateInternal() {
       // de que `session` llegue a 'in') mostraría los valores falsos de
       // relleno que hubiera en usuarioPorDefecto.
       await refreshAccount();
-      await saveLastAccount(pendingUser.email, apiUser.fullName);
+      await guardarUltimaCuenta(pendingUser.email, apiUser.fullName);
       setPendingUser(null);
       setDniFrontPhoto(null);
       setFrontDniNumber(null);
@@ -500,7 +500,7 @@ export function useAppStateInternal() {
     try {
       const apiUser = await authApi.login({ email: trimmed, password });
       setUser((u) => aplicarUsuarioApi(u, apiUser));
-      await saveLastAccount(trimmed, apiUser.fullName);
+      await guardarUltimaCuenta(trimmed, apiUser.fullName);
       setAttempts(0);
       setSession('in');
       touch();
@@ -525,7 +525,7 @@ export function useAppStateInternal() {
   const loginWithFace = useCallback(async (selfieBase64: string) => {
     if (blockedUntil && blockLeft > 0) return { ok: false as const, reason: 'blocked' as const };
 
-    const email = await getLastEmail();
+    const email = await obtenerUltimoCorreo();
     if (!email) {
       return { ok: false as const, reason: 'noAccount' as const, message: 'Primero inicia sesión con tu contraseña en este dispositivo.' };
     }
@@ -533,7 +533,7 @@ export function useAppStateInternal() {
     try {
       const apiUser = await authApi.faceLogin({ email, selfie: selfieBase64 });
       setUser((u) => aplicarUsuarioApi(u, apiUser));
-      await saveLastAccount(email, apiUser.fullName);
+      await guardarUltimaCuenta(email, apiUser.fullName);
       setAttempts(0);
       setSession('in');
       touch();
@@ -684,7 +684,7 @@ export function useAppStateInternal() {
     try {
       const apiUser = await profileApi.updateEmail(newEmail, otpCode);
       setUser((u) => aplicarUsuarioApi(u, apiUser));
-      await saveLastAccount(apiUser.email, apiUser.fullName);
+      await guardarUltimaCuenta(apiUser.email, apiUser.fullName);
       return { ok: true as const };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo actualizar el correo. Intenta de nuevo.' };

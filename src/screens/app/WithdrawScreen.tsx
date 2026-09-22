@@ -7,7 +7,7 @@ import { TituloPantalla } from '../../components/Primitivas';
 import { BotonPeligroContorno, BotonPrimario } from '../../components/Botones';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { mmss } from '../../lib/format';
+import { mmss } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 

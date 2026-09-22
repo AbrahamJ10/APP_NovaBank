@@ -14,7 +14,7 @@ import RastreadorActividad from './src/components/RastreadorActividad';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
-// One-time cleanup: an earlier build scheduled fake "you received money"
+// One-time cleanup: an earlier build scheduled fake "you received dinero"
 // local notifications every couple minutes as a demo. Now that balances and
 // transactions are real, those are gone from the code, but any still
 // pending on the device (Android's AlarmManager keeps them independently of

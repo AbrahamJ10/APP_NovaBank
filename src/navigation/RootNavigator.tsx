@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { useAppState } from '../state/AppStateContext';
-import { startAuditTracking, stopAuditTracking, trackEvent } from '../lib/audit';
+import { iniciarSeguimientoAuditoria, detenerSeguimientoAuditoria, rastrearEvento } from '../lib/auditoria';
 import AuthStack from './AuthStack';
 import RootStack from './RootStack';
 
@@ -15,9 +15,9 @@ export default function RootNavigator() {
 
   useEffect(() => {
     if (session === 'in') {
-      startAuditTracking();
+      iniciarSeguimientoAuditoria();
     } else {
-      stopAuditTracking();
+      detenerSeguimientoAuditoria();
       ultimaRuta.current = undefined;
     }
   }, [session]);
@@ -27,7 +27,7 @@ export default function RootNavigator() {
     const ruta = refNav.current?.getCurrentRoute()?.name;
     if (ruta && ruta !== ultimaRuta.current) {
       ultimaRuta.current = ruta;
-      trackEvent('screen_view', { screen: ruta });
+      rastrearEvento('screen_view', { screen: ruta });
     }
   };
 

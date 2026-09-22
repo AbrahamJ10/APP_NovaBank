@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { fonts } from '../theme/tokens';
-import { money } from '../lib/format';
+import { dinero } from '../lib/formato';
 import { Tx } from '../state/types';
 import Icono from './Icono';
 
@@ -37,7 +37,7 @@ export default function FilaTransaccion({ tx, onPress, showDate }: { tx: Tx; onP
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: colorMonto }}>
           {signo}
-          {money(tx.amount)}
+          {dinero(tx.amount)}
         </Text>
         {showDate ? <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{tx.time}</Text> : null}
       </View>

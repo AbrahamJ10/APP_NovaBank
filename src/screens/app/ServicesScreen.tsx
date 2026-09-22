@@ -9,7 +9,7 @@ import { BotonFantasma, BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { money } from '../../lib/format';
+import { dinero } from '../../lib/formato';
 import { useAppState } from '../../state/AppStateContext';
 import { ServiceBill } from '../../state/types';
 import { RootStackParamList } from '../../navigation/types';
@@ -61,7 +61,7 @@ export default function ServicesScreen() {
           </View>
           <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
-            {t('services.receiptPaidBody', { name: seleccionado.name, amount: money(seleccionado.amount) })}
+            {t('services.receiptPaidBody', { name: seleccionado.name, amount: dinero(seleccionado.amount) })}
           </Text>
           <BotonFantasma
             label={t('services.payAnother')}
@@ -128,7 +128,7 @@ export default function ServicesScreen() {
 
         <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 20, borderRadius: 24, padding: 22 }}>
           <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.totalToPay')}</Text>
-          <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 38, letterSpacing: -1.5, color: '#fff' }}>{money(seleccionado.amount)}</Text>
+          <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 38, letterSpacing: -1.5, color: '#fff' }}>{dinero(seleccionado.amount)}</Text>
           <View style={{ marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(217,190,122,.22)', gap: 11 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontFamily: fonts.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.period')}</Text>
@@ -153,7 +153,7 @@ export default function ServicesScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('services.savings')}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: money(available) })}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: dinero(available) })}</Text>
           </View>
           <Icono name="check_circle" size={19} color={theme.gold} />
         </View>
@@ -163,7 +163,7 @@ export default function ServicesScreen() {
         ) : null}
 
         <BotonDorado
-          label={pagando ? t('services.paying') : t('services.pay', { amount: money(seleccionado.amount) })}
+          label={pagando ? t('services.paying') : t('services.pay', { amount: dinero(seleccionado.amount) })}
           disabled={seleccionado.amount > available || pagando}
           onPress={enviar}
           style={{ marginTop: 20 }}
@@ -208,7 +208,7 @@ export default function ServicesScreen() {
               <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{servicio.meta}</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: theme.ink }}>{money(servicio.amount)}</Text>
+              <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: theme.ink }}>{dinero(servicio.amount)}</Text>
               <Text style={{ marginTop: 3, fontFamily: fonts.bodyBold, fontSize: 10.5, color: servicio.suspended ? theme.gold : servicio.dueColor === 'warn' ? theme.red : theme.green }}>
                 {servicio.suspended ? t('services.suspended') : servicio.due}
               </Text>

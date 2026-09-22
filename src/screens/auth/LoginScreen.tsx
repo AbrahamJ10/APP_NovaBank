@@ -11,11 +11,11 @@ import { MarcaLogo } from '../../components/Logo';
 import SelectorIdioma from '../../components/SelectorIdioma';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { mmss } from '../../lib/format';
+import { mmss } from '../../lib/formato';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
-import { clearLastAccount, getLastAccount } from '../../lib/secureTokens';
+import { limpiarUltimaCuenta, obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 export default function LoginScreen() {
   const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -38,7 +38,7 @@ export default function LoginScreen() {
   const bloqueado = !!blockedUntil && blockLeft > 0;
 
   useEffect(() => {
-    getLastAccount().then(setRecordado);
+    obtenerUltimaCuenta().then(setRecordado);
     Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync()])
       .then(([hw, inscrita]) => setBiometriaDisponible(hw && inscrita))
       .catch(() => setBiometriaDisponible(false));
@@ -170,7 +170,7 @@ export default function LoginScreen() {
       {accesoRapido && (
         <Pressable
           onPress={() => {
-            clearLastAccount().catch(() => {});
+            limpiarUltimaCuenta().catch(() => {});
             setRecordado(null);
             setIdentificador('');
             setContrasena('');

@@ -8,7 +8,7 @@ import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { mmss, maskEmail } from '../../lib/format';
+import { mmss, enmascararCorreo } from '../../lib/formato';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
 import { verificationApi } from '../../lib/api';
@@ -108,7 +108,7 @@ export default function OtpScreen() {
       <Text style={{ marginTop: 20, fontFamily: fonts.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('otp.title')}</Text>
       <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
         {t('otp.subtitle')}
-        <Text style={{ fontFamily: fonts.bodyBold, color: theme.ink }}>{maskEmail(pendingUser?.email ?? '')}</Text>.
+        <Text style={{ fontFamily: fonts.bodyBold, color: theme.ink }}>{enmascararCorreo(pendingUser?.email ?? '')}</Text>.
       </Text>
 
       <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 26 }}>

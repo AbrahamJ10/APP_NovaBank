@@ -9,7 +9,7 @@ import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
-import { mmss } from '../../lib/format';
+import { mmss } from '../../lib/formato';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';

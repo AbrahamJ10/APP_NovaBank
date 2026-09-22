@@ -24,7 +24,7 @@ async function flush() {
   }
 }
 
-export function trackEvent(action: string, opts?: { screen?: string; success?: boolean; metadata?: Record<string, unknown> }) {
+export function rastrearEvento(action: string, opts?: { screen?: string; success?: boolean; metadata?: Record<string, unknown> }) {
   if (!enabled) return;
   queue.push({ action, screen: opts?.screen, success: opts?.success, metadata: opts?.metadata });
   if (queue.length >= MAX_QUEUE) flush();
@@ -33,13 +33,13 @@ export function trackEvent(action: string, opts?: { screen?: string; success?: b
 // Se llama una vez que el usuario está autenticado — no tiene sentido
 // encolar eventos (o pegarle a un endpoint que solo va a dar 401) mientras
 // está desconectado.
-export function startAuditTracking() {
+export function iniciarSeguimientoAuditoria() {
   if (enabled) return;
   enabled = true;
   timer = setInterval(flush, FLUSH_INTERVAL_MS);
 }
 
-export function stopAuditTracking() {
+export function detenerSeguimientoAuditoria() {
   enabled = false;
   if (timer) {
     clearInterval(timer);

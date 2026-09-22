@@ -10,7 +10,7 @@ import { BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { AuthStackParamList } from '../../navigation/types';
 import { useAppState } from '../../state/AppStateContext';
-import { analyzeDniFront } from '../../lib/dniOcr';
+import { analizarFrenteDni } from '../../lib/dniOcr';
 import { analizarCodigoBarrasDni } from '../../lib/dni';
 import { dniApi } from '../../lib/api';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -63,7 +63,7 @@ export default function DniCaptureScreen() {
         return;
       }
 
-      const analisis = await analyzeDniFront(foto.uri);
+      const analisis = await analizarFrenteDni(foto.uri);
       if (!analisis.dni || analisis.age === null) {
         setEstado('retry');
         setFallosFrente((n) => n + 1);

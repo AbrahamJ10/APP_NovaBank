@@ -1,6 +1,6 @@
 import TextRecognition, { TextRecognitionResult } from '@react-native-ml-kit/text-recognition';
 
-export type DniFrontAnalysis = {
+export type AnalisisFrenteDni = {
   dni: string | null;
   birthDate: string | null; // normalizado DD/MM/YYYY
   age: number | null;
@@ -68,7 +68,7 @@ function findDniNumber(lines: string[], excludeDigits: Set<string>): string | nu
   return null;
 }
 
-export function calculateAge(dateStr: string): number | null {
+export function calcularEdad(dateStr: string): number | null {
   const match = new RegExp(DATE_RE.source).exec(dateStr);
   if (!match) return null;
   const [, dd, mm, yyyy] = match;
@@ -87,7 +87,7 @@ export function calculateAge(dateStr: string): number | null {
 // letra grande — se lee con OCR en el propio dispositivo para no depender
 // solo del código de barras PDF417 del reverso, y poder exigir 18+ años
 // para el registro.
-export async function analyzeDniFront(uri: string): Promise<DniFrontAnalysis> {
+export async function analizarFrenteDni(uri: string): Promise<AnalisisFrenteDni> {
   try {
     const result = await TextRecognition.recognize(uri);
     const lines = linesInReadingOrder(result);
@@ -99,7 +99,7 @@ export async function analyzeDniFront(uri: string): Promise<DniFrontAnalysis> {
     const dni = findDniNumber(lines, dateDigitStrings);
 
     const birthDate = birth ? `${String(birth.dd).padStart(2, '0')}/${String(birth.mm).padStart(2, '0')}/${birth.yyyy}` : null;
-    const age = birthDate ? calculateAge(birthDate) : null;
+    const age = birthDate ? calcularEdad(birthDate) : null;
 
     console.log('[dniOcr] raw text:', JSON.stringify(result.text));
     console.log('[dniOcr] dates:', dates, '-> birth:', birth, '-> dni:', dni, '-> age:', age);
