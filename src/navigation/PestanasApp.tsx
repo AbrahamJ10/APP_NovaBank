@@ -15,9 +15,9 @@ const Tab = createBottomTabNavigator<ListaParametrosPestanas>();
 
 const PESTANAS: { name: keyof ListaParametrosPestanas; labelKey: string; icon: string }[] = [
   { name: 'Home', labelKey: 'tabs.home', icon: 'home' },
-  { name: 'Transactions', labelKey: 'tabs.transactions', icon: 'receipt_long' },
+  { name: 'Transactions', labelKey: 'tabs.transacciones', icon: 'receipt_long' },
   { name: 'Transfer', labelKey: 'tabs.transfer', icon: 'swap_horiz' },
-  { name: 'Notifications', labelKey: 'tabs.notifications', icon: 'notifications' },
+  { name: 'Notifications', labelKey: 'tabs.notificaciones', icon: 'notificaciones' },
   { name: 'Profile', labelKey: 'tabs.profile', icon: 'person' },
 ];
 

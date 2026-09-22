@@ -16,7 +16,7 @@ export default function PantallaTarjeta() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { user, cardBlocked, requestCardBlock, requestProfileOtp, revealCvv } = usarEstadoApp();
+  const { usuario, tarjetaBloqueada, solicitarBloqueoTarjeta, solicitarOtpPerfil, revelarCvv } = usarEstadoApp();
 
   const CONTROLES = [
     { key: 'pin', icon: 'pin', label: t('card.controlPinLabel'), desc: t('card.controlPinDesc') },
@@ -41,7 +41,7 @@ export default function PantallaTarjeta() {
       setErrorCvv(null);
       setPasoCvv('otp');
       setEnviandoCvv(true);
-      const resultado = await requestProfileOtp();
+      const resultado = await solicitarOtpPerfil();
       setEnviandoCvv(false);
       if (!resultado.ok) setErrorCvv(resultado.message);
     }
@@ -51,7 +51,7 @@ export default function PantallaTarjeta() {
     if (v.length !== 6 || verificandoCvv) return;
     setVerificandoCvv(true);
     setErrorCvv(null);
-    const resultado = await revealCvv(v);
+    const resultado = await revelarCvv(v);
     setVerificandoCvv(false);
     if (!resultado.ok) {
       setErrorCvv(resultado.message);
@@ -67,7 +67,7 @@ export default function PantallaTarjeta() {
       <TituloPantalla title={t('card.title')} showLanguageSwitch />
 
       <LinearGradient
-        colors={cardBlocked ? ['#5B6875', '#3A434C'] : ['#0E2C4E', '#061626']}
+        colors={tarjetaBloqueada ? ['#5B6875', '#3A434C'] : ['#0E2C4E', '#061626']}
         style={{ marginTop: 18, borderRadius: 22, padding: 24, height: 216, justifyContent: 'space-between', overflow: 'hidden' }}
       >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -75,21 +75,21 @@ export default function PantallaTarjeta() {
             <Text style={{ fontFamily: fuentes.displaySemi, fontSize: 17, letterSpacing: 2.4, textTransform: 'uppercase', color: '#E7CE92' }}>NovaBank</Text>
             <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 10.5, color: 'rgba(255,255,255,.55)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('card.visaInfinite')}</Text>
           </View>
-          <View style={{ paddingHorizontal: 11, paddingVertical: 5, borderRadius: 9, backgroundColor: cardBlocked ? 'rgba(255,255,255,.18)' : 'rgba(217,190,122,.2)' }}>
-            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: cardBlocked ? '#fff' : '#E7CE92' }}>{cardBlocked ? t('card.blocked') : t('card.active')}</Text>
+          <View style={{ paddingHorizontal: 11, paddingVertical: 5, borderRadius: 9, backgroundColor: tarjetaBloqueada ? 'rgba(255,255,255,.18)' : 'rgba(217,190,122,.2)' }}>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: tarjetaBloqueada ? '#fff' : '#E7CE92' }}>{tarjetaBloqueada ? t('card.blocked') : t('card.active')}</Text>
           </View>
         </View>
         <View>
           <LinearGradient colors={['#E7CE92', '#B98B33', '#F0DCA8']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 44, height: 32, borderRadius: 6 }} />
-          <Text style={{ marginTop: 12, fontFamily: fuentes.bodyMed, fontSize: 18, letterSpacing: 2.6, color: '#fff' }}>{user.cardNumber}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.bodyMed, fontSize: 18, letterSpacing: 2.6, color: '#fff' }}>{usuario.cardNumber}</Text>
           <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <View>
               <Text style={{ fontFamily: fuentes.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.holder')}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, letterSpacing: 0.5, color: '#fff' }}>{user.name.toUpperCase()}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, letterSpacing: 0.5, color: '#fff' }}>{usuario.name.toUpperCase()}</Text>
             </View>
             <View>
               <Text style={{ fontFamily: fuentes.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.expires')}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, color: '#fff' }}>{user.cardExpiry}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, color: '#fff' }}>{usuario.cardExpiry}</Text>
             </View>
             <Text style={{ fontFamily: fuentes.heading, fontSize: 16, fontStyle: 'italic', color: '#E7CE92' }}>VISA</Text>
           </View>
@@ -98,12 +98,12 @@ export default function PantallaTarjeta() {
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: theme.ink }}>{cardBlocked ? t('card.blockedTitle') : t('card.blockTitle')}</Text>
+          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: theme.ink }}>{tarjetaBloqueada ? t('card.blockedTitle') : t('card.blockTitle')}</Text>
           <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
-            {cardBlocked ? t('card.blockedDesc') : t('card.unblockedDesc')}
+            {tarjetaBloqueada ? t('card.blockedDesc') : t('card.unblockedDesc')}
           </Text>
         </View>
-        <Interruptor value={cardBlocked} onChange={(siguiente) => (siguiente ? setConfirmarAbierto(true) : requestCardBlock(false))} />
+        <Interruptor value={tarjetaBloqueada} onChange={(siguiente) => (siguiente ? setConfirmarAbierto(true) : solicitarBloqueoTarjeta(false))} />
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 14 }}>
@@ -139,7 +139,7 @@ export default function PantallaTarjeta() {
         <BotonPeligro
           label={t('card.yesBlock')}
           onPress={() => {
-            requestCardBlock(true);
+            solicitarBloqueoTarjeta(true);
             setConfirmarAbierto(false);
           }}
           style={{ marginTop: 22 }}
@@ -204,7 +204,7 @@ export default function PantallaTarjeta() {
         {pasoCvv === 'shown' && (
           <View style={{ alignItems: 'center', paddingVertical: 6 }}>
             <Icono name="lock_open" size={30} color={theme.green} />
-            <Text style={{ marginTop: 14, fontFamily: fuentes.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: user.cardNumber.slice(-4) })}</Text>
+            <Text style={{ marginTop: 14, fontFamily: fuentes.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: usuario.cardNumber.slice(-4) })}</Text>
             <Text style={{ marginTop: 8, fontFamily: fuentes.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{valorCvv}</Text>
             <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('card.cvvHides')}</Text>
             <BotonPrimario label={t('card.done')} onPress={() => setPasoCvv('closed')} style={{ marginTop: 18, width: '100%' }} />

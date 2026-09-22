@@ -23,12 +23,12 @@ export default function PantallaSeguridad() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { alerts, toggleAlert, panicMode, openPanic, closePanic, sessions, loadSecurity } = usarEstadoApp();
+  const { alertas, alternarAlerta, modoPanico, abrirPanico, cerrarPanico, sesiones, cargarSeguridad } = usarEstadoApp();
   const [confirmarPanico, setConfirmarPanico] = useState(false);
 
   useEffect(() => {
-    loadSecurity();
-  }, [loadSecurity]);
+    cargarSeguridad();
+  }, [cargarSeguridad]);
 
   const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
@@ -37,18 +37,18 @@ export default function PantallaSeguridad() {
       .catch(() => setFaceIdActivo(false));
   }, []);
 
-  const otrasSesiones = Math.max(0, sessions.length - 1);
+  const otrasSesiones = Math.max(0, sesiones.length - 1);
   const sinSospechosas = otrasSesiones === 0;
 
   const puntaje = useMemo(() => {
     let puntos = 100;
     if (!faceIdActivo) puntos -= 10;
     if (!sinSospechosas) puntos -= 8;
-    if (!alerts.compra) puntos -= 4;
-    if (!alerts.retiro) puntos -= 4;
-    if (!alerts.login) puntos -= 6;
+    if (!alertas.compra) puntos -= 4;
+    if (!alertas.retiro) puntos -= 4;
+    if (!alertas.iniciarSesion) puntos -= 6;
     return Math.max(0, Math.min(100, puntos));
-  }, [faceIdActivo, sinSospechosas, alerts]);
+  }, [faceIdActivo, sinSospechosas, alertas]);
 
   const tareas = [
     { icon: 'fingerprint', done: faceIdActivo, label: t('security.taskFaceId'), desc: faceIdActivo ? t('security.taskFaceIdDesc') : t('security.taskFaceIdDescOff') },
@@ -62,13 +62,13 @@ export default function PantallaSeguridad() {
       label: t('security.taskSuspicious'),
       desc: sinSospechosas ? t('security.taskSuspiciousOk') : t('security.taskSuspiciousBad', { count: String(otrasSesiones) }),
     },
-    { icon: 'notifications_active', done: alerts.compra && alerts.retiro && alerts.login, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
+    { icon: 'notifications_active', done: alertas.compra && alertas.retiro && alertas.iniciarSesion, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
   ];
 
-  const filasAlerta: { key: keyof typeof alerts; icon: string; label: string }[] = [
+  const filasAlerta: { key: keyof typeof alertas; icon: string; label: string }[] = [
     { key: 'compra', icon: 'shopping_cart', label: t('security.alertPurchase') },
     { key: 'retiro', icon: 'local_atm', label: t('security.alertWithdrawal') },
-    { key: 'login', icon: 'login', label: t('security.alertLogin') },
+    { key: 'iniciarSesion', icon: 'iniciarSesion', label: t('security.alertLogin') },
     { key: 'promo', icon: 'local_offer', label: t('security.alertPromo') },
   ];
 
@@ -118,7 +118,7 @@ export default function PantallaSeguridad() {
         <FilaModulo
           icono="devices"
           etiqueta={t('security.devicesSessions')}
-          descripcion={t('devices.subtitle', { count: String(sessions.length) })}
+          descripcion={t('devices.subtitle', { count: String(sesiones.length) })}
           insignia={otrasSesiones > 0 ? String(otrasSesiones) : undefined}
           alPresionar={() => nav.navigate('Devices')}
         />
@@ -132,13 +132,13 @@ export default function PantallaSeguridad() {
             <View key={fila.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
               <Icono name={fila.icon} size={19} color={theme.soft} />
               <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{fila.label}</Text>
-              <Interruptor value={alerts[fila.key]} onChange={() => toggleAlert(fila.key)} />
+              <Interruptor value={alertas[fila.key]} onChange={() => alternarAlerta(fila.key)} />
             </View>
           ))}
         </View>
       </View>
 
-      {panicMode && (
+      {modoPanico && (
         <View style={{ marginTop: 16, borderRadius: 22, backgroundColor: '#B02B22', padding: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Icono name="gpp_bad" size={21} color="#fff" />
@@ -147,13 +147,13 @@ export default function PantallaSeguridad() {
           <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.85)' }}>
             {t('security.panicModeActiveDesc')}
           </Text>
-          <Pressable onPress={closePanic} style={{ marginTop: 16, height: 46, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.16)', alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable onPress={cerrarPanico} style={{ marginTop: 16, height: 46, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.16)', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: '#fff' }}>{t('security.deactivatePanic')}</Text>
           </Pressable>
         </View>
       )}
 
-      {!panicMode && (
+      {!modoPanico && (
         <>
           <BotonPeligroContorno label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmarPanico(true)} style={{ marginTop: 16 }} />
           <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
@@ -173,7 +173,7 @@ export default function PantallaSeguridad() {
         <BotonPeligro
           label={t('security.yesBlockAll')}
           onPress={() => {
-            openPanic();
+            abrirPanico();
             setConfirmarPanico(false);
           }}
           style={{ marginTop: 22 }}

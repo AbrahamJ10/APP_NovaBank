@@ -22,7 +22,7 @@ const ANILLO = 178;
 export default function PantallaRegistroRostro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
-  const { pendingUser, dniFrontPhoto, setPendingSelfie } = usarEstadoApp();
+  const { usuarioPendiente, fotoFrenteDni, setSelfiePendiente } = usarEstadoApp();
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [etapa, setEtapa] = useState<Etapa>('idle');
   const [mensajeFalla, setMensajeFalla] = useState('');
@@ -72,13 +72,13 @@ export default function PantallaRegistroRostro() {
         return;
       }
 
-      if (!dniFrontPhoto || !pendingUser?.dni) {
+      if (!fotoFrenteDni || !usuarioPendiente?.dni) {
         setMensajeFalla(t('registerFace.failNoPhoto'));
         setEtapa('fail');
         return;
       }
 
-      const resultado = await verificationApi.faceMatch({ dni: pendingUser.dni, selfie: foto.base64, dniPhoto: dniFrontPhoto });
+      const resultado = await verificationApi.faceMatch({ dni: usuarioPendiente.dni, selfie: foto.base64, dniPhoto: fotoFrenteDni });
       if (!resultado.matched) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
         setMensajeFalla(t('registerFace.failNoMatch'));
@@ -88,7 +88,7 @@ export default function PantallaRegistroRostro() {
 
       // Se guarda la selfie ahora para poder enviarla junto con la llamada
       // final a register() y guardarla como foto de referencia de Face ID.
-      setPendingSelfie(foto.base64);
+      setSelfiePendiente(foto.base64);
 
       // El rostro ya está verificado en este punto — una falla enviando el
       // correo con el OTP después es un problema aparte y no debe mostrarse
@@ -101,9 +101,9 @@ export default function PantallaRegistroRostro() {
   };
 
   const enviarOtp = async () => {
-    if (!pendingUser) return;
+    if (!usuarioPendiente) return;
     try {
-      await verificationApi.requestRegisterOtp(pendingUser.email);
+      await verificationApi.requestRegisterOtp(usuarioPendiente.email);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       setEtapa('ok');
     } catch (error) {

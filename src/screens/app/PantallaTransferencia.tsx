@@ -12,7 +12,7 @@ import { MarcaLogo } from '../../components/Logo';
 import { usarTema } from '../../theme/ContextoTema';
 import { fuentes } from '../../theme/estilos';
 import { dinero, mmss } from '../../lib/formato';
-import { usarEstadoApp, TransferReceipt } from '../../state/ContextoEstadoApp';
+import { usarEstadoApp, ComprobanteTransferencia } from '../../state/ContextoEstadoApp';
 import { ListaParametrosRaiz, ListaParametrosPestanas } from '../../navigation/tipos';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
@@ -23,7 +23,7 @@ export default function PantallaTransferencia() {
   const nav = useNavigation<Navegacion>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { payees, available, requestTransferOtp, executeTransfer, addPayee, otpLeft } = usarEstadoApp();
+  const { destinatarios, disponible, solicitarOtpTransferencia, ejecutarTransferencia, agregarDestinatario, otpRestante } = usarEstadoApp();
 
   const [paso, setPaso] = useState<Paso>('form');
   const [agregandoDestinatario, setAgregandoDestinatario] = useState(false);
@@ -39,12 +39,12 @@ export default function PantallaTransferencia() {
   const [enviandoCodigo, setEnviandoCodigo] = useState(false);
   const [enviandoOtp, setEnviandoOtp] = useState(false);
   const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
-  const [comprobante, setComprobante] = useState<TransferReceipt | null>(null);
+  const [comprobante, setComprobante] = useState<ComprobanteTransferencia | null>(null);
   const refEntrada = useRef<TextInput>(null);
 
-  const destinatarioSeleccionado = payees.find((p) => p.id === idDestinatario);
+  const destinatarioSeleccionado = destinatarios.find((p) => p.id === idDestinatario);
   const montoNum = Number(monto.replace(',', '.')) || 0;
-  const insuficiente = montoNum > available;
+  const insuficiente = montoNum > disponible;
   const puedeContinuar = !!idDestinatario && montoNum > 0 && !insuficiente && concepto.trim().length > 0;
 
   const reiniciar = () => {
@@ -57,7 +57,7 @@ export default function PantallaTransferencia() {
     setComprobante(null);
   };
 
-  const compartirComprobante = (r: TransferReceipt) => {
+  const compartirComprobante = (r: ComprobanteTransferencia) => {
     Share.share({
       message: [
         `NovaBank · ${t('transfer.completedBadge')}`,
@@ -75,7 +75,7 @@ export default function PantallaTransferencia() {
     setEnviandoCodigo(true);
     setErrorCodigo(null);
     try {
-      const resultado = await executeTransfer(idDestinatario, montoNum, concepto, valor);
+      const resultado = await ejecutarTransferencia(idDestinatario, montoNum, concepto, valor);
       if (!resultado.ok) {
         setErrorCodigo(resultado.message);
         setCodigo('');
@@ -96,7 +96,7 @@ export default function PantallaTransferencia() {
 
           <Text style={{ marginTop: 14, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.recipient')}</Text>
           <View style={{ marginTop: 10, gap: 9 }}>
-            {payees.map((p) => {
+            {destinatarios.map((p) => {
               const activo = idDestinatario === p.id;
               return (
                 <Pressable
@@ -137,7 +137,7 @@ export default function PantallaTransferencia() {
                   onPress={async () => {
                     setGuardandoDestinatario(true);
                     try {
-                      const creado = await addPayee({
+                      const creado = await agregarDestinatario({
                         name: nuevoNombre.trim(),
                         bank: t('transfer.addedAccount'),
                         accountNumber: '···' + nuevoCci.trim().slice(-4),
@@ -194,7 +194,7 @@ export default function PantallaTransferencia() {
             />
           </View>
           <Text style={{ marginTop: 7, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: insuficiente ? '#C2352B' : theme.soft }}>
-            {insuficiente ? t('transfer.insufficient', { available: dinero(available) }) : t('transfer.availableAmount', { available: dinero(available) })}
+            {insuficiente ? t('transfer.insufficient', { disponible: dinero(disponible) }) : t('transfer.availableAmount', { disponible: dinero(disponible) })}
           </Text>
 
           <Text style={{ marginTop: 18, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('transfer.concept')}</Text>
@@ -213,7 +213,7 @@ export default function PantallaTransferencia() {
               setEnviandoOtp(true);
               setErrorEnvio(null);
               try {
-                const resultado = await requestTransferOtp();
+                const resultado = await solicitarOtpTransferencia();
                 if (!resultado.ok) {
                   setErrorEnvio(resultado.message);
                   return;
@@ -259,12 +259,12 @@ export default function PantallaTransferencia() {
             <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
           ) : null}
           <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
-            {otpLeft > 0 ? (
+            {otpRestante > 0 ? (
               <>
-                {t('transfer.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpLeft)}</Text>
+                {t('transfer.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpRestante)}</Text>
               </>
             ) : (
-              <Text onPress={() => requestTransferOtp()} style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>
+              <Text onPress={() => solicitarOtpTransferencia()} style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>
                 {t('transfer.resendCode')}
               </Text>
             )}
@@ -335,7 +335,7 @@ export default function PantallaTransferencia() {
               <Fila label={t('transfer.reasonLabel')} value={comprobante.reasonLabel ?? ''} />
               <Fila label={t('transfer.codeLabel')} value={comprobante.reasonCode ?? ''} />
               <Fila label={t('transfer.amountLabel')} value={dinero(comprobante.amount)} />
-              <Fila label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: dinero(available) })}</Text>} />
+              <Fila label={t('transfer.balanceLabel')} k={<Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: '#21A26B' }}>{t('transfer.balanceIntact', { amount: dinero(disponible) })}</Text>} />
             </View>
           </View>
 

@@ -9,21 +9,21 @@ import PilaRaiz from './PilaRaiz';
 
 export default function NavegadorRaiz() {
   const { theme, dark } = usarTema();
-  const { session, touch } = usarEstadoApp();
+  const { sesion, tocar } = usarEstadoApp();
   const refNav = useRef<NavigationContainerRef<Record<string, object | undefined>>>(null);
   const ultimaRuta = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    if (session === 'in') {
+    if (sesion === 'in') {
       iniciarSeguimientoAuditoria();
     } else {
       detenerSeguimientoAuditoria();
       ultimaRuta.current = undefined;
     }
-  }, [session]);
+  }, [sesion]);
 
   const alCambiarEstado = () => {
-    touch();
+    tocar();
     const ruta = refNav.current?.getCurrentRoute()?.name;
     if (ruta && ruta !== ultimaRuta.current) {
       ultimaRuta.current = ruta;
@@ -31,7 +31,7 @@ export default function NavegadorRaiz() {
     }
   };
 
-  if (session === 'checking') {
+  if (sesion === 'checking') {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.bg }}>
         <ActivityIndicator color={theme.gold} />
@@ -53,7 +53,7 @@ export default function NavegadorRaiz() {
 
   return (
     <NavigationContainer ref={refNav} theme={temaNavegacion} onStateChange={alCambiarEstado}>
-      {session === 'in' ? <PilaRaiz /> : <PilaAutenticacion />}
+      {sesion === 'in' ? <PilaRaiz /> : <PilaAutenticacion />}
     </NavigationContainer>
   );
 }

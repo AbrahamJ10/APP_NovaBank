@@ -14,29 +14,29 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 export default function PantallaPagarTarjeta() {
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { user, cardDebt, minPayment, creditLine, cutDate, payCard } = usarEstadoApp();
+  const { usuario, deudaTarjeta, pagoMinimo, lineaCredito, fechaCorte, pagarTarjeta } = usarEstadoApp();
   const [plan, setPlan] = useState<'full' | 'min' | 'installments'>('installments');
   const [listo, setListo] = useState(false);
   const [pagando, setPagando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const pctLinea = creditLine > 0 ? Math.min(100, Math.round((cardDebt / creditLine) * 100)) : 0;
-  const cuota = cardDebt / 3;
+  const pctLinea = lineaCredito > 0 ? Math.min(100, Math.round((deudaTarjeta / lineaCredito) * 100)) : 0;
+  const cuota = deudaTarjeta / 3;
   const planes = [
-    { id: 'full' as const, label: t('payCard.planFull'), note: t('payCard.planFullNote'), amt: cardDebt, icon: 'check_circle' },
+    { id: 'full' as const, label: t('payCard.planFull'), note: t('payCard.planFullNote'), amt: deudaTarjeta, icon: 'check_circle' },
     { id: 'installments' as const, label: t('payCard.planInstallments'), note: t('payCard.planInstallmentsNote', { amount: dinero(cuota) }), amt: cuota, icon: 'calendar_month' },
-    { id: 'min' as const, label: t('payCard.planMin'), note: t('payCard.planMinNote'), amt: minPayment, icon: 'trending_down' },
+    { id: 'min' as const, label: t('payCard.planMin'), note: t('payCard.planMinNote'), amt: pagoMinimo, icon: 'trending_down' },
   ];
 
   const meses = [t('payCard.month1'), t('payCard.month2'), t('payCard.month3')];
-  const diaCorte = cutDate.split(' ')[0];
+  const diaCorte = fechaCorte.split(' ')[0];
 
   const enviar = async () => {
     if (pagando) return;
     const monto = planes.find((opcion) => opcion.id === plan)!.amt;
     setPagando(true);
     setError(null);
-    const resultado = await payCard(monto);
+    const resultado = await pagarTarjeta(monto);
     setPagando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -55,8 +55,8 @@ export default function PantallaPagarTarjeta() {
           <Text style={{ marginTop: 22, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('payCard.scheduled')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {plan === 'installments'
-              ? t('payCard.scheduledInstallments', { amount: dinero(cardDebt) })
-              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.minPayment'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
+              ? t('payCard.scheduledInstallments', { amount: dinero(deudaTarjeta) })
+              : t('payCard.scheduledOther', { planLabel: plan === 'full' ? t('payCard.fullPayment') : t('payCard.pagoMinimo'), amount: dinero(planes.find((opcion) => opcion.id === plan)!.amt) })}
           </Text>
           <BotonFantasma label={t('payCard.backToCard')} onPress={() => setListo(false)} style={{ marginTop: 24, width: 220 }} />
         </View>
@@ -66,25 +66,25 @@ export default function PantallaPagarTarjeta() {
 
   return (
     <Pantalla bg={theme.bg}>
-      <TituloPantalla eyebrow={`Visa Infinite ···${user.cardNumber.slice(-4)}`} title={t('payCard.title')} showLanguageSwitch />
+      <TituloPantalla eyebrow={`Visa Infinite ···${usuario.cardNumber.slice(-4)}`} title={t('payCard.title')} showLanguageSwitch />
 
       <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 18, borderRadius: 24, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <View>
             <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('payCard.periodDebt')}</Text>
-            <Text style={{ marginTop: 7, fontFamily: fuentes.heading, fontSize: 34, letterSpacing: -1.3, color: '#fff' }}>{dinero(cardDebt)}</Text>
+            <Text style={{ marginTop: 7, fontFamily: fuentes.heading, fontSize: 34, letterSpacing: -1.3, color: '#fff' }}>{dinero(deudaTarjeta)}</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: 'rgba(255,255,255,.5)' }}>{t('payCard.minimumPayment')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{dinero(minPayment)}</Text>
+            <Text style={{ marginTop: 6, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{dinero(pagoMinimo)}</Text>
           </View>
         </View>
         <View style={{ marginTop: 18, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,.12)', overflow: 'hidden' }}>
           <LinearGradient colors={['#B98B33', '#E7CE92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${pctLinea}%`, height: 6, borderRadius: 3 }} />
         </View>
         <View style={{ marginTop: 9, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: pctLinea, line: dinero(creditLine) })}</Text>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.dueDate', { date: cutDate })}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.percentOfLine', { pct: pctLinea, line: dinero(lineaCredito) })}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.6)' }}>{t('payCard.dueDate', { date: fechaCorte })}</Text>
         </View>
       </LinearGradient>
 

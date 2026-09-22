@@ -12,7 +12,7 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 export default function PantallaExpirada() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
-  const { setExpired } = usarEstadoApp();
+  const { setExpirado } = usarEstadoApp();
 
   return (
     <View style={{ flex: 1, backgroundColor: 'rgba(8,17,26,.75)', alignItems: 'center', justifyContent: 'center', padding: 22 }}>
@@ -27,14 +27,14 @@ export default function PantallaExpirada() {
         <BotonPrimario
           label={t('expired.signInAgain')}
           onPress={() => {
-            setExpired(false);
+            setExpirado(false);
             nav.navigate('Login');
           }}
           style={{ marginTop: 22, width: '100%' }}
         />
         <Pressable
           onPress={() => {
-            setExpired(false);
+            setExpirado(false);
             nav.navigate('Welcome' as never);
           }}
           style={{ marginTop: 14 }}

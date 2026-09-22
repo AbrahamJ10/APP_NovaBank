@@ -19,7 +19,7 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 export default function PantallaQr() {
   const nav = useNavigation();
   const { t } = usarIdioma();
-  const { user, available, payQr, transactions } = usarEstadoApp();
+  const { usuario, disponible, pagarQr, transacciones } = usarEstadoApp();
   const [pestana, setPestana] = useState<'scan' | 'mine'>('scan');
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [escaneado, setEscaneado] = useState<string | null>(null);
@@ -31,7 +31,7 @@ export default function PantallaQr() {
   const [seleccionandoImagen, setSeleccionandoImagen] = useState(false);
   const bloqueado = useRef(false);
 
-  const pagosQr = transactions.filter((tx) => tx.category === 'qr').slice(0, 4);
+  const pagosQr = transacciones.filter((tx) => tx.category === 'qr').slice(0, 4);
 
   const alEscanear = (resultado: { data: string }) => {
     if (bloqueado.current) return;
@@ -81,7 +81,7 @@ export default function PantallaQr() {
     if (pagando) return;
     setPagando(true);
     setError(null);
-    const resultado = await payQr(nombreComercio || t('qr.merchant'), montoNum);
+    const resultado = await pagarQr(nombreComercio || t('qr.merchant'), montoNum);
     setPagando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -134,10 +134,10 @@ export default function PantallaQr() {
         ) : (
           <View style={{ marginTop: 28, alignItems: 'center', backgroundColor: '#111E2B', borderRadius: 26, padding: 26 }}>
             <View style={{ padding: 14, backgroundColor: '#fff', borderRadius: 18 }}>
-              <QRCode value={`NOVABANK|${user.accountNumber}|${user.name}`} size={190} color="#0F1A26" backgroundColor="#fff" />
+              <QRCode value={`NOVABANK|${usuario.accountNumber}|${usuario.name}`} size={190} color="#0F1A26" backgroundColor="#fff" />
             </View>
-            <Text style={{ marginTop: 16, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{user.name}</Text>
-            <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('qr.account', { account: user.accountNumber })}</Text>
+            <Text style={{ marginTop: 16, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{usuario.name}</Text>
+            <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('qr.account', { account: usuario.accountNumber })}</Text>
             <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: 'rgba(255,255,255,.45)' }}>
               {t('qr.anyoneCanScan')}
             </Text>
@@ -195,15 +195,15 @@ export default function PantallaQr() {
             <View style={{ marginTop: 16 }}>
               <CampoTexto label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
             </View>
-            <Text style={{ marginTop: 6, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
-              {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: dinero(available) })}
+            <Text style={{ marginTop: 6, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: montoNum > disponible ? '#C2352B' : '#5F6B78' }}>
+              {montoNum > disponible ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: dinero(disponible) })}
             </Text>
             {error ? (
               <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
             ) : null}
             <BotonPrimario
               label={pagando ? t('qr.paying') : t('qr.confirmPayment')}
-              disabled={montoNum <= 0 || montoNum > available || pagando}
+              disabled={montoNum <= 0 || montoNum > disponible || pagando}
               onPress={enviar}
               style={{ marginTop: 18 }}
             />

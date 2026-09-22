@@ -20,14 +20,14 @@ export default function PantallaLimites() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { limitOnline, setLimitOnline, limitAtm, setLimitAtm, geoPeru, setGeoPeru, geoIntl, setGeoIntl, loadSecurity, saveLimits } = usarEstadoApp();
+  const { limiteEnLinea, setLimiteEnLinea, limiteCajero, setLimiteCajero, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional, cargarSeguridad, guardarLimites } = usarEstadoApp();
 
   useEffect(() => {
-    loadSecurity();
-  }, [loadSecurity]);
+    cargarSeguridad();
+  }, [cargarSeguridad]);
 
-  const persistir = (siguiente: Partial<{ limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean }>) => {
-    saveLimits({ limitOnline, limitAtm, geoPeru, geoIntl, ...siguiente });
+  const persistir = (siguiente: Partial<{ limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean }>) => {
+    guardarLimites({ limiteEnLinea, limiteCajero, geoPeru, geoInternacional, ...siguiente });
   };
 
   return (
@@ -39,16 +39,16 @@ export default function PantallaLimites() {
       <View style={{ marginTop: 18, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('limits.onlinePurchases')}</Text>
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limitOnline)}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limiteEnLinea)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
           <DeslizadorSimple
             minimumValue={EN_LINEA_MIN}
             maximumValue={EN_LINEA_MAX}
             step={100}
-            value={limitOnline}
-            onValueChange={setLimitOnline}
-            onSlidingComplete={(valor) => persistir({ limitOnline: valor })}
+            value={limiteEnLinea}
+            onValueChange={setLimiteEnLinea}
+            onSlidingComplete={(valor) => persistir({ limiteEnLinea: valor })}
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -61,16 +61,16 @@ export default function PantallaLimites() {
       <View style={{ marginTop: 14, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('limits.atmWithdrawals')}</Text>
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limitAtm)}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.5, color: theme.ink }}>{dinero(limiteCajero)}</Text>
         </View>
         <View style={{ marginTop: 14 }}>
           <DeslizadorSimple
             minimumValue={CAJERO_MIN}
             maximumValue={CAJERO_MAX}
             step={100}
-            value={limitAtm}
-            onValueChange={setLimitAtm}
-            onSlidingComplete={(valor) => persistir({ limitAtm: valor })}
+            value={limiteCajero}
+            onValueChange={setLimiteCajero}
+            onSlidingComplete={(valor) => persistir({ limiteCajero: valor })}
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -98,9 +98,9 @@ export default function PantallaLimites() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{t('limits.abroad')}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{geoIntl ? t('limits.enabledTemp') : t('limits.blockedDefault')}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{geoInternacional ? t('limits.enabledTemp') : t('limits.blockedDefault')}</Text>
           </View>
-          <Interruptor value={geoIntl} onChange={(v) => { setGeoIntl(v); persistir({ geoIntl: v }); }} />
+          <Interruptor value={geoInternacional} onChange={(v) => { setGeoInternacional(v); persistir({ geoInternacional: v }); }} />
         </View>
       </View>
 

@@ -19,7 +19,7 @@ export default function PantallaServicios() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { services, available, payBill, suspendBill, resumeBill } = usarEstadoApp();
+  const { servicios, disponible, pagarRecibo, suspenderRecibo, reanudarRecibo } = usarEstadoApp();
   const [seleccionado, setSeleccionado] = useState<ServiceBill | null>(null);
   const [listo, setListo] = useState(false);
   const [pagando, setPagando] = useState(false);
@@ -30,7 +30,7 @@ export default function PantallaServicios() {
     if (!seleccionado || pagando) return;
     setPagando(true);
     setError(null);
-    const resultado = await payBill(seleccionado.id);
+    const resultado = await pagarRecibo(seleccionado.id);
     setPagando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -43,7 +43,7 @@ export default function PantallaServicios() {
     if (!seleccionado || alternando) return;
     setAlternando(true);
     setError(null);
-    const resultado = seleccionado.suspended ? await resumeBill(seleccionado.id) : await suspendBill(seleccionado.id);
+    const resultado = seleccionado.suspended ? await reanudarRecibo(seleccionado.id) : await suspenderRecibo(seleccionado.id);
     setAlternando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -153,7 +153,7 @@ export default function PantallaServicios() {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{t('services.savings')}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: dinero(available) })}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{t('services.disponible', { amount: dinero(disponible) })}</Text>
           </View>
           <Icono name="check_circle" size={19} color={theme.gold} />
         </View>
@@ -164,7 +164,7 @@ export default function PantallaServicios() {
 
         <BotonDorado
           label={pagando ? t('services.paying') : t('services.pay', { amount: dinero(seleccionado.amount) })}
-          disabled={seleccionado.amount > available || pagando}
+          disabled={seleccionado.amount > disponible || pagando}
           onPress={enviar}
           style={{ marginTop: 20 }}
         />
@@ -191,7 +191,7 @@ export default function PantallaServicios() {
 
       <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.yourBills')}</Text>
       <View style={{ marginTop: 12, gap: 11 }}>
-        {services.map((servicio) => (
+        {servicios.map((servicio) => (
           <Pressable
             key={servicio.id}
             onPress={() => {

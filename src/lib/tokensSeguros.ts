@@ -28,8 +28,8 @@ export async function limpiarTokens() {
 }
 
 // Recuerda qué cuenta inició sesión con éxito por última vez en este
-// dispositivo, para que el login rápido con Face ID sepa contra las fotos
-// de referencia de quién comparar, y la pantalla de login pueda saludar a
+// dispositivo, para que el iniciarSesion rápido con Face ID sepa contra las fotos
+// de referencia de quién comparar, y la pantalla de iniciarSesion pueda saludar a
 // un usuario que regresa por su nombre y saltarse pedir el correo de nuevo
 // (solo la contraseña, como hacen la mayoría de apps bancarias).
 export async function guardarUltimoCorreo(email: string) {

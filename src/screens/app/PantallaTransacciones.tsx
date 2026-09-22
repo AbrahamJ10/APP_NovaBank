@@ -28,7 +28,7 @@ function etiquetaGrupo(diasAtras: number, t: (key: string) => string) {
 export default function PantallaTransacciones() {
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { transactions, refreshAccount } = usarEstadoApp();
+  const { transacciones, refrescarCuenta } = usarEstadoApp();
   const [filtro, setFiltro] = useState<(typeof CLAVES_FILTRO)[number]>('30d');
   const [refrescando, setRefrescando] = useState(false);
   const [seleccionada, setSeleccionada] = useState<Tx | null>(null);
@@ -40,7 +40,7 @@ export default function PantallaTransacciones() {
     all: t('transactions.filterAll'),
   };
 
-  const filtradas = useMemo(() => transactions.filter((tx) => tx.daysAgo <= LIMITES[filtro]), [transactions, filtro]);
+  const filtradas = useMemo(() => transacciones.filter((tx) => tx.daysAgo <= LIMITES[filtro]), [transacciones, filtro]);
 
   const grupos = useMemo(() => {
     const mapa = new Map<string, Tx[]>();
@@ -69,7 +69,7 @@ export default function PantallaTransacciones() {
     if (refrescando) return;
     setRefrescando(true);
     try {
-      await refreshAccount();
+      await refrescarCuenta();
     } finally {
       setRefrescando(false);
     }
@@ -120,7 +120,7 @@ export default function PantallaTransacciones() {
 
         <BotonFantasma label={t('transactions.refresh')} icon="sync" onPress={refrescar} style={{ marginTop: 4 }} />
         <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>
-          {t('transactions.showingCount', { shown: filtradas.length, total: transactions.length })}
+          {t('transactions.showingCount', { shown: filtradas.length, total: transacciones.length })}
         </Text>
       </View>
 

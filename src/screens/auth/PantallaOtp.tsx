@@ -26,7 +26,7 @@ export default function PantallaOtp() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { completeRegister, pendingUser } = usarEstadoApp();
+  const { completarRegistro, usuarioPendiente } = usarEstadoApp();
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState(false);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
@@ -59,7 +59,7 @@ export default function PantallaOtp() {
     if (valor.length !== 6 || enviando) return;
     setEnviando(true);
     try {
-      const resultado = await completeRegister(valor);
+      const resultado = await completarRegistro(valor);
       if (resultado.ok) {
         setError(false);
         nav.replace('RegisterDone');
@@ -74,10 +74,10 @@ export default function PantallaOtp() {
   };
 
   const reenviar = async () => {
-    if (!pendingUser || reenviando || espera > 0) return;
+    if (!usuarioPendiente || reenviando || espera > 0) return;
     setReenviando(true);
     try {
-      await verificationApi.requestRegisterOtp(pendingUser.email);
+      await verificationApi.requestRegisterOtp(usuarioPendiente.email);
       setEspera(ESPERA_REENVIO_S);
       setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
       setError(false);
@@ -108,7 +108,7 @@ export default function PantallaOtp() {
       <Text style={{ marginTop: 20, fontFamily: fuentes.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('otp.title')}</Text>
       <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
         {t('otp.subtitle')}
-        <Text style={{ fontFamily: fuentes.bodyBold, color: theme.ink }}>{enmascararCorreo(pendingUser?.email ?? '')}</Text>.
+        <Text style={{ fontFamily: fuentes.bodyBold, color: theme.ink }}>{enmascararCorreo(usuarioPendiente?.email ?? '')}</Text>.
       </Text>
 
       <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 26 }}>

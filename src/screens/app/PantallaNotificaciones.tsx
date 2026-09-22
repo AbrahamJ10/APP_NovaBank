@@ -17,22 +17,22 @@ export default function PantallaNotificaciones() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { notifications, markAllNotifRead, markNotifRead, clearNotifications } = usarEstadoApp();
-  const cantidadNoLeidas = notifications.filter((n) => n.unread).length;
+  const { notificaciones, marcarTodasNotifLeidas, marcarNotifLeida, limpiarNotificaciones } = usarEstadoApp();
+  const cantidadNoLeidas = notificaciones.filter((n) => n.unread).length;
   const [seleccionada, setSeleccionada] = useState<NotificationItem | null>(null);
 
   const grupos = useMemo(() => {
-    const mapa = new Map<string, typeof notifications>();
-    notifications.forEach((notificacion) => {
+    const mapa = new Map<string, typeof notificaciones>();
+    notificaciones.forEach((notificacion) => {
       if (!mapa.has(notificacion.group)) mapa.set(notificacion.group, []);
       mapa.get(notificacion.group)!.push(notificacion);
     });
     return Array.from(mapa.entries());
-  }, [notifications]);
+  }, [notificaciones]);
 
   const abrirDetalle = (notificacion: NotificationItem) => {
     setSeleccionada(notificacion);
-    if (notificacion.unread) markNotifRead(notificacion.id);
+    if (notificacion.unread) marcarNotifLeida(notificacion.id);
   };
 
   const accionRelacionada = (notificacion: NotificationItem | null) => {
@@ -55,15 +55,15 @@ export default function PantallaNotificaciones() {
         </View>
         <View style={{ alignItems: 'flex-end', gap: 8 }}>
           <SelectorIdioma />
-          {notifications.length > 0 && (
-            <Pressable onPress={markAllNotifRead} style={{ paddingHorizontal: 12, paddingVertical: 9, borderRadius: 11, backgroundColor: theme.surf, borderWidth: 1.5, borderColor: theme.line }}>
+          {notificaciones.length > 0 && (
+            <Pressable onPress={marcarTodasNotifLeidas} style={{ paddingHorizontal: 12, paddingVertical: 9, borderRadius: 11, backgroundColor: theme.surf, borderWidth: 1.5, borderColor: theme.line }}>
               <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: theme.mid }}>{t('notifications.markRead')}</Text>
             </Pressable>
           )}
         </View>
       </View>
 
-      {notifications.length === 0 ? (
+      {notificaciones.length === 0 ? (
         <View style={{ marginTop: 100, alignItems: 'center' }}>
           <View style={{ width: 110, height: 110, borderRadius: 34, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="notifications_off" size={56} color="#D9BE7A" />
@@ -104,7 +104,7 @@ export default function PantallaNotificaciones() {
               </View>
             </View>
           ))}
-          <Pressable onPress={clearNotifications} style={{ alignSelf: 'center', marginTop: 4 }}>
+          <Pressable onPress={limpiarNotificaciones} style={{ alignSelf: 'center', marginTop: 4 }}>
             <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12, color: theme.soft }}>{t('notifications.clearAll')}</Text>
           </Pressable>
         </View>

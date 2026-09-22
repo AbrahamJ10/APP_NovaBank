@@ -37,7 +37,7 @@ export default function PantallaRecuperar() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { startRecover, otpLeft, resendOtp } = usarEstadoApp();
+  const { iniciarRecuperacion, otpRestante, reenviarOtp } = usarEstadoApp();
 
   const [paso, setPaso] = useState(1);
   const [identificador, setIdentificador] = useState('');
@@ -91,7 +91,7 @@ export default function PantallaRecuperar() {
     setErrorEnvio(null);
     try {
       await authApi.requestPasswordReset(correo);
-      startRecover(correo);
+      iniciarRecuperacion(correo);
       setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
       setPaso(2);
     } catch (error) {
@@ -199,15 +199,15 @@ export default function PantallaRecuperar() {
             style={{ position: 'absolute', opacity: 0, height: 0 }}
           />
           <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
-            {otpLeft > 0 ? (
+            {otpRestante > 0 ? (
               <>
-                {t('recover.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpLeft)}</Text>
+                {t('recover.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpRestante)}</Text>
               </>
             ) : (
               <Text
                 onPress={() => {
                   authApi.requestPasswordReset(correo).catch(() => {});
-                  resendOtp();
+                  reenviarOtp();
                   setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
                 }}
                 style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}

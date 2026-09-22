@@ -24,11 +24,11 @@ export default function PantallaPerfil() {
   const nav = useNavigation<Navegacion>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = usarEstadoApp();
+  const { usuario, cerrarSesion, solicitarOtpPerfil, confirmarCambioCorreo, confirmarCambioTelefono, cambiarContrasena } = usarEstadoApp();
 
   // Refleja la misma verificación de PantallaIniciarSesion — Face ID aquí significa
   // "el desbloqueo nativo por huella/rostro de este dispositivo de verdad
-  // está registrado y puede hacer login rápido de esta cuenta", no alguna
+  // está registrado y puede hacer iniciarSesion rápido de esta cuenta", no alguna
   // configuración separada por cuenta.
   const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function PantallaPerfil() {
     setErrorCodigo(null);
     setErrorEnvio(null);
     setEnviandoOtp(true);
-    const resultado = await requestProfileOtp();
+    const resultado = await solicitarOtpPerfil();
     setEnviandoOtp(false);
     if (!resultado.ok) setErrorEnvio(resultado.message);
   };
@@ -75,7 +75,7 @@ export default function PantallaPerfil() {
     if (v.length !== 6 || !editando || enviandoCodigo) return;
     setEnviandoCodigo(true);
     setErrorCodigo(null);
-    const resultado = editando.field === 'email' ? await confirmEmailChange(valor, v) : await confirmPhoneChange(valor, v);
+    const resultado = editando.field === 'email' ? await confirmarCambioCorreo(valor, v) : await confirmarCambioTelefono(valor, v);
     setEnviandoCodigo(false);
     if (!resultado.ok) {
       setErrorCodigo(resultado.message);
@@ -108,7 +108,7 @@ export default function PantallaPerfil() {
     setErrorPwActual(false);
     setPwErrorEnvio(null);
     setPwEnviandoOtp(true);
-    const resultado = await requestProfileOtp();
+    const resultado = await solicitarOtpPerfil();
     setPwEnviandoOtp(false);
     if (!resultado.ok) {
       setPwErrorEnvio(resultado.message);
@@ -121,7 +121,7 @@ export default function PantallaPerfil() {
     if (v.length !== 6 || pwEnviando) return;
     setPwEnviando(true);
     setPwErrorCodigo(null);
-    const resultado = await changePassword(pwActual, pwNueva, v);
+    const resultado = await cambiarContrasena(pwActual, pwNueva, v);
     setPwEnviando(false);
     if (!resultado.ok) {
       if (resultado.message.includes('contraseña actual')) {
@@ -137,10 +137,10 @@ export default function PantallaPerfil() {
   };
 
   const campos = [
-    { label: t('profile.fullName'), value: user.name },
-    { label: t('profile.dni'), value: user.dni },
-    { label: t('profile.email'), value: user.email, edit: () => abrirEdicion('email', t('profile.emailField'), user.email) },
-    { label: t('profile.phone'), value: '+51 ' + user.phone, edit: () => abrirEdicion('phone', t('profile.phoneField'), user.phone) },
+    { label: t('profile.fullName'), value: usuario.name },
+    { label: t('profile.dni'), value: usuario.dni },
+    { label: t('profile.email'), value: usuario.email, edit: () => abrirEdicion('email', t('profile.emailField'), usuario.email) },
+    { label: t('profile.phone'), value: '+51 ' + usuario.phone, edit: () => abrirEdicion('phone', t('profile.phoneField'), usuario.phone) },
   ];
 
   return (
@@ -150,10 +150,10 @@ export default function PantallaPerfil() {
       </View>
       <View style={{ alignItems: 'center', marginTop: 4 }}>
         <View style={{ width: 86, height: 86, borderRadius: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B2340', borderWidth: 2, borderColor: '#C9A227' }}>
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 30, color: '#fff' }}>{user.initials}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 30, color: '#fff' }}>{usuario.initials}</Text>
         </View>
-        <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.4, color: theme.ink }}>{user.name}</Text>
-        <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: theme.soft }}>{t('profile.memberSince', { date: user.memberSince })}</Text>
+        <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.4, color: theme.ink }}>{usuario.name}</Text>
+        <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: theme.soft }}>{t('profile.memberSince', { date: usuario.memberSince })}</Text>
         <View style={{ marginTop: 12 }}>
           <Insignia label={t('profile.identityVerified')} tone="green" />
         </View>
@@ -176,7 +176,7 @@ export default function PantallaPerfil() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 16 }}>
-        <FilaPerfil icono="password" etiqueta={t('profile.changePassword')} descripcion={t('profile.changePasswordDesc')} alPresionar={() => setPwAbierto(true)} />
+        <FilaPerfil icono="password" etiqueta={t('profile.cambiarContrasena')} descripcion={t('profile.changePasswordDesc')} alPresionar={() => setPwAbierto(true)} />
         <FilaPerfil
           icono="fingerprint"
           etiqueta={t('profile.faceId')}
@@ -187,7 +187,7 @@ export default function PantallaPerfil() {
         <FilaPerfil icono="description" etiqueta={t('profile.accountStatement')} descripcion={t('profile.accountStatementDesc')} alPresionar={() => nav.navigate('Reports')} ultimo />
       </View>
 
-      <BotonPeligroContorno label={t('profile.logout')} icon="logout" onPress={logout} style={{ marginTop: 16 }} />
+      <BotonPeligroContorno label={t('profile.cerrarSesion')} icon="cerrarSesion" onPress={cerrarSesion} style={{ marginTop: 16 }} />
 
       <HojaInferior visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
         {editando ? (

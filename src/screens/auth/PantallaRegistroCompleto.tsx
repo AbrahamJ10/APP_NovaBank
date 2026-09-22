@@ -10,8 +10,8 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function PantallaRegistroCompleto() {
   const { t } = usarIdioma();
-  const { user, setSession, touch } = usarEstadoApp();
-  const primerNombre = user.name.split(' ')[0];
+  const { usuario, setSesion, tocar } = usarEstadoApp();
+  const primerNombre = usuario.name.split(' ')[0];
 
   return (
     <View style={{ flex: 1, backgroundColor: '#061626' }}>
@@ -27,11 +27,11 @@ export default function PantallaRegistroCompleto() {
           <View style={styles.card}>
             <View>
               <Text style={styles.cardLabel}>{t('registerDone.savingsAccount')}</Text>
-              <Text style={styles.cardValue}>{user.accountNumber}</Text>
+              <Text style={styles.cardValue}>{usuario.accountNumber}</Text>
             </View>
             <View style={{ marginTop: 14 }}>
               <Text style={styles.cardLabel}>{t('registerDone.cci')}</Text>
-              <Text style={styles.cardValue}>{user.cci}</Text>
+              <Text style={styles.cardValue}>{usuario.cci}</Text>
             </View>
           </View>
         </View>
@@ -39,8 +39,8 @@ export default function PantallaRegistroCompleto() {
         <BotonDorado
           label={t('registerDone.goToAccount')}
           onPress={() => {
-            setSession('in');
-            touch();
+            setSesion('in');
+            tocar();
           }}
         />
       </SafeAreaView>

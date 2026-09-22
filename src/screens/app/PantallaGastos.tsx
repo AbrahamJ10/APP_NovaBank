@@ -15,7 +15,7 @@ export default function PantallaGastos() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { transactions } = usarEstadoApp();
+  const { transacciones } = usarEstadoApp();
 
   const META_CATEGORIA: Record<string, { label: string; color: string; icon: string }> = {
     compras: { label: t('spend.catCompras'), color: '#2C6FD1', icon: 'shopping_cart' },
@@ -26,7 +26,7 @@ export default function PantallaGastos() {
     pago_tarjeta: { label: t('spend.catPagoTarjeta'), color: '#7C3AED', icon: 'credit_card' },
   };
 
-  const txMes = transactions.filter((tx) => tx.kind === 'debit' && tx.daysAgo <= 31);
+  const txMes = transacciones.filter((tx) => tx.kind === 'debit' && tx.daysAgo <= 31);
   const total = txMes.reduce((s, tx) => s + tx.amount, 0);
 
   const porCategoria = useMemo(() => {

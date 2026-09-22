@@ -22,7 +22,7 @@ export default function PantallaInicio() {
   const nav = useNavigation<Navegacion>();
   const { theme, dark, toggle } = usarTema();
   const { t } = usarIdioma();
-  const { user, available, held, creditLine, minPayment, cutDate, cardBlocked, transactions } = usarEstadoApp();
+  const { usuario, disponible, retenido, lineaCredito, pagoMinimo, fechaCorte, tarjetaBloqueada, transacciones } = usarEstadoApp();
 
   const ACCESOS_RAPIDOS = [
     { icon: 'swap_horiz', label: t('home.quickTransfer'), go: 'TransferTab' as const },
@@ -34,7 +34,7 @@ export default function PantallaInicio() {
   ];
   const [ocultar, setOcultar] = useState(false);
 
-  const recientes = transactions.slice(0, 4);
+  const recientes = transacciones.slice(0, 4);
   const enmascarar = (v: string) => v.replace(/[0-9]/g, '•');
 
   return (
@@ -42,18 +42,18 @@ export default function PantallaInicio() {
       <LinearGradient colors={['#0E2C4E', '#061626']} start={{ x: 0.85, y: 0 }} end={{ x: 0.2, y: 1 }} style={{ paddingTop: 14, paddingHorizontal: 22, paddingBottom: 30, borderBottomLeftRadius: 34, borderBottomRightRadius: 34 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.12)', borderWidth: 1, borderColor: 'rgba(217,190,122,.4)', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#E7CE92' }}>{user.initials}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#E7CE92' }}>{usuario.initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' }}>{user.name}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' }}>{usuario.name}</Text>
           </View>
           <SelectorIdioma dark compact />
           <Pressable onPress={toggle} style={estilosH.iconBtn}>
             <Icono name={dark ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
           <Pressable onPress={() => nav.navigate('Notifications' as never)} style={estilosH.iconBtn}>
-            <Icono name="notifications" size={20} color="#fff" />
+            <Icono name="notificaciones" size={20} color="#fff" />
             <View style={estilosH.dot} />
           </Pressable>
         </View>
@@ -65,20 +65,20 @@ export default function PantallaInicio() {
           </Pressable>
         </View>
         <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
-          {ocultar ? enmascarar(dinero(available)) : dinero(available)}
+          {ocultar ? enmascarar(dinero(disponible)) : dinero(disponible)}
         </Text>
         <View style={{ marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 22, height: 1, backgroundColor: 'rgba(217,190,122,.7)' }} />
           <Text style={{ fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' }}>
-            {t('home.accountsSummary', { a: user.accountNumber.slice(-4), b: user.cardNumber.slice(-4) })}
+            {t('home.accountsSummary', { a: usuario.accountNumber.slice(-4), b: usuario.cardNumber.slice(-4) })}
           </Text>
         </View>
 
         <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: 'rgba(255,255,255,.07)', borderWidth: 1, borderColor: 'rgba(217,190,122,.22)', padding: 18, flexDirection: 'row', flexWrap: 'wrap' }}>
-          <MiniEstadistica label={t('home.heldBalance')} value={dinero(held)} />
-          <MiniEstadistica label={t('home.creditLine')} value={dinero(creditLine)} />
-          <MiniEstadistica label={t('home.minPayment')} value={dinero(minPayment)} />
-          <MiniEstadistica label={t('home.cutDate')} value={cutDate} />
+          <MiniEstadistica label={t('home.heldBalance')} value={dinero(retenido)} />
+          <MiniEstadistica label={t('home.lineaCredito')} value={dinero(lineaCredito)} />
+          <MiniEstadistica label={t('home.pagoMinimo')} value={dinero(pagoMinimo)} />
+          <MiniEstadistica label={t('home.fechaCorte')} value={fechaCorte} />
         </View>
       </LinearGradient>
 
@@ -110,13 +110,13 @@ export default function PantallaInicio() {
 
         <Pressable
           onPress={() => nav.navigate('Card')}
-          style={{ marginTop: 20, borderRadius: 20, padding: 18, backgroundColor: cardBlocked ? '#5B6875' : '#123A63', flexDirection: 'row', alignItems: 'center', gap: 14 }}
+          style={{ marginTop: 20, borderRadius: 20, padding: 18, backgroundColor: tarjetaBloqueada ? '#5B6875' : '#123A63', flexDirection: 'row', alignItems: 'center', gap: 14 }}
         >
-          <Icono name={cardBlocked ? 'lock' : 'credit_card'} size={26} color="#fff" />
+          <Icono name={tarjetaBloqueada ? 'lock' : 'credit_card'} size={26} color="#fff" />
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{user.cardNumber.slice(-4)}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{usuario.cardNumber.slice(-4)}</Text>
             <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.65)' }}>
-              {t('home.cardStatus', { status: cardBlocked ? t('home.cardBlocked') : t('home.cardActive') })}
+              {t('home.cardStatus', { status: tarjetaBloqueada ? t('home.tarjetaBloqueada') : t('home.cardActive') })}
             </Text>
           </View>
           <Icono name="chevron_right" size={20} color="rgba(255,255,255,.7)" />

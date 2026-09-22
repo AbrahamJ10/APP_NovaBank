@@ -14,24 +14,24 @@ export default function PantallaDispositivos() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { sessions, loadSecurity, revokeSession, revokeOtherSessions } = usarEstadoApp();
+  const { sesiones, cargarSeguridad, revocarSesion, revocarOtrasSesiones } = usarEstadoApp();
 
   useEffect(() => {
-    loadSecurity();
-  }, [loadSecurity]);
+    cargarSeguridad();
+  }, [cargarSeguridad]);
 
-  const otras = sessions.filter((sesion) => !sesion.current);
+  const otras = sesiones.filter((sesion) => !sesion.current);
 
   return (
     <Pantalla bg={theme.bg}>
       <BotonVolver onPress={() => nav.goBack()} />
       <Text style={{ fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('devices.title')}</Text>
       <Text style={{ marginTop: 6, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
-        {t('devices.subtitle', { count: String(sessions.length) })}
+        {t('devices.subtitle', { count: String(sesiones.length) })}
       </Text>
 
       <View style={{ marginTop: 16, gap: 11 }}>
-        {sessions.map((sesion) => (
+        {sesiones.map((sesion) => (
           <View key={sesion.id} style={{ borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 18 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 13 }}>
               <View style={{ width: 42, height: 42, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
@@ -54,10 +54,10 @@ export default function PantallaDispositivos() {
             </View>
             {!sesion.current && (
               <Pressable
-                onPress={() => revokeSession(sesion.id)}
+                onPress={() => revocarSesion(sesion.id)}
                 style={{ marginTop: 14, height: 44, borderRadius: 13, backgroundColor: theme.red, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
-                <Icono name="logout" size={18} color="#fff" />
+                <Icono name="cerrarSesion" size={18} color="#fff" />
                 <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: '#fff' }}>{t('devices.closeSession')}</Text>
               </Pressable>
             )}
@@ -65,7 +65,7 @@ export default function PantallaDispositivos() {
         ))}
       </View>
 
-      {otras.length === 0 && sessions.length > 0 && (
+      {otras.length === 0 && sesiones.length > 0 && (
         <Text style={{ marginTop: 14, fontFamily: fuentes.body, fontSize: 12, color: theme.soft, textAlign: 'center' }}>
           {t('devices.noOthers')}
         </Text>
@@ -75,7 +75,7 @@ export default function PantallaDispositivos() {
         <BotonFantasma
           label={t('devices.closeAllOthers')}
           icon="phonelink_erase"
-          onPress={revokeOtherSessions}
+          onPress={revocarOtrasSesiones}
           style={{ marginTop: 18 }}
         />
       )}

@@ -24,7 +24,7 @@ export default function PantallaReportes() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t, language } = usarIdioma();
-  const { user } = usarEstadoApp();
+  const { usuario } = usarEstadoApp();
 
   const meses = useMemo(() => ultimos6Meses(language === 'es' ? 'es-PE' : 'en-US'), [language]);
   const [seleccionado, setSeleccionado] = useState(meses[0]);
@@ -56,7 +56,7 @@ export default function PantallaReportes() {
           </View>
           <Text style={{ marginTop: 20, fontFamily: fuentes.heading, fontSize: 22, letterSpacing: -0.7, color: theme.ink }}>{t('reports.sentTitle')}</Text>
           <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, maxWidth: 280 }}>
-            {t('reports.sentBody', { email: user.email })}
+            {t('reports.sentBody', { email: usuario.email })}
           </Text>
           <BotonFantasma label={t('reports.requestAnother')} onPress={() => setEnviado(false)} style={{ marginTop: 22, width: 200 }} />
         </View>
@@ -89,7 +89,7 @@ export default function PantallaReportes() {
           style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: theme.bg, flexDirection: 'row', alignItems: 'center', gap: 10 }}
         >
           <Icono name="mail" size={19} color={theme.gold} />
-          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, color: theme.ink }}>{user.email}</Text>
+          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, color: theme.ink }}>{usuario.email}</Text>
         </View>
       </View>
 

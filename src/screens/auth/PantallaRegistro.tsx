@@ -21,7 +21,7 @@ export default function PantallaRegistro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { beginRegister, scannedDni, setScannedDni } = usarEstadoApp();
+  const { iniciarRegistro, dniEscaneado, setDniEscaneado } = usarEstadoApp();
 
   // Vienen del escaneo del DNI/consulta a RENIEC hecha antes en el flujo —
   // solo lectura, el usuario nunca los escribe.
@@ -40,14 +40,14 @@ export default function PantallaRegistro() {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (scannedDni) {
-        if (scannedDni.dni) setDni(scannedDni.dni);
-        if (scannedDni.nombres) setNombres(scannedDni.nombres);
-        if (scannedDni.apellidoPaterno) setApellidoPaterno(scannedDni.apellidoPaterno);
-        if (scannedDni.apellidoMaterno) setApellidoMaterno(scannedDni.apellidoMaterno);
-        setScannedDni(null);
+      if (dniEscaneado) {
+        if (dniEscaneado.dni) setDni(dniEscaneado.dni);
+        if (dniEscaneado.nombres) setNombres(dniEscaneado.nombres);
+        if (dniEscaneado.apellidoPaterno) setApellidoPaterno(dniEscaneado.apellidoPaterno);
+        if (dniEscaneado.apellidoMaterno) setApellidoMaterno(dniEscaneado.apellidoMaterno);
+        setDniEscaneado(null);
       }
-    }, [scannedDni])
+    }, [dniEscaneado])
   );
 
   const correoValido = cumpleRegla(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, correo);
@@ -70,7 +70,7 @@ export default function PantallaRegistro() {
 
   const alContinuar = () => {
     const nombreCompleto = [nombres, apellidoPaterno, apellidoMaterno].filter(Boolean).join(' ');
-    beginRegister({ name: nombreCompleto, email: correo, dni, phone: telefono, password: contrasena });
+    iniciarRegistro({ name: nombreCompleto, email: correo, dni, phone: telefono, password: contrasena });
     nav.navigate('RegisterFace');
   };
 

@@ -21,7 +21,7 @@ export default function PantallaIniciarSesion() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { login, blockedUntil, blockLeft, restoreSession } = usarEstadoApp();
+  const { iniciarSesion, bloqueadoHasta, tiempoBloqueoRestante, restaurarSesion } = usarEstadoApp();
 
   const [recordado, setRecordado] = useState<{ email: string; fullName: string } | null | undefined>(undefined);
   const [biometriaDisponible, setBiometriaDisponible] = useState(false);
@@ -35,7 +35,7 @@ export default function PantallaIniciarSesion() {
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  const bloqueado = !!blockedUntil && blockLeft > 0;
+  const bloqueado = !!bloqueadoHasta && tiempoBloqueoRestante > 0;
 
   useEffect(() => {
     obtenerUltimaCuenta().then(setRecordado);
@@ -51,7 +51,7 @@ export default function PantallaIniciarSesion() {
     if (enviando) return;
     setEnviando(true);
     try {
-      const res = await login(correo, contrasena);
+      const res = await iniciarSesion(correo, contrasena);
       if (!res.ok) {
         setError(true);
         setMensajeError('message' in res ? res.message ?? null : null);
@@ -82,7 +82,7 @@ export default function PantallaIniciarSesion() {
       // de este celular — igual tiene que combinarse con una sesión que de
       // verdad sea válida, igual que la restauración silenciosa en el
       // arranque en frío.
-      const restaurada = await restoreSession();
+      const restaurada = await restaurarSesion();
       if (!restaurada) setMensajeBiometria(t('login.bioSessionExpired'));
     } finally {
       setVerificandoBiometria(false);
@@ -120,7 +120,7 @@ export default function PantallaIniciarSesion() {
           <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: '#8A4741' }}>
             {t('login.blockedBody')}
           </Text>
-          <Text style={{ marginTop: 10, fontFamily: fuentes.heading, fontSize: 28, color: '#C2352B', letterSpacing: -1 }}>{mmss(blockLeft)}</Text>
+          <Text style={{ marginTop: 10, fontFamily: fuentes.heading, fontSize: 28, color: '#C2352B', letterSpacing: -1 }}>{mmss(tiempoBloqueoRestante)}</Text>
           <Pressable onPress={() => nav.navigate('Recover')}>
             <Text style={{ marginTop: 8, fontFamily: fuentes.bodyBold, fontSize: 12, color: '#C2352B' }}>{t('login.recoverNow')}</Text>
           </Pressable>

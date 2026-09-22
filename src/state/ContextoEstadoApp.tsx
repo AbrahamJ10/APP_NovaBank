@@ -122,8 +122,8 @@ function aplicarUsuarioApi(u: Usuario, apiUser: PublicUser): Usuario {
     dni: apiUser.dni ?? u.dni,
     phone: apiUser.phone ?? u.phone,
     // El servidor nunca devuelve la contraseña (está hasheada) — este campo
-    // es solo un lugar transitorio en `pendingUser` durante el registro
-    // (ver beginRegister/completeRegister abajo), siempre vacío en el
+    // es solo un lugar transitorio en `usuarioPendiente` durante el registro
+    // (ver iniciarRegistro/completarRegistro abajo), siempre vacío en el
     // usuario autenticado real. Los cambios reales de contraseña pasan por
     // profileApi.
     password: '',
@@ -146,7 +146,7 @@ type Usuario = {
 
 type PropositoOtp = 'register' | 'transfer' | 'recover' | 'edit' | null;
 
-export type TransferReceipt = {
+export type ComprobanteTransferencia = {
   amount: number;
   payee: Payee;
   concept: string;
@@ -180,84 +180,84 @@ function formatearAhora() {
 }
 
 export function usarEstadoAppInterno() {
-  const [now, setNow] = useState(Date.now());
+  const [ahora, setNow] = useState(Date.now());
 
-  const [session, setSession] = useState<Session>('checking');
-  const [expired, setExpired] = useState(false);
-  const [user, setUser] = useState<Usuario>(usuarioPorDefecto);
-  const [pendingUser, setPendingUser] = useState<Usuario | null>(null);
+  const [sesion, setSesion] = useState<Session>('checking');
+  const [expirado, setExpirado] = useState(false);
+  const [usuario, setUser] = useState<Usuario>(usuarioPorDefecto);
+  const [usuarioPendiente, setPendingUser] = useState<Usuario | null>(null);
 
-  const [available, setAvailable] = useState(0);
-  const [held, setHeld] = useState(0);
-  const [creditLine, setCreditLine] = useState(0);
-  const [cardDebt, setCardDebt] = useState(0);
-  const [minPayment, setMinPayment] = useState(0);
-  const [cutDate, setCutDate] = useState('');
-  const [accountLoading, setAccountLoading] = useState(false);
+  const [disponible, setAvailable] = useState(0);
+  const [retenido, setHeld] = useState(0);
+  const [lineaCredito, setCreditLine] = useState(0);
+  const [deudaTarjeta, setCardDebt] = useState(0);
+  const [pagoMinimo, setMinPayment] = useState(0);
+  const [fechaCorte, setCutDate] = useState('');
+  const [cargandoCuenta, setAccountLoading] = useState(false);
 
-  const [transactions, setTransactions] = useState<Tx[]>([]);
-  const [payees, setPayees] = useState<Payee[]>([]);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [services, setServices] = useState<ServiceBill[]>([]);
+  const [transacciones, setTransactions] = useState<Tx[]>([]);
+  const [destinatarios, setPayees] = useState<Payee[]>([]);
+  const [notificaciones, setNotifications] = useState<NotificationItem[]>([]);
+  const [servicios, setServices] = useState<ServiceBill[]>([]);
 
-  const [cardBlocked, setCardBlocked] = useState(false);
-  const [panicMode, setPanicMode] = useState(false);
+  const [tarjetaBloqueada, setCardBlocked] = useState(false);
+  const [modoPanico, setPanicMode] = useState(false);
 
-  const [attempts, setAttempts] = useState(0);
-  const [blockedUntil, setBlockedUntil] = useState<number | null>(null);
+  const [intentos, setAttempts] = useState(0);
+  const [bloqueadoHasta, setBlockedUntil] = useState<number | null>(null);
 
   const [otp, setOtp] = useState<string | null>(null);
-  const [otpPurpose, setOtpPurpose] = useState<PropositoOtp>(null);
+  const [propositoOtp, setPropositoOtp] = useState<PropositoOtp>(null);
   const [otpDeadline, setOtpDeadline] = useState<number>(0);
-  const [otpContext, setOtpContext] = useState<any>(null);
+  const [contextoOtp, setOtpContext] = useState<any>(null);
 
-  const [limitOnline, setLimitOnline] = useState(1500);
-  const [limitAtm, setLimitAtm] = useState(700);
+  const [limiteEnLinea, setLimiteEnLinea] = useState(1500);
+  const [limiteCajero, setLimiteCajero] = useState(700);
   const [geoPeru, setGeoPeru] = useState(true);
-  const [geoIntl, setGeoIntl] = useState(false);
-  const [alerts, setAlerts] = useState<SecurityAlerts>({ compra: true, retiro: true, login: true, promo: false });
-  const [sessions, setSessions] = useState<SecuritySession[]>([]);
+  const [geoInternacional, setGeoInternacional] = useState(false);
+  const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, retiro: true, iniciarSesion: true, promo: false });
+  const [sesiones, setSessions] = useState<SecuritySession[]>([]);
 
-  const [withdraw, setWithdraw] = useState<{ id: string; code: string; qr: string; deadline: number; amount: number } | null>(null);
-  const [scannedDni, setScannedDni] = useState<DatosDni | null>(null);
-  const [dniFrontPhoto, setDniFrontPhoto] = useState<string | null>(null);
-  const [frontDniNumber, setFrontDniNumber] = useState<string | null>(null);
-  const [pendingSelfie, setPendingSelfie] = useState<string | null>(null);
+  const [retiro, setWithdraw] = useState<{ id: string; code: string; qr: string; deadline: number; amount: number } | null>(null);
+  const [dniEscaneado, setDniEscaneado] = useState<DatosDni | null>(null);
+  const [fotoFrenteDni, setFotoFrenteDni] = useState<string | null>(null);
+  const [numeroFrenteDni, setNumeroFrenteDni] = useState<string | null>(null);
+  const [selfiePendiente, setSelfiePendiente] = useState<string | null>(null);
 
   const lastActivity = useRef(Date.now());
-  const touch = useCallback(() => {
+  const tocar = useCallback(() => {
     lastActivity.current = Date.now();
-    if (expired) setExpired(false);
-  }, [expired]);
+    if (expirado) setExpirado(false);
+  }, [expirado]);
 
   // Compartido por la verificación de arranque en frío de abajo y por el
-  // botón biométrico de la pantalla de login: si hay una sesión todavía
+  // botón biométrico de la pantalla de iniciarSesion: si hay una sesión todavía
   // válida guardada, esto es lo que en realidad la restaura. El éxito
   // biométrico por sí solo nunca habla con el backend — solo controla si
   // esto se ejecuta, igual que escribir una contraseña controlaría una
-  // llamada nueva a login().
-  const restoreSession = useCallback(async (): Promise<boolean> => {
+  // llamada nueva a iniciarSesion().
+  const restaurarSesion = useCallback(async (): Promise<boolean> => {
     try {
       const [accessToken, refreshToken] = await Promise.all([obtenerTokenAcceso(), obtenerTokenRefresco()]);
       if (!accessToken && !refreshToken) return false;
       const apiUser = await withTimeout(authApi.me(), TIEMPO_LIMITE_VERIFICACION_SESION_MS);
       setUser((u) => aplicarUsuarioApi(u, apiUser));
-      setSession('in');
-      touch();
+      setSesion('in');
+      tocar();
       return true;
     } catch {
       return false;
     }
-  }, [touch]);
+  }, [tocar]);
 
   const applyAccountSummary = useCallback((summary: AccountSummary) => {
     setAvailable(summary.availableBalance);
     setHeld(summary.heldBalance);
-    setCreditLine(summary.creditLine);
-    setCardDebt(summary.cardDebt);
-    setMinPayment(summary.minPayment);
-    setCutDate(summary.cutDate);
-    setCardBlocked(summary.cardBlocked);
+    setCreditLine(summary.lineaCredito);
+    setCardDebt(summary.deudaTarjeta);
+    setMinPayment(summary.pagoMinimo);
+    setCutDate(summary.fechaCorte);
+    setCardBlocked(summary.tarjetaBloqueada);
     setUser((u) => ({
       ...u,
       accountNumber: summary.accountNumber,
@@ -272,7 +272,7 @@ export function usarEstadoAppInterno() {
   // se llama una vez que la sesión ya está activa (ver el efecto de abajo),
   // y se expone para que cualquier pantalla que cambie la cuenta pueda
   // pedir una copia fresca.
-  const refreshAccount = useCallback(async () => {
+  const refrescarCuenta = useCallback(async () => {
     setAccountLoading(true);
     try {
       const [summary, txs, notifs, payeeList, billList] = await Promise.all([
@@ -297,13 +297,13 @@ export function usarEstadoAppInterno() {
   }, [applyAccountSummary]);
 
   useEffect(() => {
-    if (session === 'in') refreshAccount();
-  }, [session, refreshAccount]);
+    if (sesion === 'in') refrescarCuenta();
+  }, [sesion, refrescarCuenta]);
 
   // Los datos de Centro de Seguridad (alertas/límites/sesiones) solo se
   // piden cuando se monta una pantalla que realmente los muestra, en vez de
-  // en cada refreshAccount — no respaldan nada en la pantalla de Inicio.
-  const loadSecurity = useCallback(async () => {
+  // en cada refrescarCuenta — no respaldan nada en la pantalla de Inicio.
+  const cargarSeguridad = useCallback(async () => {
     try {
       const refreshToken = await obtenerTokenRefresco();
       const [alertsRes, limitsRes, sessionsRes] = await Promise.all([
@@ -312,10 +312,10 @@ export function usarEstadoAppInterno() {
         refreshToken ? securityApi.listSessions(refreshToken) : Promise.resolve([]),
       ]);
       setAlerts(alertsRes);
-      setLimitOnline(limitsRes.limitOnline);
-      setLimitAtm(limitsRes.limitAtm);
+      setLimiteEnLinea(limitsRes.limiteEnLinea);
+      setLimiteCajero(limitsRes.limiteCajero);
       setGeoPeru(limitsRes.geoPeru);
-      setGeoIntl(limitsRes.geoIntl);
+      setGeoInternacional(limitsRes.geoInternacional);
       setSessions(sessionsRes);
     } catch {
       // Se deja lo último que se cargó tal cual.
@@ -323,7 +323,7 @@ export function usarEstadoAppInterno() {
   }, []);
 
   const saveAlerts = useCallback(async (next: SecurityAlerts) => {
-    const prev = alerts;
+    const prev = alertas;
     setAlerts(next); // optimistic
     try {
       const saved = await securityApi.updateAlerts(next);
@@ -331,50 +331,50 @@ export function usarEstadoAppInterno() {
     } catch {
       setAlerts(prev);
     }
-  }, [alerts]);
+  }, [alertas]);
 
-  const saveLimits = useCallback(async (next: { limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean }) => {
+  const guardarLimites = useCallback(async (next: { limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean }) => {
     try {
       const saved = await securityApi.updateLimits(next);
-      setLimitOnline(saved.limitOnline);
-      setLimitAtm(saved.limitAtm);
+      setLimiteEnLinea(saved.limiteEnLinea);
+      setLimiteCajero(saved.limiteCajero);
       setGeoPeru(saved.geoPeru);
-      setGeoIntl(saved.geoIntl);
+      setGeoInternacional(saved.geoInternacional);
     } catch {
       // El slider/interruptor ya refleja el valor intentado localmente; una
       // falla silenciosa aquí solo significa que no se guardó esta vez.
     }
   }, []);
 
-  const revokeSession = useCallback(async (id: string) => {
+  const revocarSesion = useCallback(async (id: string) => {
     setSessions((s) => s.filter((x) => x.id !== id)); // optimistic
     try {
-      await securityApi.revokeSession(id);
+      await securityApi.revocarSesion(id);
     } catch {
-      loadSecurity();
+      cargarSeguridad();
     }
-  }, [loadSecurity]);
+  }, [cargarSeguridad]);
 
-  const revokeOtherSessions = useCallback(async () => {
+  const revocarOtrasSesiones = useCallback(async () => {
     const refreshToken = await obtenerTokenRefresco();
     if (!refreshToken) return;
     setSessions((s) => s.filter((x) => x.current)); // optimistic
     try {
-      await securityApi.revokeOtherSessions(refreshToken);
+      await securityApi.revocarOtrasSesiones(refreshToken);
     } catch {
-      loadSecurity();
+      cargarSeguridad();
     }
-  }, [loadSecurity]);
+  }, [cargarSeguridad]);
 
   // En un arranque en frío (y cada vez que la app vuelve de estar cerrada
-  // o en segundo plano), siempre se aterriza en la pantalla de login en
+  // o en segundo plano), siempre se aterriza en la pantalla de iniciarSesion en
   // vez de volver a entrar en silencio — igual que cualquier app bancaria
   // real. Una sesión todavía válida queda intacta en el almacenamiento y
-  // la pantalla de login muestra su modo rápido de nombre + huella para
-  // ella (ver restoreSession arriba), pero retomarla de verdad siempre
+  // la pantalla de iniciarSesion muestra su modo rápido de nombre + huella para
+  // ella (ver restaurarSesion arriba), pero retomarla de verdad siempre
   // requiere un toque explícito de huella o la contraseña.
   useEffect(() => {
-    setSession('out');
+    setSesion('out');
   }, []);
 
   // Vigilante de inactividad: un intervalo ligero que solo toca el estado
@@ -382,67 +382,67 @@ export function usarEstadoAppInterno() {
   // que escribir normalmente nunca dispare un re-render por esta
   // verificación. Los tokens se dejan intactos a propósito aquí — esto solo
   // bloquea la interfaz (cae al modo rápido con huella de la pantalla de
-  // login), no revoca la sesión de fondo, ya que la cuenta sigue "con
+  // iniciarSesion), no revoca la sesión de fondo, ya que la cuenta sigue "con
   // sesión iniciada" en lo que respecta al backend y una huella válida del
   // dispositivo debería bastar para retomarla.
   useEffect(() => {
-    if (session !== 'in') return;
+    if (sesion !== 'in') return;
     const id = setInterval(() => {
       const idleMs = Date.now() - lastActivity.current;
       if (idleMs > 3 * 60 * 1000) {
-        setExpired(true);
-        setSession('out');
+        setExpirado(true);
+        setSesion('out');
       }
     }, 5000);
     return () => clearInterval(id);
-  }, [session]);
+  }, [sesion]);
 
-  // `now` solo necesita avanzar mientras haya de verdad una cuenta
-  // regresiva visible en algún lado (reenvío de OTP, bloqueo de login,
+  // `ahora` solo necesita avanzar mientras haya de verdad una cuenta
+  // regresiva visible en algún lado (reenvío de OTP, bloqueo de iniciarSesion,
   // código de retiro sin tarjeta). Hacerlo avanzar siempre re-renderizaba
   // cada pantalla cada segundo, incluso a mitad de tecleo en formularios
   // simples sin ningún temporizador.
-  const hasActiveTimer = otpDeadline > Date.now() || !!blockedUntil || !!withdraw;
+  const hasActiveTimer = otpDeadline > Date.now() || !!bloqueadoHasta || !!retiro;
   useEffect(() => {
     if (!hasActiveTimer) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, [hasActiveTimer]);
 
-  const blockLeft = blockedUntil ? Math.max(0, Math.round((blockedUntil - now) / 1000)) : 0;
+  const tiempoBloqueoRestante = bloqueadoHasta ? Math.max(0, Math.round((bloqueadoHasta - ahora) / 1000)) : 0;
   useEffect(() => {
-    if (blockedUntil && blockLeft === 0) {
+    if (bloqueadoHasta && tiempoBloqueoRestante === 0) {
       setBlockedUntil(null);
       setAttempts(0);
     }
-  }, [blockLeft, blockedUntil]);
+  }, [tiempoBloqueoRestante, bloqueadoHasta]);
 
-  const otpLeft = Math.max(0, Math.round((otpDeadline - now) / 1000));
+  const otpRestante = Math.max(0, Math.round((otpDeadline - ahora) / 1000));
 
-  const withdrawLeft = withdraw ? Math.max(0, Math.round((withdraw.deadline - now) / 1000)) : 0;
-  const withdrawExpired = !!withdraw && withdrawLeft === 0;
+  const retiroRestante = retiro ? Math.max(0, Math.round((retiro.deadline - ahora) / 1000)) : 0;
+  const retiroExpirado = !!retiro && retiroRestante === 0;
 
-  const startOtp = useCallback((purpose: PropositoOtp, ctx?: any) => {
+  const iniciarOtp = useCallback((purpose: PropositoOtp, ctx?: any) => {
     const code = generarOtp();
     setOtp(code);
-    setOtpPurpose(purpose);
+    setPropositoOtp(purpose);
     setOtpContext(ctx ?? null);
     setOtpDeadline(Date.now() + 60_000);
     return code;
   }, []);
 
-  const resendOtp = useCallback(() => {
+  const reenviarOtp = useCallback(() => {
     const code = generarOtp();
     setOtp(code);
     setOtpDeadline(Date.now() + 60_000);
     return code;
   }, []);
 
-  const verifyOtp = useCallback((code: string) => {
+  const verificarOtp = useCallback((code: string) => {
     return code.length === 6 && code === otp;
   }, [otp]);
 
-  const beginRegister = useCallback((data: { name: string; email: string; dni: string; phone: string; password: string }) => {
+  const iniciarRegistro = useCallback((data: { name: string; email: string; dni: string; phone: string; password: string }) => {
     const u: Usuario = {
       ...usuarioPorDefecto,
       name: data.name || usuarioPorDefecto.name,
@@ -455,42 +455,42 @@ export function usarEstadoAppInterno() {
     setPendingUser(u);
   }, []);
 
-  const completeRegister = useCallback(async (otpCode: string): Promise<{ ok: true } | { ok: false; message: string }> => {
-    if (!pendingUser) return { ok: false, message: 'No hay un registro en curso.' };
+  const completarRegistro = useCallback(async (otpCode: string): Promise<{ ok: true } | { ok: false; message: string }> => {
+    if (!usuarioPendiente) return { ok: false, message: 'No hay un registro en curso.' };
     try {
       const apiUser = await authApi.register({
-        email: pendingUser.email,
-        password: pendingUser.password,
-        fullName: pendingUser.name,
-        phone: pendingUser.phone,
-        dni: pendingUser.dni,
+        email: usuarioPendiente.email,
+        password: usuarioPendiente.password,
+        fullName: usuarioPendiente.name,
+        phone: usuarioPendiente.phone,
+        dni: usuarioPendiente.dni,
         otpCode,
-        dniPhoto: dniFrontPhoto ?? undefined,
-        selfie: pendingSelfie ?? undefined,
+        dniPhoto: fotoFrenteDni ?? undefined,
+        selfie: selfiePendiente ?? undefined,
       });
-      setUser(aplicarUsuarioApi(pendingUser, apiUser));
+      setUser(aplicarUsuarioApi(usuarioPendiente, apiUser));
       // aplicarUsuarioApi solo transfiere nombre/correo/dni/teléfono — el número
       // de cuenta/CCI/tarjeta reales solo existen una vez que el backend
       // los crea durante register(), así que se traen ahora. De lo
       // contrario PantallaRegistroCompleto (que se muestra a continuación, antes
-      // de que `session` llegue a 'in') mostraría los valores falsos de
+      // de que `sesion` llegue a 'in') mostraría los valores falsos de
       // relleno que hubiera en usuarioPorDefecto.
-      await refreshAccount();
-      await guardarUltimaCuenta(pendingUser.email, apiUser.fullName);
+      await refrescarCuenta();
+      await guardarUltimaCuenta(usuarioPendiente.email, apiUser.fullName);
       setPendingUser(null);
-      setDniFrontPhoto(null);
-      setFrontDniNumber(null);
-      setPendingSelfie(null);
+      setFotoFrenteDni(null);
+      setNumeroFrenteDni(null);
+      setSelfiePendiente(null);
       setAttempts(0);
       setBlockedUntil(null);
       return { ok: true };
     } catch (err) {
       return { ok: false, message: err instanceof ApiError ? err.message : 'No se pudo crear la cuenta. Intenta de nuevo.' };
     }
-  }, [pendingUser, dniFrontPhoto, pendingSelfie, refreshAccount]);
+  }, [usuarioPendiente, fotoFrenteDni, selfiePendiente, refrescarCuenta]);
 
-  const login = useCallback(async (identifier: string, password: string) => {
-    if (blockedUntil && blockLeft > 0) return { ok: false as const, blocked: true };
+  const iniciarSesion = useCallback(async (identifier: string, password: string) => {
+    if (bloqueadoHasta && tiempoBloqueoRestante > 0) return { ok: false as const, blocked: true };
 
     const trimmed = identifier.trim();
     if (!RE_CORREO.test(trimmed)) {
@@ -498,12 +498,12 @@ export function usarEstadoAppInterno() {
     }
 
     try {
-      const apiUser = await authApi.login({ email: trimmed, password });
+      const apiUser = await authApi.iniciarSesion({ email: trimmed, password });
       setUser((u) => aplicarUsuarioApi(u, apiUser));
       await guardarUltimaCuenta(trimmed, apiUser.fullName);
       setAttempts(0);
-      setSession('in');
-      touch();
+      setSesion('in');
+      tocar();
       return { ok: true as const };
     } catch (err) {
       if (err instanceof ApiError && err.status === 423) {
@@ -511,19 +511,19 @@ export function usarEstadoAppInterno() {
         setBlockedUntil(lockedUntil);
         return { ok: false as const, blocked: true };
       }
-      const next = attempts + 1;
+      const next = intentos + 1;
       setAttempts(next);
       const message = err instanceof ApiError ? err.message : 'No se pudo conectar con el servidor. Intenta de nuevo.';
-      return { ok: false as const, blocked: false, attempts: next, message };
+      return { ok: false as const, blocked: false, intentos: next, message };
     }
-  }, [attempts, blockLeft, blockedUntil, touch]);
+  }, [intentos, tiempoBloqueoRestante, bloqueadoHasta, tocar]);
 
   // Login rápido con Face ID: compara una selfie nueva contra las fotos de
   // referencia guardadas durante el registro (foto del DNI + selfie del
   // registro), para la cuenta que haya iniciado sesión con éxito por
   // última vez en este dispositivo.
-  const loginWithFace = useCallback(async (selfieBase64: string) => {
-    if (blockedUntil && blockLeft > 0) return { ok: false as const, reason: 'blocked' as const };
+  const iniciarSesionConRostro = useCallback(async (selfieBase64: string) => {
+    if (bloqueadoHasta && tiempoBloqueoRestante > 0) return { ok: false as const, reason: 'blocked' as const };
 
     const email = await obtenerUltimoCorreo();
     if (!email) {
@@ -535,8 +535,8 @@ export function usarEstadoAppInterno() {
       setUser((u) => aplicarUsuarioApi(u, apiUser));
       await guardarUltimaCuenta(email, apiUser.fullName);
       setAttempts(0);
-      setSession('in');
-      touch();
+      setSesion('in');
+      tocar();
       return { ok: true as const };
     } catch (err) {
       if (err instanceof ApiError && err.status === 423) {
@@ -550,19 +550,19 @@ export function usarEstadoAppInterno() {
       const message = err instanceof ApiError ? err.message : 'No se pudo conectar con el servidor. Intenta de nuevo.';
       return { ok: false as const, reason: 'noMatch' as const, message };
     }
-  }, [blockLeft, blockedUntil, touch]);
+  }, [tiempoBloqueoRestante, bloqueadoHasta, tocar]);
 
-  const logout = useCallback(() => {
-    authApi.logout().catch(() => {});
-    setSession('out');
-    setExpired(false);
+  const cerrarSesion = useCallback(() => {
+    authApi.cerrarSesion().catch(() => {});
+    setSesion('out');
+    setExpirado(false);
   }, []);
 
-  const requestCardBlock = useCallback(async (next: boolean) => {
+  const solicitarBloqueoTarjeta = useCallback(async (next: boolean) => {
     setCardBlocked(next); // optimistic — reconciled from the server response
     try {
       const res = await accountApi.setCardBlocked(next);
-      setCardBlocked(res.cardBlocked);
+      setCardBlocked(res.tarjetaBloqueada);
       return { ok: true as const };
     } catch (err) {
       setCardBlocked(!next); // revert on failure
@@ -574,30 +574,30 @@ export function usarEstadoAppInterno() {
   // mismo endpoint que el interruptor de la pantalla de Tarjeta) y revoca
   // cualquier otra sesión activa, para que un celular perdido/robado no
   // pueda seguir usando una sesión abierta en otro lado.
-  const openPanic = useCallback(() => {
+  const abrirPanico = useCallback(() => {
     setPanicMode(true);
-    requestCardBlock(true);
-    revokeOtherSessions();
-  }, [requestCardBlock, revokeOtherSessions]);
-  const closePanic = useCallback(() => {
+    solicitarBloqueoTarjeta(true);
+    revocarOtrasSesiones();
+  }, [solicitarBloqueoTarjeta, revocarOtrasSesiones]);
+  const cerrarPanico = useCallback(() => {
     setPanicMode(false);
-    requestCardBlock(false);
-  }, [requestCardBlock]);
+    solicitarBloqueoTarjeta(false);
+  }, [solicitarBloqueoTarjeta]);
 
   // Solo controla la cuenta regresiva local de reenvío en la interfaz (ver
-  // startRecover arriba) — el código real se envía y se verifica contra el
+  // iniciarRecuperacion arriba) — el código real se envía y se verifica contra el
   // backend.
-  const requestTransferOtp = useCallback(async () => {
+  const solicitarOtpTransferencia = useCallback(async () => {
     try {
       await transfersApi.requestOtp();
-      startOtp('transfer');
+      iniciarOtp('transfer');
       return { ok: true as const };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo enviar el código. Intenta de nuevo.' };
     }
-  }, [startOtp]);
+  }, [iniciarOtp]);
 
-  const addPayee = useCallback(async (input: { name: string; bank: string; accountNumber: string }) => {
+  const agregarDestinatario = useCallback(async (input: { name: string; bank: string; accountNumber: string }) => {
     try {
       const created = await payeesApi.create(input);
       const payee = aDestinatarioLocal(created);
@@ -608,11 +608,11 @@ export function usarEstadoAppInterno() {
     }
   }, []);
 
-  const executeTransfer = useCallback(
+  const ejecutarTransferencia = useCallback(
     async (payeeId: string, amount: number, concept: string, otpCode: string) => {
       try {
         const res = await transfersApi.execute({ payeeId, amount, concept, otpCode });
-        const payee = payees.find((p) => p.id === payeeId) ?? {
+        const payee = destinatarios.find((p) => p.id === payeeId) ?? {
           id: payeeId,
           name: res.payee.name,
           bank: res.payee.bank,
@@ -620,7 +620,7 @@ export function usarEstadoAppInterno() {
           initials: inicialesDe(res.payee.name),
         };
         const created = new Date(res.createdAt);
-        const receipt: TransferReceipt = {
+        const receipt: ComprobanteTransferencia = {
           amount: res.amount,
           payee,
           concept: res.concept,
@@ -632,13 +632,13 @@ export function usarEstadoAppInterno() {
         // es el único lugar que de verdad movió dinero real, así que el
         // saldo/historial mostrado después debe venir directo del libro
         // contable, no de una suposición.
-        refreshAccount();
+        refrescarCuenta();
         return { ok: true as const, receipt };
       } catch (err) {
         if (err instanceof ApiError && err.status === 422) {
-          const payee = payees.find((p) => p.id === payeeId)!;
+          const payee = destinatarios.find((p) => p.id === payeeId)!;
           const details = err.details as Record<string, unknown> | undefined;
-          const receipt: TransferReceipt = {
+          const receipt: ComprobanteTransferencia = {
             amount,
             payee,
             concept,
@@ -654,33 +654,33 @@ export function usarEstadoAppInterno() {
         return { ok: false as const, message };
       }
     },
-    [payees, refreshAccount]
+    [destinatarios, refrescarCuenta]
   );
 
   // Ahora solo controla la cuenta regresiva local de reenvío en la
   // interfaz — el código real se envía y se verifica contra el backend
   // (ver authApi.requestPasswordReset / confirmPasswordReset), esto ya no
   // genera un código utilizable por sí mismo.
-  const startRecover = useCallback((identifier: string) => {
-    startOtp('recover', { identifier });
-  }, [startOtp]);
+  const iniciarRecuperacion = useCallback((identifier: string) => {
+    iniciarOtp('recover', { identifier });
+  }, [iniciarOtp]);
 
   // Los cambios de campos del perfil (correo/teléfono/contraseña) se
   // confirman con un código real enviado por correo a la dirección actual
   // de la cuenta — esto solo controla la cuenta regresiva local de reenvío
   // en la interfaz, el código en sí se genera y se revisa del lado del
   // servidor.
-  const requestProfileOtp = useCallback(async () => {
+  const solicitarOtpPerfil = useCallback(async () => {
     try {
       await profileApi.requestOtp();
-      startOtp('edit');
+      iniciarOtp('edit');
       return { ok: true as const };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo enviar el código. Intenta de nuevo.' };
     }
-  }, [startOtp]);
+  }, [iniciarOtp]);
 
-  const confirmEmailChange = useCallback(async (newEmail: string, otpCode: string) => {
+  const confirmarCambioCorreo = useCallback(async (newEmail: string, otpCode: string) => {
     try {
       const apiUser = await profileApi.updateEmail(newEmail, otpCode);
       setUser((u) => aplicarUsuarioApi(u, apiUser));
@@ -691,7 +691,7 @@ export function usarEstadoAppInterno() {
     }
   }, []);
 
-  const confirmPhoneChange = useCallback(async (newPhone: string, otpCode: string) => {
+  const confirmarCambioTelefono = useCallback(async (newPhone: string, otpCode: string) => {
     try {
       const apiUser = await profileApi.updatePhone(newPhone, otpCode);
       setUser((u) => aplicarUsuarioApi(u, apiUser));
@@ -701,7 +701,7 @@ export function usarEstadoAppInterno() {
     }
   }, []);
 
-  const changePassword = useCallback(async (currentPassword: string, newPassword: string, otpCode: string) => {
+  const cambiarContrasena = useCallback(async (currentPassword: string, newPassword: string, otpCode: string) => {
     try {
       await profileApi.updatePassword(currentPassword, newPassword, otpCode);
       return { ok: true as const };
@@ -714,11 +714,11 @@ export function usarEstadoAppInterno() {
   // en el momento en que se genera un código (aquí no hay una red de
   // cajeros real contra la cual canjearlo después) — cancelar emite un
   // reembolso real, renovar rota el código sin mover dinero de nuevo.
-  const generateWithdraw = useCallback(async (amount: number) => {
+  const generarRetiro = useCallback(async (amount: number) => {
     try {
       const w = await withdrawalsApi.create(amount);
       setWithdraw({ id: w.id, code: w.code, qr: `NOVABANK|WD|${w.code}|${w.amount}`, deadline: new Date(w.expiresAt).getTime(), amount: w.amount });
-      refreshAccount();
+      refrescarCuenta();
       return { ok: true as const };
     } catch (err) {
       if (err instanceof ApiError && err.status === 422) {
@@ -727,78 +727,78 @@ export function usarEstadoAppInterno() {
       }
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo generar la clave. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const cancelWithdraw = useCallback(() => {
-    if (!withdraw) return;
-    const id = withdraw.id;
+  const cancelarRetiro = useCallback(() => {
+    if (!retiro) return;
+    const id = retiro.id;
     setWithdraw(null); // optimistic
-    withdrawalsApi.cancel(id).then(refreshAccount).catch(() => {});
-  }, [withdraw, refreshAccount]);
+    withdrawalsApi.cancel(id).then(refrescarCuenta).catch(() => {});
+  }, [retiro, refrescarCuenta]);
 
-  const renewWithdraw = useCallback(async () => {
-    if (!withdraw) return;
+  const renovarRetiro = useCallback(async () => {
+    if (!retiro) return;
     try {
-      const w = await withdrawalsApi.renew(withdraw.id);
+      const w = await withdrawalsApi.renew(retiro.id);
       setWithdraw({ id: w.id, code: w.code, qr: `NOVABANK|WD|${w.code}|${w.amount}`, deadline: new Date(w.expiresAt).getTime(), amount: w.amount });
     } catch {
       // se deja el estado expirado tal cual; el botón sigue disponible para reintentar
     }
-  }, [withdraw]);
+  }, [retiro]);
 
-  const payBill = useCallback(async (billId: string) => {
+  const pagarRecibo = useCallback(async (billId: string) => {
     try {
       await billsApi.pay(billId);
-      refreshAccount();
+      refrescarCuenta();
       return { ok: true as const };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo pagar el servicio. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const affiliateService = useCallback(async (billerKey: string, supplyNumber: string) => {
+  const afiliarServicio = useCallback(async (billerKey: string, supplyNumber: string) => {
     try {
       const bill = await billsApi.affiliate(billerKey, supplyNumber);
-      refreshAccount(); // pulls the (new or existing) bill into `services` too
+      refrescarCuenta(); // pulls the (new or existing) bill into `servicios` too
       return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo consultar el servicio. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const suspendBill = useCallback(async (billId: string) => {
+  const suspenderRecibo = useCallback(async (billId: string) => {
     try {
       const bill = await billsApi.suspend(billId);
-      refreshAccount();
+      refrescarCuenta();
       return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo suspender el servicio. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const resumeBill = useCallback(async (billId: string) => {
+  const reanudarRecibo = useCallback(async (billId: string) => {
     try {
       const bill = await billsApi.resume(billId);
-      refreshAccount();
+      refrescarCuenta();
       return { ok: true as const, bill: aReciboLocal(bill) };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo reactivar el servicio. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const payQr = useCallback(async (merchant: string, amount: number) => {
+  const pagarQr = useCallback(async (merchant: string, amount: number) => {
     try {
       const receipt = await qrApi.pay(merchant, amount);
-      refreshAccount();
+      refrescarCuenta();
       return { ok: true as const, receipt };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo completar el pago. Intenta de nuevo.' };
     }
-  }, [refreshAccount]);
+  }, [refrescarCuenta]);
 
-  const payCard = useCallback(async (amount: number) => {
+  const pagarTarjeta = useCallback(async (amount: number) => {
     try {
-      const summary = await accountApi.payCard(amount);
+      const summary = await accountApi.pagarTarjeta(amount);
       applyAccountSummary(summary);
       return { ok: true as const };
     } catch (err) {
@@ -806,57 +806,57 @@ export function usarEstadoAppInterno() {
     }
   }, [applyAccountSummary]);
 
-  const revealCvv = useCallback(async (otpCode: string) => {
+  const revelarCvv = useCallback(async (otpCode: string) => {
     try {
-      const { cvv } = await accountApi.revealCvv(otpCode);
+      const { cvv } = await accountApi.revelarCvv(otpCode);
       return { ok: true as const, cvv };
     } catch (err) {
       return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo verificar el código. Intenta de nuevo.' };
     }
   }, []);
 
-  const markAllNotifRead = useCallback(() => {
+  const marcarTodasNotifLeidas = useCallback(() => {
     setNotifications((n) => n.map((x) => ({ ...x, unread: false })));
     notificationsApi.markAllRead().catch(() => {});
   }, []);
-  const markNotifRead = useCallback((id: string) => {
+  const marcarNotifLeida = useCallback((id: string) => {
     setNotifications((n) => n.map((x) => (x.id === id ? { ...x, unread: false } : x)));
     notificationsApi.markRead(id).catch(() => {});
   }, []);
-  const clearNotifications = useCallback(() => {
+  const limpiarNotificaciones = useCallback(() => {
     setNotifications([]); // optimistic
-    notificationsApi.deleteAll().catch(() => refreshAccount());
-  }, [refreshAccount]);
+    notificationsApi.deleteAll().catch(() => refrescarCuenta());
+  }, [refrescarCuenta]);
 
-  const toggleAlert = useCallback((key: keyof SecurityAlerts) => {
-    saveAlerts({ ...alerts, [key]: !alerts[key] });
-  }, [alerts, saveAlerts]);
+  const alternarAlerta = useCallback((key: keyof SecurityAlerts) => {
+    saveAlerts({ ...alertas, [key]: !alertas[key] });
+  }, [alertas, saveAlerts]);
 
   return {
-    now, touch,
-    session, setSession, expired, setExpired,
-    user, pendingUser,
-    available, held, creditLine, cardDebt, minPayment, cutDate, accountLoading, refreshAccount,
-    transactions, payees, notifications, services,
-    cardBlocked, requestCardBlock,
-    panicMode, openPanic, closePanic,
-    attempts, blockedUntil, blockLeft,
-    otp, otpPurpose, otpLeft, otpContext, startOtp, resendOtp, verifyOtp, setOtpPurpose,
-    beginRegister, completeRegister,
-    login, loginWithFace, logout, restoreSession,
-    requestTransferOtp, executeTransfer, addPayee,
-    startRecover,
-    requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword,
-    withdraw, withdrawLeft, withdrawExpired, generateWithdraw, cancelWithdraw, renewWithdraw,
-    scannedDni, setScannedDni,
-    dniFrontPhoto, setDniFrontPhoto,
-    frontDniNumber, setFrontDniNumber,
-    pendingSelfie, setPendingSelfie,
-    payBill, payQr, payCard, revealCvv, affiliateService, suspendBill, resumeBill,
-    markAllNotifRead, markNotifRead, clearNotifications,
-    limitOnline, setLimitOnline, limitAtm, setLimitAtm, geoPeru, setGeoPeru, geoIntl, setGeoIntl,
-    alerts, toggleAlert,
-    sessions, loadSecurity, saveLimits, revokeSession, revokeOtherSessions,
+    ahora, tocar,
+    sesion, setSesion, expirado, setExpirado,
+    usuario, usuarioPendiente,
+    disponible, retenido, lineaCredito, deudaTarjeta, pagoMinimo, fechaCorte, cargandoCuenta, refrescarCuenta,
+    transacciones, destinatarios, notificaciones, servicios,
+    tarjetaBloqueada, solicitarBloqueoTarjeta,
+    modoPanico, abrirPanico, cerrarPanico,
+    intentos, bloqueadoHasta, tiempoBloqueoRestante,
+    otp, propositoOtp, otpRestante, contextoOtp, iniciarOtp, reenviarOtp, verificarOtp, setPropositoOtp,
+    iniciarRegistro, completarRegistro,
+    iniciarSesion, iniciarSesionConRostro, cerrarSesion, restaurarSesion,
+    solicitarOtpTransferencia, ejecutarTransferencia, agregarDestinatario,
+    iniciarRecuperacion,
+    solicitarOtpPerfil, confirmarCambioCorreo, confirmarCambioTelefono, cambiarContrasena,
+    retiro, retiroRestante, retiroExpirado, generarRetiro, cancelarRetiro, renovarRetiro,
+    dniEscaneado, setDniEscaneado,
+    fotoFrenteDni, setFotoFrenteDni,
+    numeroFrenteDni, setNumeroFrenteDni,
+    selfiePendiente, setSelfiePendiente,
+    pagarRecibo, pagarQr, pagarTarjeta, revelarCvv, afiliarServicio, suspenderRecibo, reanudarRecibo,
+    marcarTodasNotifLeidas, marcarNotifLeida, limpiarNotificaciones,
+    limiteEnLinea, setLimiteEnLinea, limiteCajero, setLimiteCajero, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional,
+    alertas, alternarAlerta,
+    sesiones, cargarSeguridad, guardarLimites, revocarSesion, revocarOtrasSesiones,
   };
 }
 

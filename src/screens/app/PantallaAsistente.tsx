@@ -15,7 +15,7 @@ import { ServiceBill } from '../../state/tipos';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Accion = { id: string; label: string; run: () => void | Promise<void> };
-type Mensaje = { id: string; from: 'agent' | 'user'; text: string; actions?: Accion[] };
+type Mensaje = { id: string; from: 'agent' | 'usuario'; text: string; actions?: Accion[] };
 
 let secuencia = 0;
 function siguienteId(prefijo: string) {
@@ -27,26 +27,26 @@ export default function PantallaAsistente() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { t } = usarIdioma();
   const {
-    user,
-    cardBlocked,
-    requestCardBlock,
-    services,
-    available,
-    creditLine,
-    cardDebt,
-    minPayment,
-    transactions,
-    sessions,
-    limitOnline,
-    limitAtm,
-    loadSecurity,
-    payBill,
-    suspendBill,
-    resumeBill,
+    usuario,
+    tarjetaBloqueada,
+    solicitarBloqueoTarjeta,
+    servicios,
+    disponible,
+    lineaCredito,
+    deudaTarjeta,
+    pagoMinimo,
+    transacciones,
+    sesiones,
+    limiteEnLinea,
+    limiteCajero,
+    cargarSeguridad,
+    pagarRecibo,
+    suspenderRecibo,
+    reanudarRecibo,
   } = usarEstadoApp();
 
   const [mensajes, setMensajes] = useState<Mensaje[]>([
-    { id: siguienteId('a'), from: 'agent', text: t('concierge.greeting', { name: user.name.split(' ')[0] }), actions: menuPrincipal() },
+    { id: siguienteId('a'), from: 'agent', text: t('concierge.greeting', { name: usuario.name.split(' ')[0] }), actions: menuPrincipal() },
   ]);
   const [borrador, setBorrador] = useState('');
   const [ocupado, setOcupado] = useState(false);
@@ -58,13 +58,13 @@ export default function PantallaAsistente() {
   }
 
   function enviarUsuario(text: string) {
-    setMensajes((m) => [...m, { id: siguienteId('u'), from: 'user', text }]);
+    setMensajes((m) => [...m, { id: siguienteId('u'), from: 'usuario', text }]);
   }
 
   function menuPrincipal(): Accion[] {
     return [
       { id: 'card', label: t('concierge.menuCard'), run: mostrarMenuTarjeta },
-      { id: 'services', label: t('concierge.menuServices'), run: mostrarMenuServicios },
+      { id: 'servicios', label: t('concierge.menuServices'), run: mostrarMenuServicios },
       { id: 'balance', label: t('concierge.menuBalance'), run: mostrarSaldo },
       { id: 'security', label: t('concierge.menuSecurity'), run: mostrarInfoSeguridad },
     ];
@@ -76,8 +76,8 @@ export default function PantallaAsistente() {
 
   // --- Bloqueo de tarjeta ---
   function mostrarMenuTarjeta() {
-    enviarAgente(cardBlocked ? t('concierge.cardStatusBlocked') : t('concierge.cardStatusActive'), [
-      cardBlocked
+    enviarAgente(tarjetaBloqueada ? t('concierge.cardStatusBlocked') : t('concierge.cardStatusActive'), [
+      tarjetaBloqueada
         ? { id: 'unblock', label: t('concierge.actionUnblockCard'), run: () => alternarTarjeta(false) }
         : { id: 'block', label: t('concierge.actionBlockCard'), run: () => alternarTarjeta(true) },
       accionVolver(),
@@ -87,7 +87,7 @@ export default function PantallaAsistente() {
   async function alternarTarjeta(bloquear: boolean) {
     enviarUsuario(bloquear ? t('concierge.actionBlockCard') : t('concierge.actionUnblockCard'));
     setOcupado(true);
-    const resultado = await requestCardBlock(bloquear);
+    const resultado = await solicitarBloqueoTarjeta(bloquear);
     setOcupado(false);
     if (!resultado.ok) {
       enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
@@ -98,13 +98,13 @@ export default function PantallaAsistente() {
 
   // --- Servicios y deudas ---
   function mostrarMenuServicios() {
-    if (services.length === 0) {
+    if (servicios.length === 0) {
       enviarAgente(t('concierge.servicesEmpty'), [accionVolver()]);
       return;
     }
     enviarAgente(
       t('concierge.servicesIntro'),
-      services.map((servicio) => ({ id: servicio.id, label: `${servicio.name} · ${servicio.paid ? t('concierge.upToDateShort') : dinero(servicio.amount)}`, run: () => mostrarDetalleServicio(servicio) }))
+      servicios.map((servicio) => ({ id: servicio.id, label: `${servicio.name} · ${servicio.paid ? t('concierge.upToDateShort') : dinero(servicio.amount)}`, run: () => mostrarDetalleServicio(servicio) }))
         .concat([accionVolver()])
     );
   }
@@ -134,7 +134,7 @@ export default function PantallaAsistente() {
 
   function confirmarPago(servicio: ServiceBill) {
     enviarUsuario(t('concierge.actionPayNow'));
-    if (servicio.amount > available) {
+    if (servicio.amount > disponible) {
       enviarAgente(t('concierge.cannotAffordService', { name: servicio.name }), [accionVolver()]);
       return;
     }
@@ -147,7 +147,7 @@ export default function PantallaAsistente() {
   async function realizarPago(servicio: ServiceBill) {
     enviarUsuario(t('concierge.yes'));
     setOcupado(true);
-    const resultado = await payBill(servicio.id);
+    const resultado = await pagarRecibo(servicio.id);
     setOcupado(false);
     if (!resultado.ok) {
       enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
@@ -159,7 +159,7 @@ export default function PantallaAsistente() {
   async function realizarSuspension(servicio: ServiceBill) {
     enviarUsuario(t('concierge.actionSuspend'));
     setOcupado(true);
-    const resultado = await suspendBill(servicio.id);
+    const resultado = await suspenderRecibo(servicio.id);
     setOcupado(false);
     if (!resultado.ok) {
       enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
@@ -171,7 +171,7 @@ export default function PantallaAsistente() {
   async function realizarReanudacion(servicio: ServiceBill) {
     enviarUsuario(t('concierge.actionResume'));
     setOcupado(true);
-    const resultado = await resumeBill(servicio.id);
+    const resultado = await reanudarRecibo(servicio.id);
     setOcupado(false);
     if (!resultado.ok) {
       enviarAgente(t('concierge.actionFailed', { message: resultado.message }), [accionVolver()]);
@@ -182,7 +182,7 @@ export default function PantallaAsistente() {
 
   // --- Saldo y movimientos ---
   function mostrarSaldo() {
-    enviarAgente(t('concierge.balanceInfo', { available: dinero(available), debt: dinero(cardDebt), min: dinero(minPayment), line: dinero(creditLine) }), [
+    enviarAgente(t('concierge.balanceInfo', { disponible: dinero(disponible), debt: dinero(deudaTarjeta), min: dinero(pagoMinimo), line: dinero(lineaCredito) }), [
       { id: 'movements', label: t('concierge.actionShowMovements'), run: mostrarMovimientos },
       accionVolver(),
     ]);
@@ -190,19 +190,19 @@ export default function PantallaAsistente() {
 
   function mostrarMovimientos() {
     enviarUsuario(t('concierge.actionShowMovements'));
-    if (transactions.length === 0) {
+    if (transacciones.length === 0) {
       enviarAgente(t('concierge.noMovements'), [accionVolver()]);
       return;
     }
-    const lineas = transactions.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${dinero(tx.amount)} · ${tx.name}`).join('\n');
+    const lineas = transacciones.slice(0, 3).map((tx) => `${tx.kind === 'credit' ? '+' : '−'}${dinero(tx.amount)} · ${tx.name}`).join('\n');
     enviarAgente(`${t('concierge.recentMovements')}\n${lineas}`, [accionVolver()]);
   }
 
   // --- Seguridad ---
   async function mostrarInfoSeguridad() {
     enviarAgente(t('concierge.securityLoading'));
-    await loadSecurity();
-    enviarAgente(t('concierge.securityInfo', { count: String(sessions.length), online: dinero(limitOnline), atm: dinero(limitAtm) }), [
+    await cargarSeguridad();
+    enviarAgente(t('concierge.securityInfo', { count: String(sesiones.length), online: dinero(limiteEnLinea), atm: dinero(limiteCajero) }), [
       { id: 'goSecurity', label: t('concierge.actionGoSecurity'), run: () => nav.navigate('Security') },
       accionVolver(),
     ]);
@@ -251,19 +251,19 @@ export default function PantallaAsistente() {
 
           <ScrollView ref={refScroll} style={{ flex: 1, marginTop: 20 }} contentContainerStyle={{ paddingHorizontal: 22, gap: 10, paddingBottom: 10 }}>
             {mensajes.map((mensaje) => (
-              <View key={mensaje.id} style={{ alignSelf: mensaje.from === 'user' ? 'flex-end' : 'flex-start', maxWidth: '86%' }}>
+              <View key={mensaje.id} style={{ alignSelf: mensaje.from === 'usuario' ? 'flex-end' : 'flex-start', maxWidth: '86%' }}>
                 <View
                   style={{
-                    backgroundColor: mensaje.from === 'user' ? '#C9A227' : 'rgba(255,255,255,.09)',
-                    borderWidth: mensaje.from === 'user' ? 0 : 1,
+                    backgroundColor: mensaje.from === 'usuario' ? '#C9A227' : 'rgba(255,255,255,.09)',
+                    borderWidth: mensaje.from === 'usuario' ? 0 : 1,
                     borderColor: 'rgba(217,190,122,.16)',
                     borderRadius: 20,
-                    borderBottomRightRadius: mensaje.from === 'user' ? 6 : 20,
+                    borderBottomRightRadius: mensaje.from === 'usuario' ? 6 : 20,
                     borderBottomLeftRadius: mensaje.from === 'agent' ? 6 : 20,
                     padding: 15,
                   }}
                 >
-                  <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 13.5, lineHeight: 20, color: mensaje.from === 'user' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{mensaje.text}</Text>
+                  <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 13.5, lineHeight: 20, color: mensaje.from === 'usuario' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{mensaje.text}</Text>
                 </View>
                 {mensaje.actions && mensaje.actions.length > 0 ? (
                   <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>

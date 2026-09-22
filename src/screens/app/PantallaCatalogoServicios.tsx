@@ -28,7 +28,7 @@ export default function PantallaCatalogoServicios() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { services } = usarEstadoApp();
+  const { servicios } = usarEstadoApp();
   const [catalogo, setCatalogo] = useState<Biller[] | null>(null);
   const [consulta, setConsulta] = useState('');
 
@@ -36,7 +36,7 @@ export default function PantallaCatalogoServicios() {
     billsApi.catalog().then(setCatalogo).catch(() => setCatalogo([]));
   }, []);
 
-  const clavesAfiliadas = useMemo(() => new Set(services.map((s) => s.billerKey)), [services]);
+  const clavesAfiliadas = useMemo(() => new Set(servicios.map((s) => s.billerKey)), [servicios]);
 
   const filtrados = useMemo(() => {
     const q = consulta.trim().toLowerCase();

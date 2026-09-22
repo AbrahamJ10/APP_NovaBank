@@ -23,7 +23,7 @@ export default function PantallaConsultaServicio() {
   const { biller } = params;
   const { theme } = usarTema();
   const { t } = usarIdioma();
-  const { available, affiliateService, payBill } = usarEstadoApp();
+  const { disponible, afiliarServicio, pagarRecibo } = usarEstadoApp();
 
   const [numeroSuministro, setNumeroSuministro] = useState('');
   const [cargando, setCargando] = useState(false);
@@ -36,7 +36,7 @@ export default function PantallaConsultaServicio() {
     if (cargando || !numeroSuministro.trim()) return;
     setCargando(true);
     setError(null);
-    const resultado = await affiliateService(biller.key, numeroSuministro.trim());
+    const resultado = await afiliarServicio(biller.key, numeroSuministro.trim());
     setCargando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -49,7 +49,7 @@ export default function PantallaConsultaServicio() {
     if (!recibo || pagando) return;
     setPagando(true);
     setError(null);
-    const resultado = await payBill(recibo.id);
+    const resultado = await pagarRecibo(recibo.id);
     setPagando(false);
     if (!resultado.ok) {
       setError(resultado.message);
@@ -136,13 +136,13 @@ export default function PantallaConsultaServicio() {
           {error ? (
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
-          {recibo.amount > available ? (
+          {recibo.amount > disponible ? (
             <Text style={{ marginTop: 10, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: '#C2352B' }}>{t('qr.insufficientBalance')}</Text>
           ) : null}
 
           <BotonDorado
             label={pagando ? t('services.paying') : t('services.pay', { amount: dinero(recibo.amount) })}
-            disabled={recibo.amount > available || pagando}
+            disabled={recibo.amount > disponible || pagando}
             onPress={enviarPago}
             style={{ marginTop: 16 }}
           />

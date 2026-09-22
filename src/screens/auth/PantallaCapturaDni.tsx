@@ -30,7 +30,7 @@ const UMBRAL_CONSEJOS = 2; // muestra ayuda extra después de este número de in
 export default function PantallaCapturaDni() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
-  const { setDniFrontPhoto, setFrontDniNumber, setScannedDni } = usarEstadoApp();
+  const { setFotoFrenteDni, setNumeroFrenteDni, setDniEscaneado } = usarEstadoApp();
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [fase, setFase] = useState<Fase>('front');
   const [estado, setEstado] = useState<Estado>('idle');
@@ -46,9 +46,9 @@ export default function PantallaCapturaDni() {
   // Se descarta todo lo capturado hasta ahora para que un escaneo a medias
   // nunca se filtre a un intento posterior.
   const descartarYVolver = () => {
-    setDniFrontPhoto(null);
-    setFrontDniNumber(null);
-    setScannedDni(null);
+    setFotoFrenteDni(null);
+    setNumeroFrenteDni(null);
+    setDniEscaneado(null);
     nav.goBack();
   };
 
@@ -75,8 +75,8 @@ export default function PantallaCapturaDni() {
       }
 
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      setDniFrontPhoto(foto.base64);
-      setFrontDniNumber(analisis.dni);
+      setFotoFrenteDni(foto.base64);
+      setNumeroFrenteDni(analisis.dni);
       dniFrenteRef.current = analisis.dni;
       setFallosFrente(0);
       setEstado('success');
@@ -124,7 +124,7 @@ export default function PantallaCapturaDni() {
     setPista(t('dniCapture.verifying', { dni: analizado.dni }));
     try {
       const verificado = await dniApi.lookup(analizado.dni);
-      setScannedDni({
+      setDniEscaneado({
         ...analizado,
         nombres: verificado.nombres,
         apellidoPaterno: verificado.apellidoPaterno,
@@ -133,7 +133,7 @@ export default function PantallaCapturaDni() {
       });
       setPista(`✓ ${verificado.fullName}`);
     } catch {
-      setScannedDni(analizado);
+      setDniEscaneado(analizado);
       setPista(analizado.fullName ? `✓ ${analizado.fullName}` : `✓ ${t('dniCapture.detectedFallback', { dni: analizado.dni })}`);
     }
     setEstado('success');

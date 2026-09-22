@@ -15,9 +15,9 @@ import PantallaRegistroRostro from '../screens/auth/PantallaRegistroRostro';
 const Stack = createStackNavigator<ListaParametrosAuth>();
 
 export default function PilaAutenticacion() {
-  const { expired } = usarEstadoApp();
+  const { expirado } = usarEstadoApp();
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={expired ? 'Expired' : 'Welcome'}>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={expirado ? 'Expired' : 'Welcome'}>
       <Stack.Screen name="Welcome" component={PantallaBienvenida} />
       <Stack.Screen name="Expired" component={PantallaExpirada} />
       <Stack.Screen name="Register" component={PantallaRegistro} />
