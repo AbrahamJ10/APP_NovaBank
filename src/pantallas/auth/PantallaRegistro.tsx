@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Pantalla from '../../componentes/Pantalla';
-import { BotonVolver, PasosProgreso } from '../../componentes/Primitivas';
+import { BotonVolver, CasillasOtp, PasosProgreso } from '../../componentes/Primitivas';
 import CampoTexto from '../../componentes/CampoTexto';
 import { BotonPrimario } from '../../componentes/Botones';
 import Icono from '../../componentes/Icono';
 import { usarTema } from '../../tema/ContextoTema';
 import { fuentes } from '../../tema/estilos';
+import { mmss } from '../../libreria/formato';
+import { ApiError, verificationApi } from '../../libreria/api';
 import { ListaParametrosAuth } from '../../navegacion/tipos';
 import { usarEstadoApp } from '../../estado/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
+
+const ESPERA_REENVIO_S = 60;
 
 function cumpleRegla(regex: RegExp, valor: string) {
   return regex.test(valor);
@@ -21,7 +25,7 @@ export default function PantallaRegistro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { tema } = usarTema();
   const { t } = usarIdioma();
-  const { iniciarRegistro, dniEscaneado, setDniEscaneado } = usarEstadoApp();
+  const { iniciarRegistro, dniEscaneado, setDniEscaneado, verificarCorreoRegistro } = usarEstadoApp();
 
   // Vienen del escaneo del DNI/consulta a RENIEC hecha antes en el flujo —
   // solo lectura, el usuario nunca los escribe.
@@ -31,6 +35,15 @@ export default function PantallaRegistro() {
   const [dni, setDni] = useState('');
 
   const [correo, setCorreo] = useState('');
+  const [correoVerificado, setCorreoVerificado] = useState(false);
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [codigoOtp, setCodigoOtp] = useState('');
+  const [enviandoCodigo, setEnviandoCodigo] = useState(false);
+  const [verificandoCodigo, setVerificandoCodigo] = useState(false);
+  const [errorCodigo, setErrorCodigo] = useState<string | null>(null);
+  const [espera, setEspera] = useState(0);
+  const refEntradaCodigo = useRef<TextInput>(null);
+
   const [telefono, setTelefono] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [contrasenaVisible, setContrasenaVisible] = useState(false);
@@ -50,6 +63,12 @@ export default function PantallaRegistro() {
     }, [dniEscaneado])
   );
 
+  useEffect(() => {
+    if (espera <= 0) return;
+    const id = setInterval(() => setEspera((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, [espera]);
+
   const correoValido = cumpleRegla(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, correo);
   const telefonoValido = cumpleRegla(/^\d{9}$/, telefono);
   const identidadLista = nombres.length > 0 && apellidoPaterno.length > 0 && /^\d{8}$/.test(dni);
@@ -66,7 +85,55 @@ export default function PantallaRegistro() {
     { label: t('register.strengthStrong'), color: '#21A26B', pct: '100%' };
 
   const confirmacionValida = confirmarContrasena.length > 0 && confirmarContrasena === contrasena;
-  const puedeContinuar = identidadLista && correoValido && telefonoValido && puntaje === 4 && confirmacionValida && aceptado;
+  const puedeContinuar = identidadLista && correoVerificado && telefonoValido && puntaje === 4 && confirmacionValida && aceptado;
+
+  const cambiarCorreo = (v: string) => {
+    setCorreo(v);
+    setCorreoVerificado(false);
+    setCodigoEnviado(false);
+    setCodigoOtp('');
+    setErrorCodigo(null);
+  };
+
+  const enviarCodigo = async () => {
+    if (!correoValido || enviandoCodigo) return;
+    setEnviandoCodigo(true);
+    setErrorCodigo(null);
+    try {
+      await verificationApi.requestRegisterOtp(correo);
+      setCodigoEnviado(true);
+      setCodigoOtp('');
+      setEspera(ESPERA_REENVIO_S);
+      setTimeout(() => refEntradaCodigo.current?.focus(), 100);
+    } catch (err) {
+      setErrorCodigo(err instanceof ApiError ? err.message : t('register.sendCode'));
+    } finally {
+      setEnviandoCodigo(false);
+    }
+  };
+
+  const esMensajeDeBloqueo = (mensaje: string) => mensaje.toLowerCase().includes('intentos permitidos');
+
+  const verificarCodigo = async (valor: string) => {
+    if (valor.length !== 6 || verificandoCodigo) return;
+    setVerificandoCodigo(true);
+    setErrorCodigo(null);
+    const resultado = await verificarCorreoRegistro(correo, valor);
+    setVerificandoCodigo(false);
+    if (!resultado.ok) {
+      if (esMensajeDeBloqueo(resultado.message)) {
+        Alert.alert(t('register.blockedTitle'), resultado.message, [{ text: 'OK' }]);
+        setCodigoEnviado(false);
+        setCodigoOtp('');
+        setEspera(0);
+      } else {
+        setErrorCodigo(resultado.message);
+        setCodigoOtp('');
+      }
+      return;
+    }
+    setCorreoVerificado(true);
+  };
 
   const alContinuar = () => {
     const nombreCompleto = [nombres, apellidoPaterno, apellidoMaterno].filter(Boolean).join(' ');
@@ -89,16 +156,77 @@ export default function PantallaRegistro() {
         <CampoTexto label={t('register.secondLastName')} icon="badge" value={apellidoMaterno} editable={false} />
         <CampoTexto label={t('register.dni')} icon="fingerprint" value={dni} editable={false} status="success" pista={t('register.verifiedReniec')} />
 
-        <CampoTexto
-          label={t('register.email')}
-          icon="mail"
-          placeholder="tucorreo@gmail.com"
-          value={correo}
-          onChangeText={setCorreo}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          status={correo.length === 0 ? 'default' : correoValido ? 'success' : 'error'}
-        />
+        <View>
+          <CampoTexto
+            label={t('register.email')}
+            icon="mail"
+            placeholder="tucorreo@gmail.com"
+            value={correo}
+            onChangeText={cambiarCorreo}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            editable={!correoVerificado}
+            status={correoVerificado ? 'success' : correo.length === 0 ? 'default' : correoValido ? 'default' : 'error'}
+            pista={correoVerificado ? t('register.emailVerified') : undefined}
+            iconoAccion={correoVerificado ? 'edit' : undefined}
+            alPresionarIconoAccion={correoVerificado ? () => cambiarCorreo(correo) : undefined}
+          />
+
+          {correoValido && !correoVerificado ? (
+            <View style={{ marginTop: 10 }}>
+              {!codigoEnviado ? (
+                <BotonPrimario
+                  label={enviandoCodigo ? t('register.sendingCode') : t('register.sendCode')}
+                  onPress={enviarCodigo}
+                  disabled={enviandoCodigo}
+                  style={{ height: 44 }}
+                />
+              ) : (
+                <View style={{ borderRadius: 16, borderWidth: 1.5, borderColor: tema.linea, backgroundColor: tema.superficie, padding: 16, gap: 12 }}>
+                  <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12.5, color: tema.medio }}>
+                    {t('register.codeSentTo', { email: correo })}
+                  </Text>
+                  <Pressable onPress={() => refEntradaCodigo.current?.focus()}>
+                    <CasillasOtp value={codigoOtp} />
+                  </Pressable>
+                  <TextInput
+                    ref={refEntradaCodigo}
+                    value={codigoOtp}
+                    keyboardType="number-pad"
+                    maxLength={6}
+                    onChangeText={(v) => {
+                      const digitos = v.replace(/\D/g, '').slice(0, 6);
+                      setCodigoOtp(digitos);
+                      setErrorCodigo(null);
+                      if (digitos.length === 6) verificarCodigo(digitos);
+                    }}
+                    style={{ position: 'absolute', opacity: 0, height: 0 }}
+                  />
+                  {errorCodigo ? (
+                    <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12, color: '#C2352B' }}>{errorCodigo}</Text>
+                  ) : null}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ fontFamily: fuentes.body, fontSize: 12, color: tema.medio }}>
+                      {espera > 0 ? t('register.resendIn', { time: mmss(espera) }) : ''}
+                    </Text>
+                    <Pressable disabled={espera > 0 || enviandoCodigo} onPress={enviarCodigo}>
+                      <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: espera > 0 ? tema.suave : tema.dorado }}>
+                        {t('register.resendCode')}
+                      </Text>
+                    </Pressable>
+                  </View>
+                  <BotonPrimario
+                    label={verificandoCodigo ? t('register.verifyingCode') : t('register.verifyCode')}
+                    onPress={() => verificarCodigo(codigoOtp)}
+                    disabled={codigoOtp.length !== 6 || verificandoCodigo}
+                    style={{ height: 44 }}
+                  />
+                </View>
+              )}
+            </View>
+          ) : null}
+        </View>
+
         <CampoTexto
           label={t('register.phone')}
           icon="call"

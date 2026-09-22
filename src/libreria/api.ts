@@ -151,6 +151,10 @@ export const verificationApi = {
     await rawRequest('/api/verification/otp/request', { method: 'POST', body: JSON.stringify({ email }) });
   },
 
+  async verifyRegisterOtp(email: string, code: string) {
+    await rawRequest('/api/verification/otp/verify', { method: 'POST', body: JSON.stringify({ email, code }) });
+  },
+
   async faceMatch(input: { dni: string; selfie: string; dniPhoto: string }): Promise<FaceMatchResult> {
     return rawRequest('/api/verification/face-match', { method: 'POST', body: JSON.stringify(input) });
   },

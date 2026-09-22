@@ -21,6 +21,7 @@ import {
   SecuritySession,
   transactionsApi,
   transfersApi,
+  verificationApi,
   withdrawalsApi,
   withTimeout,
 } from '../libreria/api';
@@ -223,6 +224,11 @@ export function usarEstadoAppInterno() {
   const [fotoFrenteDni, setFotoFrenteDni] = useState<string | null>(null);
   const [numeroFrenteDni, setNumeroFrenteDni] = useState<string | null>(null);
   const [selfiePendiente, setSelfiePendiente] = useState<string | null>(null);
+  // Se guarda el código apenas se verifica el correo en el formulario de
+  // registro (mucho antes de terminar la captura de DNI/rostro), para
+  // volver a enviarlo tal cual al completar el registro más adelante — el
+  // backend lo valida otra vez ahí (y recién ahí lo consume).
+  const [otpCorreoVerificado, setOtpCorreoVerificado] = useState<string | null>(null);
 
   const lastActivity = useRef(Date.now());
   const tocar = useCallback(() => {
@@ -458,10 +464,26 @@ export function usarEstadoAppInterno() {
       password: data.password,
     };
     setPendingUser(u);
+    setOtpCorreoVerificado(null);
   }, []);
 
-  const completarRegistro = useCallback(async (otpCode: string): Promise<{ ok: true } | { ok: false; message: string }> => {
+  // Verificación temprana del correo, hecha en el propio formulario de
+  // registro apenas se escribe — no consume el código en el servidor (ver
+  // verificarOtpRegistroPrevio), solo confirma que es correcto y lo guarda
+  // para reenviarlo tal cual cuando el registro se complete de verdad.
+  const verificarCorreoRegistro = useCallback(async (correo: string, codigo: string): Promise<{ ok: true } | { ok: false; message: string }> => {
+    try {
+      await verificationApi.verifyRegisterOtp(correo, codigo);
+      setOtpCorreoVerificado(codigo);
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, message: err instanceof ApiError ? err.message : 'No se pudo verificar el código. Intenta de nuevo.' };
+    }
+  }, []);
+
+  const completarRegistro = useCallback(async (): Promise<{ ok: true } | { ok: false; message: string }> => {
     if (!usuarioPendiente) return { ok: false, message: 'No hay un registro en curso.' };
+    if (!otpCorreoVerificado) return { ok: false, message: 'Primero verifica tu correo.' };
     try {
       const apiUser = await authApi.register({
         email: usuarioPendiente.email,
@@ -469,7 +491,7 @@ export function usarEstadoAppInterno() {
         fullName: usuarioPendiente.name,
         phone: usuarioPendiente.phone,
         dni: usuarioPendiente.dni,
-        otpCode,
+        otpCode: otpCorreoVerificado,
         dniPhoto: fotoFrenteDni ?? undefined,
         selfie: selfiePendiente ?? undefined,
       });
@@ -486,13 +508,14 @@ export function usarEstadoAppInterno() {
       setFotoFrenteDni(null);
       setNumeroFrenteDni(null);
       setSelfiePendiente(null);
+      setOtpCorreoVerificado(null);
       setAttempts(0);
       setBlockedUntil(null);
       return { ok: true };
     } catch (err) {
       return { ok: false, message: err instanceof ApiError ? err.message : 'No se pudo crear la cuenta. Intenta de nuevo.' };
     }
-  }, [usuarioPendiente, fotoFrenteDni, selfiePendiente, refrescarCuenta]);
+  }, [usuarioPendiente, otpCorreoVerificado, fotoFrenteDni, selfiePendiente, refrescarCuenta]);
 
   const iniciarSesion = useCallback(async (identifier: string, password: string) => {
     if (bloqueadoHasta && tiempoBloqueoRestante > 0) return { ok: false as const, blocked: true };
@@ -847,7 +870,7 @@ export function usarEstadoAppInterno() {
     modoPanico, abrirPanico, cerrarPanico,
     intentos, bloqueadoHasta, tiempoBloqueoRestante,
     otp, propositoOtp, otpRestante, contextoOtp, iniciarOtp, reenviarOtp, verificarOtp, setPropositoOtp,
-    iniciarRegistro, completarRegistro,
+    iniciarRegistro, completarRegistro, verificarCorreoRegistro, otpCorreoVerificado,
     iniciarSesion, iniciarSesionConRostro, cerrarSesion, restaurarSesion,
     solicitarOtpTransferencia, ejecutarTransferencia, agregarDestinatario,
     iniciarRecuperacion,

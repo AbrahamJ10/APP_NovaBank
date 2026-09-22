@@ -32,13 +32,9 @@ export default function Pantalla({ children, scroll = true, padded = true, bg, s
   return (
     <SafeAreaView style={[{ flex: 1, backgroundColor: fondo }, style]} edges={edges ?? ['top', 'left', 'right']}>
       <StatusBar barStyle={oscuro ? 'light-content' : 'dark-content'} backgroundColor={fondo} />
-      {Platform.OS === 'ios' ? (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-          {cuerpo}
-        </KeyboardAvoidingView>
-      ) : (
-        cuerpo
-      )}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {cuerpo}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

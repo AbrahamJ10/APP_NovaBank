@@ -15,14 +15,14 @@ import { mensajeFalloRostro, ejecutarChequeoRostro } from '../../libreria/detecc
 import { ApiError, verificationApi } from '../../libreria/api';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-type Etapa = 'idle' | 'scanning' | 'checking' | 'ok' | 'otpFailed' | 'fail';
+type Etapa = 'idle' | 'scanning' | 'checking' | 'completing' | 'registerFailed' | 'fail';
 
 const ANILLO = 178;
 
 export default function PantallaRegistroRostro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
-  const { usuarioPendiente, fotoFrenteDni, setSelfiePendiente } = usarEstadoApp();
+  const { usuarioPendiente, fotoFrenteDni, setSelfiePendiente, completarRegistro } = usarEstadoApp();
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [etapa, setEtapa] = useState<Etapa>('idle');
   const [mensajeFalla, setMensajeFalla] = useState('');
@@ -90,26 +90,26 @@ export default function PantallaRegistroRostro() {
       // final a register() y guardarla como foto de referencia de Face ID.
       setSelfiePendiente(foto.base64);
 
-      // El rostro ya está verificado en este punto — una falla enviando el
-      // correo con el OTP después es un problema aparte y no debe mostrarse
-      // como "no pudimos verificarte".
-      await enviarOtp();
+      // El rostro ya está verificado en este punto y el correo ya se había
+      // verificado antes, en el propio formulario de registro — ya se puede
+      // crear la cuenta directamente, sin pedir un código de nuevo.
+      await finalizarRegistro();
     } catch (error) {
       setMensajeFalla(error instanceof ApiError ? error.message : t('registerFace.failGeneric'));
       setEtapa('fail');
     }
   };
 
-  const enviarOtp = async () => {
-    if (!usuarioPendiente) return;
-    try {
-      await verificationApi.requestRegisterOtp(usuarioPendiente.email);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      setEtapa('ok');
-    } catch (error) {
-      setMensajeFalla(error instanceof ApiError ? error.message : t('registerFace.failGeneric'));
-      setEtapa('otpFailed');
+  const finalizarRegistro = async () => {
+    setEtapa('completing');
+    const resultado = await completarRegistro();
+    if (!resultado.ok) {
+      setMensajeFalla(resultado.message);
+      setEtapa('registerFailed');
+      return;
     }
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    nav.replace('RegisterDone');
   };
 
   const trasladoY = escaneoY.interpolate({ inputRange: [0, 1], outputRange: [-60, 60] });
@@ -118,8 +118,8 @@ export default function PantallaRegistroRostro() {
     etapa === 'idle' ? t('registerFace.title') :
     etapa === 'scanning' ? t('registerFace.titleScanning') :
     etapa === 'checking' ? t('registerFace.titleChecking') :
-    etapa === 'ok' ? t('registerFace.titleOk') :
-    etapa === 'otpFailed' ? t('registerFace.titleOtpFailed') :
+    etapa === 'completing' ? t('registerFace.titleOk') :
+    etapa === 'registerFailed' ? t('registerFace.titleRegisterFailed') :
     t('registerFace.titleFail');
   const descripcion =
     etapa === 'idle'
@@ -128,7 +128,7 @@ export default function PantallaRegistroRostro() {
       ? t('registerFace.descScanning')
       : etapa === 'checking'
       ? t('registerFace.descChecking')
-      : etapa === 'ok'
+      : etapa === 'completing'
       ? t('registerFace.descOk')
       : mensajeFalla;
 
@@ -141,7 +141,7 @@ export default function PantallaRegistroRostro() {
         </Pressable>
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <View style={[styles.ring, (etapa === 'ok' || etapa === 'otpFailed') && { borderColor: 'rgba(123,224,168,.5)' }, etapa === 'fail' && { borderColor: 'rgba(194,53,43,.5)' }]}>
+          <View style={[styles.ring, etapa === 'completing' && { borderColor: 'rgba(123,224,168,.5)' }, (etapa === 'fail' || etapa === 'registerFailed') && { borderColor: 'rgba(194,53,43,.5)' }]}>
             {etapa === 'scanning' || etapa === 'checking' ? (
               <View style={styles.cameraClip}>
                 <CameraView ref={camaraRef} style={StyleSheet.absoluteFill} facing="front" />
@@ -153,15 +153,15 @@ export default function PantallaRegistroRostro() {
                 )}
               </View>
             ) : (
-              <Icono name="face" size={96} color={etapa === 'ok' || etapa === 'otpFailed' ? '#7BE0A8' : etapa === 'fail' ? '#C2352B' : 'rgba(255,255,255,.55)'} />
+              <Icono name="face" size={96} color={etapa === 'completing' ? '#7BE0A8' : (etapa === 'fail' || etapa === 'registerFailed') ? '#C2352B' : 'rgba(255,255,255,.55)'} />
             )}
 
-            {(etapa === 'ok' || etapa === 'otpFailed') && (
+            {etapa === 'completing' && (
               <View style={[styles.badge, { backgroundColor: '#21A26B' }]}>
-                <Icono name="check" size={30} color="#fff" />
+                <ActivityIndicator color="#fff" size="small" />
               </View>
             )}
-            {etapa === 'fail' && (
+            {(etapa === 'fail' || etapa === 'registerFailed') && (
               <View style={[styles.badge, { backgroundColor: '#C2352B' }]}>
                 <Icono name="close" size={30} color="#fff" />
               </View>
@@ -177,11 +177,8 @@ export default function PantallaRegistroRostro() {
           {(etapa === 'scanning' || etapa === 'checking') && (
             <BotonFantasma label={t('registerFace.cancel')} onPress={() => setEtapa('idle')} colorTexto="#fff" style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.28)' }} />
           )}
-          {etapa === 'ok' && (
-            <BotonDorado label={t('registerFace.continueButton')} icon="arrow_forward" onPress={() => nav.replace('Otp')} />
-          )}
-          {etapa === 'otpFailed' && (
-            <BotonDorado label={t('registerFace.retrySendEmail')} icon="refresh" onPress={enviarOtp} />
+          {etapa === 'registerFailed' && (
+            <BotonDorado label={t('registerFace.retryRegister')} icon="refresh" onPress={finalizarRegistro} />
           )}
           {etapa === 'fail' && (
             <>

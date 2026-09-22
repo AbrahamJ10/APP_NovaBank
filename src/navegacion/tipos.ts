@@ -6,7 +6,6 @@ export type ListaParametrosAuth = {
   Register: undefined;
   DniCapture: undefined;
   RegisterFace: undefined;
-  Otp: undefined;
   RegisterDone: undefined;
   Login: undefined;
   Recover: undefined;
