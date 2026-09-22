@@ -20,74 +20,74 @@ export default function QrScreen() {
   const nav = useNavigation();
   const { t } = useLanguage();
   const { user, available, payQr, transactions } = useAppState();
-  const [tab, setTab] = useState<'scan' | 'mine'>('scan');
-  const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState<string | null>(null);
-  const [amount, setAmount] = useState('');
-  const [done, setDone] = useState(false);
-  const [paying, setPaying] = useState(false);
+  const [pestana, setPestana] = useState<'scan' | 'mine'>('scan');
+  const [permiso, solicitarPermiso] = useCameraPermissions();
+  const [escaneado, setEscaneado] = useState<string | null>(null);
+  const [monto, setMonto] = useState('');
+  const [listo, setListo] = useState(false);
+  const [pagando, setPagando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [galleryError, setGalleryError] = useState<string | null>(null);
-  const [pickingImage, setPickingImage] = useState(false);
-  const locked = useRef(false);
+  const [errorGaleria, setErrorGaleria] = useState<string | null>(null);
+  const [seleccionandoImagen, setSeleccionandoImagen] = useState(false);
+  const bloqueado = useRef(false);
 
-  const qrPayments = transactions.filter((tx) => tx.category === 'qr').slice(0, 4);
+  const pagosQr = transactions.filter((tx) => tx.category === 'qr').slice(0, 4);
 
-  const onScanned = (result: { data: string }) => {
-    if (locked.current) return;
-    locked.current = true;
+  const alEscanear = (resultado: { data: string }) => {
+    if (bloqueado.current) return;
+    bloqueado.current = true;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
-    setScanned(result.data);
+    setEscaneado(resultado.data);
   };
 
-  const pickFromGallery = async () => {
-    if (pickingImage) return;
-    setPickingImage(true);
-    setGalleryError(null);
+  const elegirDeGaleria = async () => {
+    if (seleccionandoImagen) return;
+    setSeleccionandoImagen(true);
+    setErrorGaleria(null);
     try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) {
-        setGalleryError(t('qr.galleryPermissionDenied'));
+      const permisoGaleria = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permisoGaleria.granted) {
+        setErrorGaleria(t('qr.galleryPermissionDenied'));
         return;
       }
-      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
-      if (result.canceled || !result.assets?.[0]) return;
-      const codes = await scanFromURLAsync(result.assets[0].uri, ['qr']);
-      if (codes.length > 0 && codes[0].data) {
-        onScanned({ data: codes[0].data });
+      const resultado = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
+      if (resultado.canceled || !resultado.assets?.[0]) return;
+      const codigos = await scanFromURLAsync(resultado.assets[0].uri, ['qr']);
+      if (codigos.length > 0 && codigos[0].data) {
+        alEscanear({ data: codigos[0].data });
       } else {
-        setGalleryError(t('qr.noQrFound'));
+        setErrorGaleria(t('qr.noQrFound'));
       }
     } catch {
-      setGalleryError(t('qr.noQrFound'));
+      setErrorGaleria(t('qr.noQrFound'));
     } finally {
-      setPickingImage(false);
+      setSeleccionandoImagen(false);
     }
   };
 
-  const closeSheet = () => {
-    setScanned(null);
-    setAmount('');
-    setDone(false);
+  const cerrarHoja = () => {
+    setEscaneado(null);
+    setMonto('');
+    setListo(false);
     setError(null);
-    setGalleryError(null);
-    locked.current = false;
+    setErrorGaleria(null);
+    bloqueado.current = false;
   };
 
-  const merchantName = scanned ? (scanned.length > 24 ? t('qr.merchant') : scanned.replace(/^https?:\/\//, '').slice(0, 24)) : '';
-  const amountNum = Number(amount.replace(',', '.')) || 0;
+  const nombreComercio = escaneado ? (escaneado.length > 24 ? t('qr.merchant') : escaneado.replace(/^https?:\/\//, '').slice(0, 24)) : '';
+  const montoNum = Number(monto.replace(',', '.')) || 0;
 
-  const submit = async () => {
-    if (paying) return;
-    setPaying(true);
+  const enviar = async () => {
+    if (pagando) return;
+    setPagando(true);
     setError(null);
-    const result = await payQr(merchantName || t('qr.merchant'), amountNum);
-    setPaying(false);
-    if (!result.ok) {
-      setError(result.message);
+    const resultado = await payQr(nombreComercio || t('qr.merchant'), montoNum);
+    setPagando(false);
+    if (!resultado.ok) {
+      setError(resultado.message);
       return;
     }
-    setDone(true);
+    setListo(true);
   };
 
   return (
@@ -98,22 +98,22 @@ export default function QrScreen() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: 8, padding: 4, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.1)' }}>
-          <Pressable onPress={() => setTab('scan')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: tab === 'scan' ? '#fff' : 'transparent' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: tab === 'scan' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabScan')}</Text>
+          <Pressable onPress={() => setPestana('scan')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: pestana === 'scan' ? '#fff' : 'transparent' }}>
+            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: pestana === 'scan' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabScan')}</Text>
           </Pressable>
-          <Pressable onPress={() => setTab('mine')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: tab === 'mine' ? '#fff' : 'transparent' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: tab === 'mine' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabMine')}</Text>
+          <Pressable onPress={() => setPestana('mine')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: pestana === 'mine' ? '#fff' : 'transparent' }}>
+            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: pestana === 'mine' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabMine')}</Text>
           </Pressable>
         </View>
 
-        {tab === 'scan' ? (
+        {pestana === 'scan' ? (
           <View style={{ marginTop: 28, height: 300, borderRadius: 26, overflow: 'hidden', backgroundColor: '#08131F' }}>
-            {permission?.granted ? (
+            {permiso?.granted ? (
               <CameraView
                 style={StyleSheet.absoluteFill}
                 facing="back"
                 barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-                onBarcodeScanned={onScanned}
+                onBarcodeScanned={alEscanear}
               />
             ) : (
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
@@ -121,13 +121,13 @@ export default function QrScreen() {
                 <Text style={{ marginTop: 14, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>
                   {t('qr.enableCamera')}
                 </Text>
-                <GoldButton label={t('qr.enableCameraButton')} onPress={requestPermission} style={{ marginTop: 16 }} />
+                <GoldButton label={t('qr.enableCameraButton')} onPress={solicitarPermiso} style={{ marginTop: 16 }} />
               </View>
             )}
-            {permission?.granted && (
-              <View pointerEvents="none" style={styles.frameWrap}>
-                <View style={styles.frame} />
-                <Text style={styles.hint}>{t('qr.pointAtQr')}</Text>
+            {permiso?.granted && (
+              <View pointerEvents="none" style={estilos.frameWrap}>
+                <View style={estilos.frame} />
+                <Text style={estilos.hint}>{t('qr.pointAtQr')}</Text>
               </View>
             )}
           </View>
@@ -144,18 +144,18 @@ export default function QrScreen() {
           </View>
         )}
 
-        {tab === 'scan' && (
+        {pestana === 'scan' && (
           <View style={{ marginTop: 22, flexDirection: 'row', gap: 10 }}>
             <Pressable
-              onPress={pickFromGallery}
-              disabled={pickingImage}
-              style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: pickingImage ? 0.6 : 1 }}
+              onPress={elegirDeGaleria}
+              disabled={seleccionandoImagen}
+              style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: seleccionandoImagen ? 0.6 : 1 }}
             >
               <Icon name="photo_library" size={18} color="#fff" />
               <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.fromGallery')}</Text>
             </Pressable>
             <Pressable
-              onPress={() => setScanned('MANUAL')}
+              onPress={() => setEscaneado('MANUAL')}
               style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               <Icon name="dialpad" size={18} color="#fff" />
@@ -164,13 +164,13 @@ export default function QrScreen() {
           </View>
         )}
 
-        {tab === 'scan' && galleryError ? (
-          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12, color: '#FF8C7A' }}>{galleryError}</Text>
+        {pestana === 'scan' && errorGaleria ? (
+          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12, color: '#FF8C7A' }}>{errorGaleria}</Text>
         ) : null}
 
         <Text style={{ marginTop: 26, fontFamily: fonts.headingBold, fontSize: 14, color: '#fff' }}>{t('qr.recentQrPayments')}</Text>
         <View style={{ marginTop: 12, gap: 13 }}>
-          {qrPayments.map((tx) => (
+          {pagosQr.map((tx) => (
             <View key={tx.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.1)', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name={tx.icon} size={19} color="#FFB07A" />
@@ -185,38 +185,38 @@ export default function QrScreen() {
         </View>
       </SafeAreaView>
 
-      <BottomSheet visible={!!scanned} onClose={closeSheet}>
-        {scanned && !done ? (
+      <BottomSheet visible={!!escaneado} onClose={cerrarHoja}>
+        {escaneado && !listo ? (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5 }}>{t('qr.payWithQr')}</Text>
             <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>
-              {scanned !== 'MANUAL' ? t('qr.codeReadFrom', { merchant: merchantName }) : t('qr.codeReadManually')}
+              {escaneado !== 'MANUAL' ? t('qr.codeReadFrom', { merchant: nombreComercio }) : t('qr.codeReadManually')}
             </Text>
             <View style={{ marginTop: 16 }}>
-              <TextField label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={amount} onChangeText={(v) => setAmount(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
+              <TextField label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
             </View>
-            <Text style={{ marginTop: 6, fontFamily: fonts.bodyMed, fontSize: 11.5, color: amountNum > available ? '#C2352B' : '#5F6B78' }}>
-              {amountNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: money(available) })}
+            <Text style={{ marginTop: 6, fontFamily: fonts.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
+              {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: money(available) })}
             </Text>
             {error ? (
               <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
             ) : null}
             <PrimaryButton
-              label={paying ? t('qr.paying') : t('qr.confirmPayment')}
-              disabled={amountNum <= 0 || amountNum > available || paying}
-              onPress={submit}
+              label={pagando ? t('qr.paying') : t('qr.confirmPayment')}
+              disabled={montoNum <= 0 || montoNum > available || pagando}
+              onPress={enviar}
               style={{ marginTop: 18 }}
             />
-            <GhostButton label={t('qr.cancel')} onPress={closeSheet} style={{ marginTop: 10 }} />
+            <GhostButton label={t('qr.cancel')} onPress={cerrarHoja} style={{ marginTop: 10 }} />
           </View>
-        ) : done ? (
+        ) : listo ? (
           <View style={{ alignItems: 'center', paddingVertical: 10 }}>
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="check" size={36} color="#21A26B" />
             </View>
             <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19 }}>{t('qr.paymentDone')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: money(amountNum) })}</Text>
-            <PrimaryButton label={t('qr.done')} onPress={closeSheet} style={{ marginTop: 18, width: '100%' }} />
+            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: money(montoNum) })}</Text>
+            <PrimaryButton label={t('qr.done')} onPress={cerrarHoja} style={{ marginTop: 18, width: '100%' }} />
           </View>
         ) : null}
       </BottomSheet>
@@ -224,7 +224,7 @@ export default function QrScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const estilos = StyleSheet.create({
   frameWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   frame: { width: 190, height: 190, borderRadius: 20, borderWidth: 2, borderColor: 'rgba(255,255,255,.5)' },
   hint: { position: 'absolute', bottom: 18, fontFamily: fonts.body, fontSize: 12.5, color: 'rgba(255,255,255,.7)' },

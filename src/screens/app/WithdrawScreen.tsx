@@ -11,27 +11,27 @@ import { mmss } from '../../lib/format';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const PRESETS = [100, 200, 400, 700];
-const RADIUS = 46;
-const CIRC = 2 * Math.PI * RADIUS;
+const PREDEFINIDOS = [100, 200, 400, 700];
+const RADIO = 46;
+const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
 export default function WithdrawScreen() {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { withdraw, withdrawLeft, withdrawExpired, generateWithdraw, cancelWithdraw, renewWithdraw } = useAppState();
-  const [amount, setAmount] = useState(200);
-  const [generating, setGenerating] = useState(false);
+  const [monto, setMonto] = useState(200);
+  const [generando, setGenerando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const pct = withdraw ? withdrawLeft / (30 * 60) : 0;
+  const porcentaje = withdraw ? withdrawLeft / (30 * 60) : 0;
 
-  const submit = async () => {
-    if (generating) return;
-    setGenerating(true);
+  const enviar = async () => {
+    if (generando) return;
+    setGenerando(true);
     setError(null);
-    const result = await generateWithdraw(amount);
-    setGenerating(false);
-    if (!result.ok) setError(result.message);
+    const resultado = await generateWithdraw(monto);
+    setGenerando(false);
+    if (!resultado.ok) setError(resultado.message);
   };
 
   return (
@@ -47,16 +47,16 @@ export default function WithdrawScreen() {
             <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('withdraw.amountToWithdraw')}</Text>
             <View style={{ marginTop: 12, height: 74, borderRadius: 16, borderWidth: 1.5, borderColor: theme.gold, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, gap: 9 }}>
               <Text style={{ fontFamily: fonts.bodyBold, fontSize: 17, color: theme.soft }}>S/</Text>
-              <Text style={{ fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1, color: theme.ink }}>{amount.toFixed(2)}</Text>
+              <Text style={{ fontFamily: fonts.heading, fontSize: 30, letterSpacing: -1, color: theme.ink }}>{monto.toFixed(2)}</Text>
             </View>
             <View style={{ marginTop: 12, flexDirection: 'row', flexWrap: 'wrap', gap: 9 }}>
-              {PRESETS.map((p) => (
+              {PREDEFINIDOS.map((valor) => (
                 <Pressable
-                  key={p}
-                  onPress={() => setAmount(p)}
-                  style={{ width: '47%', height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: amount === p ? theme.selBg : theme.bg, borderWidth: amount === p ? 1.5 : 0, borderColor: theme.gold }}
+                  key={valor}
+                  onPress={() => setMonto(valor)}
+                  style={{ width: '47%', height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: monto === valor ? theme.selBg : theme.bg, borderWidth: monto === valor ? 1.5 : 0, borderColor: theme.gold }}
                 >
-                  <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>S/ {p}</Text>
+                  <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>S/ {valor}</Text>
                 </Pressable>
               ))}
             </View>
@@ -68,10 +68,10 @@ export default function WithdrawScreen() {
             <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
           <PrimaryButton
-            label={generating ? t('withdraw.generating') : t('withdraw.generateKey')}
+            label={generando ? t('withdraw.generating') : t('withdraw.generateKey')}
             icon="key"
-            disabled={generating}
-            onPress={submit}
+            disabled={generando}
+            onPress={enviar}
             style={{ marginTop: 18 }}
           />
         </View>
@@ -86,16 +86,16 @@ export default function WithdrawScreen() {
 
           <View style={{ marginTop: 22, width: 110, height: 110, alignItems: 'center', justifyContent: 'center' }}>
             <Svg width={110} height={110} style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>
-              <Circle cx={55} cy={55} r={RADIUS} stroke={theme.line} strokeWidth={8} fill="none" />
+              <Circle cx={55} cy={55} r={RADIO} stroke={theme.line} strokeWidth={8} fill="none" />
               <Circle
                 cx={55}
                 cy={55}
-                r={RADIUS}
+                r={RADIO}
                 stroke={withdrawExpired ? theme.soft : '#C9A227'}
                 strokeWidth={8}
                 fill="none"
-                strokeDasharray={`${CIRC}, ${CIRC}`}
-                strokeDashoffset={CIRC * (1 - pct)}
+                strokeDasharray={`${CIRCUNFERENCIA}, ${CIRCUNFERENCIA}`}
+                strokeDashoffset={CIRCUNFERENCIA * (1 - porcentaje)}
                 strokeLinecap="round"
               />
             </Svg>
