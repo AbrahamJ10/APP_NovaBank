@@ -15,9 +15,9 @@ type Props = {
 
 export default function Screen({ children, scroll = true, padded = true, bg, style, contentStyle, edges }: Props) {
   const { theme, dark } = useTheme();
-  const background = bg ?? theme.bg;
+  const fondo = bg ?? theme.bg;
 
-  const body = scroll ? (
+  const cuerpo = scroll ? (
     <ScrollView
       contentContainerStyle={[padded && styles.padded, { paddingBottom: 40 }, contentStyle]}
       showsVerticalScrollIndicator={false}
@@ -30,14 +30,14 @@ export default function Screen({ children, scroll = true, padded = true, bg, sty
   );
 
   return (
-    <SafeAreaView style={[{ flex: 1, backgroundColor: background }, style]} edges={edges ?? ['top', 'left', 'right']}>
-      <StatusBar barStyle={dark ? 'light-content' : 'dark-content'} backgroundColor={background} />
+    <SafeAreaView style={[{ flex: 1, backgroundColor: fondo }, style]} edges={edges ?? ['top', 'left', 'right']}>
+      <StatusBar barStyle={dark ? 'light-content' : 'dark-content'} backgroundColor={fondo} />
       {Platform.OS === 'ios' ? (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-          {body}
+          {cuerpo}
         </KeyboardAvoidingView>
       ) : (
-        body
+        cuerpo
       )}
     </SafeAreaView>
   );

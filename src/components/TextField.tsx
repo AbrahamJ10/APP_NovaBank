@@ -15,18 +15,18 @@ type Props = TextInputProps & {
 
 export default function TextField({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
   const { theme } = useTheme();
-  const [focused, setFocused] = useState(false);
+  const [enfocado, setEnfocado] = useState(false);
 
-  let borderColor = theme.line;
-  let bg = theme.surf;
+  let colorBorde = theme.line;
+  let fondo = theme.surf;
   if (status === 'success') {
-    borderColor = '#21A26B';
-    bg = theme.dark ? theme.surf : '#F5FCF8';
+    colorBorde = '#21A26B';
+    fondo = theme.dark ? theme.surf : '#F5FCF8';
   } else if (status === 'error') {
-    borderColor = '#C2352B';
-    bg = theme.dark ? theme.surf : '#FFF4F3';
-  } else if (focused) {
-    borderColor = theme.gold;
+    colorBorde = '#C2352B';
+    fondo = theme.dark ? theme.surf : '#FFF4F3';
+  } else if (enfocado) {
+    colorBorde = theme.gold;
   }
 
   return (
@@ -39,8 +39,8 @@ export default function TextField({ label, icon, status = 'default', rightIcon, 
           height: 52,
           borderRadius: 14,
           borderWidth: 1.5,
-          borderColor,
-          backgroundColor: bg,
+          borderColor: colorBorde,
+          backgroundColor: fondo,
           flexDirection: 'row',
           alignItems: 'center',
           paddingHorizontal: 14,
@@ -50,8 +50,8 @@ export default function TextField({ label, icon, status = 'default', rightIcon, 
         {icon ? <Icon name={icon} size={19} color={theme.soft} /> : null}
         <TextInput
           placeholderTextColor={theme.soft}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => setEnfocado(true)}
+          onBlur={() => setEnfocado(false)}
           style={[{ flex: 1, fontSize: 14.5, color: theme.ink, padding: 0 }, style]}
           {...rest}
         />

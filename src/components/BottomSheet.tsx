@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { radii } from '../theme/tokens';
 
-const { height: SCREEN_H } = Dimensions.get('window');
+const { height: ALTO_PANTALLA } = Dimensions.get('window');
 
 export default function BottomSheet({
   visible,
@@ -24,18 +24,18 @@ export default function BottomSheet({
   children: React.ReactNode;
 }) {
   const { theme } = useTheme();
-  const translateY = useRef(new Animated.Value(SCREEN_H)).current;
-  const fade = useRef(new Animated.Value(0)).current;
+  const trasladoY = useRef(new Animated.Value(ALTO_PANTALLA)).current;
+  const desvanecido = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
       Animated.parallel([
-        Animated.timing(translateY, { toValue: 0, duration: 260, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        Animated.timing(fade, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.timing(trasladoY, { toValue: 0, duration: 260, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(desvanecido, { toValue: 1, duration: 200, useNativeDriver: true }),
       ]).start(() => onShow?.());
     } else {
-      translateY.setValue(SCREEN_H);
-      fade.setValue(0);
+      trasladoY.setValue(ALTO_PANTALLA);
+      desvanecido.setValue(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
@@ -44,11 +44,11 @@ export default function BottomSheet({
 
   return (
     <Modal transparent visible={visible} animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <Animated.View style={[styles.backdrop, { opacity: fade }]}>
+      <Animated.View style={[styles.backdrop, { opacity: desvanecido }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
       </Animated.View>
       <KeyboardAvoidingView behavior="padding" style={styles.sheetWrap} pointerEvents="box-none">
-        <Animated.View style={{ transform: [{ translateY }] }}>
+        <Animated.View style={{ transform: [{ translateY: trasladoY }] }}>
           <SafeAreaView edges={['bottom']} style={[styles.sheet, { backgroundColor: theme.surf }]}>
             <View style={[styles.handle, { backgroundColor: theme.line }]} />
             {children}

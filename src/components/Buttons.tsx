@@ -17,14 +17,14 @@ type BtnProps = {
   textColor?: string;
 };
 
-const tap = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+const toque = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
 export function PrimaryButton({ label, onPress, icon, iconRight, disabled, loading, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {
         if (disabled || loading) return;
-        tap();
+        toque();
         onPress?.();
       }}
       style={({ pressed }) => [
@@ -47,22 +47,22 @@ export function PrimaryButton({ label, onPress, icon, iconRight, disabled, loadi
 }
 
 export function GoldButton({ label, onPress, icon, disabled, loading, style }: BtnProps) {
-  const [width, setWidth] = useState(320);
-  const sheen = useRef(new Animated.Value(0)).current;
+  const [ancho, setAncho] = useState(320);
+  const brillo = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const loop = Animated.loop(
+    const bucle = Animated.loop(
       Animated.sequence([
         Animated.delay(1800),
-        Animated.timing(sheen, { toValue: 1, duration: 1900, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-        Animated.timing(sheen, { toValue: 0, duration: 0, useNativeDriver: true }),
+        Animated.timing(brillo, { toValue: 1, duration: 1900, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(brillo, { toValue: 0, duration: 0, useNativeDriver: true }),
       ])
     );
-    loop.start();
-    return () => loop.stop();
-  }, [sheen]);
+    bucle.start();
+    return () => bucle.stop();
+  }, [brillo]);
 
-  const translateX = sheen.interpolate({ inputRange: [0, 1], outputRange: [-width * 0.7, width * 1.4] });
+  const trasladoX = brillo.interpolate({ inputRange: [0, 1], outputRange: [-ancho * 0.7, ancho * 1.4] });
 
   if (disabled) {
     // Coincide con el aspecto deshabilitado de PrimaryButton (gris plano,
@@ -70,7 +70,7 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
     // de brillo todavía corriendo se leía como roto/con glitch en vez de
     // "no se puede tocar esto".
     return (
-      <Pressable disabled onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={[styles.base, { backgroundColor: '#9AA7B4' }, style]}>
+      <Pressable disabled onLayout={(e) => setAncho(e.nativeEvent.layout.width)} style={[styles.base, { backgroundColor: '#9AA7B4' }, style]}>
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
@@ -87,14 +87,14 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
     <Pressable
       onPress={() => {
         if (loading) return;
-        tap();
+        toque();
         onPress?.();
       }}
-      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => setAncho(e.nativeEvent.layout.width)}
       style={({ pressed }) => [{ opacity: pressed ? 0.92 : 1 }, style]}
     >
       <LinearGradient colors={GOLD_GRADIENT} start={{ x: 0, y: 0.2 }} end={{ x: 1, y: 0.8 }} style={[styles.base, styles.goldShadow, { overflow: 'hidden' }]}>
-        <Animated.View pointerEvents="none" style={[styles.sheen, { transform: [{ translateX }, { rotate: '14deg' }] }]}>
+        <Animated.View pointerEvents="none" style={[styles.sheen, { transform: [{ translateX: trasladoX }, { rotate: '14deg' }] }]}>
           <LinearGradient
             colors={['transparent', 'rgba(255,255,255,.5)', 'transparent']}
             start={{ x: 0, y: 0 }}
@@ -117,12 +117,12 @@ export function GoldButton({ label, onPress, icon, disabled, loading, style }: B
 
 export function GhostButton({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
   const { theme } = useTheme();
-  const fg = textColor ?? theme.ink;
+  const colorTexto = textColor ?? theme.ink;
   return (
     <Pressable
       onPress={() => {
         if (disabled) return;
-        tap();
+        toque();
         onPress?.();
       }}
       style={({ pressed }) => [
@@ -132,8 +132,8 @@ export function GhostButton({ label, onPress, icon, disabled, style, textColor }
       ]}
     >
       <View style={styles.row}>
-        {icon ? <Icon name={icon} color={fg} size={18} style={{ marginRight: 7 }} /> : null}
-        <Text style={[styles.label, { color: fg }]}>{label}</Text>
+        {icon ? <Icon name={icon} color={colorTexto} size={18} style={{ marginRight: 7 }} /> : null}
+        <Text style={[styles.label, { color: colorTexto }]}>{label}</Text>
       </View>
     </Pressable>
   );
@@ -144,7 +144,7 @@ export function DangerOutlineButton({ label, onPress, icon, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {
-        tap();
+        toque();
         onPress?.();
       }}
       style={({ pressed }) => [
@@ -165,7 +165,7 @@ export function DangerButton({ label, onPress, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {
-        tap();
+        toque();
         onPress?.();
       }}
       style={({ pressed }) => [styles.base, { backgroundColor: '#C2352B', opacity: pressed ? 0.9 : 1 }, style]}

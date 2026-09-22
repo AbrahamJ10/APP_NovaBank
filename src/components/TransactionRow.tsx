@@ -8,8 +8,8 @@ import Icon from './Icon';
 
 export default function TransactionRow({ tx, onPress, showDate }: { tx: Tx; onPress?: () => void; showDate?: boolean }) {
   const { theme } = useTheme();
-  const amountColor = tx.kind === 'credit' ? theme.green : theme.ink;
-  const sign = tx.kind === 'credit' ? '+' : '−';
+  const colorMonto = tx.kind === 'credit' ? theme.green : theme.ink;
+  const signo = tx.kind === 'credit' ? '+' : '−';
   return (
     <Pressable
       onPress={onPress}
@@ -35,8 +35,8 @@ export default function TransactionRow({ tx, onPress, showDate }: { tx: Tx; onPr
         </Text>
       </View>
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: amountColor }}>
-          {sign}
+        <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: colorMonto }}>
+          {signo}
           {money(tx.amount)}
         </Text>
         {showDate ? <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{tx.time}</Text> : null}
