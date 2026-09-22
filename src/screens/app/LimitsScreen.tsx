@@ -11,10 +11,10 @@ import { money } from '../../lib/format';
 import { useAppState } from '../../state/AppStateContext';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const ONLINE_MIN = 200;
-const ONLINE_MAX = 5000;
-const ATM_MIN = 100;
-const ATM_MAX = 2000;
+const EN_LINEA_MIN = 200;
+const EN_LINEA_MAX = 5000;
+const CAJERO_MIN = 100;
+const CAJERO_MAX = 2000;
 
 export default function LimitsScreen() {
   const nav = useNavigation();
@@ -26,8 +26,8 @@ export default function LimitsScreen() {
     loadSecurity();
   }, [loadSecurity]);
 
-  const persist = (next: Partial<{ limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean }>) => {
-    saveLimits({ limitOnline, limitAtm, geoPeru, geoIntl, ...next });
+  const persistir = (siguiente: Partial<{ limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean }>) => {
+    saveLimits({ limitOnline, limitAtm, geoPeru, geoIntl, ...siguiente });
   };
 
   return (
@@ -43,18 +43,18 @@ export default function LimitsScreen() {
         </View>
         <View style={{ marginTop: 14 }}>
           <SimpleSlider
-            minimumValue={ONLINE_MIN}
-            maximumValue={ONLINE_MAX}
+            minimumValue={EN_LINEA_MIN}
+            maximumValue={EN_LINEA_MAX}
             step={100}
             value={limitOnline}
             onValueChange={setLimitOnline}
-            onSlidingComplete={(v) => persist({ limitOnline: v })}
+            onSlidingComplete={(valor) => persistir({ limitOnline: valor })}
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(ONLINE_MIN)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(EN_LINEA_MIN)}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('limits.dailyCap')}</Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(ONLINE_MAX)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(EN_LINEA_MAX)}</Text>
         </View>
       </View>
 
@@ -65,18 +65,18 @@ export default function LimitsScreen() {
         </View>
         <View style={{ marginTop: 14 }}>
           <SimpleSlider
-            minimumValue={ATM_MIN}
-            maximumValue={ATM_MAX}
+            minimumValue={CAJERO_MIN}
+            maximumValue={CAJERO_MAX}
             step={100}
             value={limitAtm}
             onValueChange={setLimitAtm}
-            onSlidingComplete={(v) => persist({ limitAtm: v })}
+            onSlidingComplete={(valor) => persistir({ limitAtm: valor })}
           />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(ATM_MIN)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(CAJERO_MIN)}</Text>
           <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('limits.dailyCap')}</Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(ATM_MAX)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{money(CAJERO_MAX)}</Text>
         </View>
       </View>
 
@@ -90,7 +90,7 @@ export default function LimitsScreen() {
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('limits.peru')}</Text>
             <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('limits.peruDesc')}</Text>
           </View>
-          <Toggle value={geoPeru} onChange={(v) => { setGeoPeru(v); persist({ geoPeru: v }); }} />
+          <Toggle value={geoPeru} onChange={(v) => { setGeoPeru(v); persistir({ geoPeru: v }); }} />
         </View>
         <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', gap: 13 }}>
           <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
@@ -100,7 +100,7 @@ export default function LimitsScreen() {
             <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('limits.abroad')}</Text>
             <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{geoIntl ? t('limits.enabledTemp') : t('limits.blockedDefault')}</Text>
           </View>
-          <Toggle value={geoIntl} onChange={(v) => { setGeoIntl(v); persist({ geoIntl: v }); }} />
+          <Toggle value={geoIntl} onChange={(v) => { setGeoIntl(v); persistir({ geoIntl: v }); }} />
         </View>
       </View>
 
