@@ -1,0 +1,47 @@
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PrimaryButton } from '../../components/Buttons';
+import Icon from '../../components/Icon';
+import { fonts } from '../../theme/tokens';
+import { AuthStackParamList } from '../../navigation/types';
+import { useAppState } from '../../state/AppStateContext';
+import { useLanguage } from '../../i18n/LanguageContext';
+
+export default function ExpiredScreen() {
+  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const { t } = useLanguage();
+  const { setExpired } = useAppState();
+
+  return (
+    <View style={{ flex: 1, backgroundColor: 'rgba(8,17,26,.75)', alignItems: 'center', justifyContent: 'center', padding: 22 }}>
+      <View style={{ width: '100%', backgroundColor: '#fff', borderRadius: 26, padding: 30, alignItems: 'center' }}>
+        <View style={{ width: 60, height: 60, borderRadius: 19, backgroundColor: '#FFF9EC', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name="timer_off" size={30} color="#B07D07" />
+        </View>
+        <Text style={{ marginTop: 18, fontFamily: fonts.heading, fontSize: 21, color: '#0F1A26', letterSpacing: -0.6 }}>{t('expired.title')}</Text>
+        <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: '#5B6875' }}>
+          {t('expired.body')}
+        </Text>
+        <PrimaryButton
+          label={t('expired.signInAgain')}
+          onPress={() => {
+            setExpired(false);
+            nav.navigate('Login');
+          }}
+          style={{ marginTop: 22, width: '100%' }}
+        />
+        <Pressable
+          onPress={() => {
+            setExpired(false);
+            nav.navigate('Welcome' as never);
+          }}
+          style={{ marginTop: 14 }}
+        >
+          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#5B6875' }}>{t('expired.goHome')}</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
