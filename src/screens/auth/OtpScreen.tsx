@@ -14,79 +14,79 @@ import { useAppState } from '../../state/AppStateContext';
 import { verificationApi } from '../../lib/api';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const RESEND_COOLDOWN_S = 60;
+const ESPERA_REENVIO_S = 60;
 // Coincide con la expiración propia del OTP del backend (otp.service.ts,
 // OTP_TTL_MS) — el código se acaba de pedir justo antes de que se abriera
 // esta pantalla, así que la ventana empieza ahora y se cierra exactamente
 // cuando el código deja de ser válido del lado del servidor. No se debe
 // dejar que alguien se quede en esta pantalla indefinidamente.
-const FLOW_TTL_MS = 10 * 60 * 1000;
+const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
 export default function OtpScreen() {
   const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { completeRegister, pendingUser } = useAppState();
-  const [code, setCode] = useState('');
+  const [codigo, setCodigo] = useState('');
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [resending, setResending] = useState(false);
-  const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_S);
-  const [flowDeadline, setFlowDeadline] = useState(() => Date.now() + FLOW_TTL_MS);
-  const [now, setNow] = useState(Date.now());
-  const inputRef = useRef<TextInput>(null);
+  const [mensajeError, setMensajeError] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState(false);
+  const [reenviando, setReenviando] = useState(false);
+  const [espera, setEspera] = useState(ESPERA_REENVIO_S);
+  const [limiteFlujo, setLimiteFlujo] = useState(() => Date.now() + DURACION_FLUJO_MS);
+  const [ahora, setAhora] = useState(Date.now());
+  const refEntrada = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (cooldown <= 0) return;
-    const id = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    if (espera <= 0) return;
+    const id = setInterval(() => setEspera((c) => Math.max(0, c - 1)), 1000);
     return () => clearInterval(id);
-  }, [cooldown]);
+  }, [espera]);
 
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const id = setInterval(() => setAhora(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const flowLeft = Math.max(0, Math.round((flowDeadline - now) / 1000));
+  const tiempoRestante = Math.max(0, Math.round((limiteFlujo - ahora) / 1000));
 
   useEffect(() => {
-    if (flowLeft > 0) return;
+    if (tiempoRestante > 0) return;
     Alert.alert(t('otp.timeExpiredTitle'), t('otp.timeExpired'), [{ text: t('otp.timeExpiredOk'), onPress: () => nav.goBack() }]);
-  }, [flowLeft, nav, t]);
+  }, [tiempoRestante, nav, t]);
 
-  const submit = async (value: string) => {
-    if (value.length !== 6 || submitting) return;
-    setSubmitting(true);
+  const enviar = async (valor: string) => {
+    if (valor.length !== 6 || enviando) return;
+    setEnviando(true);
     try {
-      const result = await completeRegister(value);
-      if (result.ok) {
+      const resultado = await completeRegister(valor);
+      if (resultado.ok) {
         setError(false);
         nav.replace('RegisterDone');
       } else {
         setError(true);
-        setErrorMessage(result.message);
-        setCode('');
+        setMensajeError(resultado.message);
+        setCodigo('');
       }
     } finally {
-      setSubmitting(false);
+      setEnviando(false);
     }
   };
 
-  const resend = async () => {
-    if (!pendingUser || resending || cooldown > 0) return;
-    setResending(true);
+  const reenviar = async () => {
+    if (!pendingUser || reenviando || espera > 0) return;
+    setReenviando(true);
     try {
       await verificationApi.requestRegisterOtp(pendingUser.email);
-      setCooldown(RESEND_COOLDOWN_S);
-      setFlowDeadline(Date.now() + FLOW_TTL_MS);
+      setEspera(ESPERA_REENVIO_S);
+      setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
       setError(false);
-      setErrorMessage(null);
+      setMensajeError(null);
     } catch {
-      setErrorMessage(t('otp.resendFail'));
+      setMensajeError(t('otp.resendFail'));
       setError(true);
     } finally {
-      setResending(false);
+      setReenviando(false);
     }
   };
 
@@ -96,9 +96,9 @@ export default function OtpScreen() {
       <ProgressSteps total={2} current={2} />
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-        <Icon name="timer" size={14} color={flowLeft <= 60 ? '#C2352B' : theme.soft} />
-        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: flowLeft <= 60 ? '#C2352B' : theme.soft }}>
-          {t('otp.timeLeft', { time: mmss(flowLeft) })}
+        <Icon name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
+        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
+          {t('otp.timeLeft', { time: mmss(tiempoRestante) })}
         </Text>
       </View>
 
@@ -111,17 +111,17 @@ export default function OtpScreen() {
         <Text style={{ fontFamily: fonts.bodyBold, color: theme.ink }}>{maskEmail(pendingUser?.email ?? '')}</Text>.
       </Text>
 
-      <Pressable onPress={() => inputRef.current?.focus()} style={{ marginTop: 26 }}>
-        <OtpBoxes value={code} />
+      <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 26 }}>
+        <OtpBoxes value={codigo} />
       </Pressable>
       <TextInput
-        ref={inputRef}
-        value={code}
+        ref={refEntrada}
+        value={codigo}
         onChangeText={(v) => {
-          const digits = v.replace(/\D/g, '').slice(0, 6);
-          setCode(digits);
+          const digitos = v.replace(/\D/g, '').slice(0, 6);
+          setCodigo(digitos);
           setError(false);
-          if (digits.length === 6) submit(digits);
+          if (digitos.length === 6) enviar(digitos);
         }}
         keyboardType="number-pad"
         maxLength={6}
@@ -130,28 +130,28 @@ export default function OtpScreen() {
       />
       {error ? (
         <Text style={{ marginTop: 10, fontFamily: fonts.bodyBold, fontSize: 12, color: '#C2352B' }}>
-          {errorMessage ?? t('otp.errorDefault')}
+          {mensajeError ?? t('otp.errorDefault')}
         </Text>
       ) : null}
 
       <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
-          {cooldown > 0 ? (
+          {espera > 0 ? (
             <>
-              {t('otp.resendIn')}<Text style={{ fontFamily: fonts.bodyBold, color: theme.gold }}>{mmss(cooldown)}</Text>
+              {t('otp.resendIn')}<Text style={{ fontFamily: fonts.bodyBold, color: theme.gold }}>{mmss(espera)}</Text>
             </>
           ) : (
             t('otp.canResend')
           )}
         </Text>
-        <Pressable disabled={cooldown > 0 || resending} onPress={resend}>
-          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: cooldown > 0 || resending ? theme.soft : theme.gold }}>
-            {resending ? t('otp.resending') : t('otp.resend')}
+        <Pressable disabled={espera > 0 || reenviando} onPress={reenviar}>
+          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: espera > 0 || reenviando ? theme.soft : theme.gold }}>
+            {reenviando ? t('otp.resending') : t('otp.resend')}
           </Text>
         </Pressable>
       </View>
 
-      <PrimaryButton label={submitting ? t('otp.verifying') : t('otp.verify')} onPress={() => submit(code)} disabled={code.length !== 6 || submitting} style={{ marginTop: 26 }} />
+      <PrimaryButton label={enviando ? t('otp.verifying') : t('otp.verify')} onPress={() => enviar(codigo)} disabled={codigo.length !== 6 || enviando} style={{ marginTop: 26 }} />
     </Screen>
   );
 }
