@@ -2,50 +2,50 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Language, translations } from './translations';
 
-type LanguageCtx = {
+type ContextoIdioma = {
   language: Language;
   setLanguage: (lang: Language) => void;
   toggle: () => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
 };
 
-const STORAGE_KEY = 'novabank.language';
+const CLAVE_ALMACENAMIENTO = 'novabank.language';
 
-const Ctx = createContext<LanguageCtx | null>(null);
+const Contexto = createContext<ContextoIdioma | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('es');
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((v) => {
-      if (v === 'es' || v === 'en') setLanguageState(v);
+    AsyncStorage.getItem(CLAVE_ALMACENAMIENTO).then((valor) => {
+      if (valor === 'es' || valor === 'en') setLanguageState(valor);
     });
   }, []);
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    AsyncStorage.setItem(STORAGE_KEY, lang).catch(() => {});
+  const setLanguage = (idioma: Language) => {
+    setLanguageState(idioma);
+    AsyncStorage.setItem(CLAVE_ALMACENAMIENTO, idioma).catch(() => {});
   };
 
   const toggle = () => setLanguage(language === 'es' ? 'en' : 'es');
 
   const t = useMemo(() => {
     return (key: string, vars?: Record<string, string | number>) => {
-      let str = translations[language][key] ?? translations.es[key] ?? key;
+      let texto = translations[language][key] ?? translations.es[key] ?? key;
       if (vars) {
-        for (const [k, v] of Object.entries(vars)) {
-          str = str.replace(`{${k}}`, String(v));
+        for (const [clave, valor] of Object.entries(vars)) {
+          texto = texto.replace(`{${clave}}`, String(valor));
         }
       }
-      return str;
+      return texto;
     };
   }, [language]);
 
-  return <Ctx.Provider value={{ language, setLanguage, toggle, t }}>{children}</Ctx.Provider>;
+  return <Contexto.Provider value={{ language, setLanguage, toggle, t }}>{children}</Contexto.Provider>;
 }
 
 export function useLanguage() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useLanguage must be used within LanguageProvider');
-  return ctx;
+  const contexto = useContext(Contexto);
+  if (!contexto) throw new Error('useLanguage must be used within LanguageProvider');
+  return contexto;
 }

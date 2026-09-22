@@ -3,37 +3,37 @@ import { Appearance } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { darkTheme, lightTheme, Theme } from './tokens';
 
-type ThemeCtx = {
+type ContextoTema = {
   theme: Theme;
   dark: boolean;
   toggle: () => void;
 };
 
-const Ctx = createContext<ThemeCtx>({ theme: lightTheme, dark: false, toggle: () => {} });
+const Contexto = createContext<ContextoTema>({ theme: lightTheme, dark: false, toggle: () => {} });
 
-const STORAGE_KEY = 'novabank.theme';
+const CLAVE_ALMACENAMIENTO = 'novabank.theme';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [dark, setDark] = useState(Appearance.getColorScheme() === 'dark');
+  const [oscuro, setOscuro] = useState(Appearance.getColorScheme() === 'dark');
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((v) => {
-      if (v === 'dark') setDark(true);
-      if (v === 'light') setDark(false);
+    AsyncStorage.getItem(CLAVE_ALMACENAMIENTO).then((valor) => {
+      if (valor === 'dark') setOscuro(true);
+      if (valor === 'light') setOscuro(false);
     });
   }, []);
 
   const toggle = () => {
-    setDark((d) => {
-      const next = !d;
-      AsyncStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light');
-      return next;
+    setOscuro((actual) => {
+      const siguiente = !actual;
+      AsyncStorage.setItem(CLAVE_ALMACENAMIENTO, siguiente ? 'dark' : 'light');
+      return siguiente;
     });
   };
 
-  const theme = useMemo(() => (dark ? darkTheme : lightTheme), [dark]);
+  const theme = useMemo(() => (oscuro ? darkTheme : lightTheme), [oscuro]);
 
-  return <Ctx.Provider value={{ theme, dark, toggle }}>{children}</Ctx.Provider>;
+  return <Contexto.Provider value={{ theme, dark: oscuro, toggle }}>{children}</Contexto.Provider>;
 }
 
-export const useTheme = () => useContext(Ctx);
+export const useTheme = () => useContext(Contexto);

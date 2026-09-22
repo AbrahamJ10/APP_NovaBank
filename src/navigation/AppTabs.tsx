@@ -13,7 +13,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
-const TABS: { name: keyof TabParamList; labelKey: string; icon: string }[] = [
+const PESTANAS: { name: keyof TabParamList; labelKey: string; icon: string }[] = [
   { name: 'Home', labelKey: 'tabs.home', icon: 'home' },
   { name: 'Transactions', labelKey: 'tabs.transactions', icon: 'receipt_long' },
   { name: 'Transfer', labelKey: 'tabs.transfer', icon: 'swap_horiz' },
@@ -24,13 +24,13 @@ const TABS: { name: keyof TabParamList; labelKey: string; icon: string }[] = [
 export default function AppTabs() {
   const { theme, dark } = useTheme();
   const { t } = useLanguage();
-  const active = dark ? '#E7CE92' : '#133A63';
+  const colorActivo = dark ? '#E7CE92' : '#133A63';
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: active,
+        tabBarActiveTintColor: colorActivo,
         tabBarInactiveTintColor: theme.soft,
         tabBarStyle: {
           backgroundColor: theme.surf,
@@ -42,24 +42,24 @@ export default function AppTabs() {
         tabBarLabelStyle: { fontFamily: fonts.bodyBold, fontSize: 10 },
       }}
     >
-      {TABS.map((tab) => (
+      {PESTANAS.map((pestana) => (
         <Tab.Screen
-          key={tab.name}
-          name={tab.name}
+          key={pestana.name}
+          name={pestana.name}
           component={
-            tab.name === 'Home'
+            pestana.name === 'Home'
               ? HomeScreen
-              : tab.name === 'Transactions'
+              : pestana.name === 'Transactions'
               ? TransactionsScreen
-              : tab.name === 'Transfer'
+              : pestana.name === 'Transfer'
               ? TransferScreen
-              : tab.name === 'Notifications'
+              : pestana.name === 'Notifications'
               ? NotificationsScreen
               : ProfileScreen
           }
           options={{
-            tabBarLabel: t(tab.labelKey),
-            tabBarIcon: ({ color }) => <Icon name={tab.icon} size={23} color={color} />,
+            tabBarLabel: t(pestana.labelKey),
+            tabBarIcon: ({ color }) => <Icon name={pestana.icon} size={23} color={color} />,
           }}
         />
       ))}

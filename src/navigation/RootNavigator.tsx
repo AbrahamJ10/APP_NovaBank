@@ -10,24 +10,24 @@ import RootStack from './RootStack';
 export default function RootNavigator() {
   const { theme, dark } = useTheme();
   const { session, touch } = useAppState();
-  const navRef = useRef<NavigationContainerRef<Record<string, object | undefined>>>(null);
-  const lastRoute = useRef<string | undefined>(undefined);
+  const refNav = useRef<NavigationContainerRef<Record<string, object | undefined>>>(null);
+  const ultimaRuta = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (session === 'in') {
       startAuditTracking();
     } else {
       stopAuditTracking();
-      lastRoute.current = undefined;
+      ultimaRuta.current = undefined;
     }
   }, [session]);
 
-  const handleStateChange = () => {
+  const alCambiarEstado = () => {
     touch();
-    const route = navRef.current?.getCurrentRoute()?.name;
-    if (route && route !== lastRoute.current) {
-      lastRoute.current = route;
-      trackEvent('screen_view', { screen: route });
+    const ruta = refNav.current?.getCurrentRoute()?.name;
+    if (ruta && ruta !== ultimaRuta.current) {
+      ultimaRuta.current = ruta;
+      trackEvent('screen_view', { screen: ruta });
     }
   };
 
@@ -39,7 +39,7 @@ export default function RootNavigator() {
     );
   }
 
-  const navTheme = {
+  const temaNavegacion = {
     ...(dark ? DarkTheme : DefaultTheme),
     colors: {
       ...(dark ? DarkTheme.colors : DefaultTheme.colors),
@@ -52,7 +52,7 @@ export default function RootNavigator() {
   };
 
   return (
-    <NavigationContainer ref={navRef} theme={navTheme} onStateChange={handleStateChange}>
+    <NavigationContainer ref={refNav} theme={temaNavegacion} onStateChange={alCambiarEstado}>
       {session === 'in' ? <RootStack /> : <AuthStack />}
     </NavigationContainer>
   );
