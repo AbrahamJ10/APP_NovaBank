@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import QRCode from 'react-native-qrcode-svg';
-import { useNavigation } from '@react-navigation/native';
 import Screen from '../../components/Screen';
 import { ScreenTitle } from '../../components/Primitives';
-import { DangerOutlineButton, GoldButton, PrimaryButton } from '../../components/Buttons';
-import Icon from '../../components/Icon';
+import { DangerOutlineButton, PrimaryButton } from '../../components/Buttons';
 import { useTheme } from '../../theme/ThemeContext';
 import { fonts } from '../../theme/tokens';
 import { mmss } from '../../lib/format';
@@ -18,7 +16,6 @@ const RADIUS = 46;
 const CIRC = 2 * Math.PI * RADIUS;
 
 export default function WithdrawScreen() {
-  const nav = useNavigation();
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { withdraw, withdrawLeft, withdrawExpired, generateWithdraw, cancelWithdraw, renewWithdraw } = useAppState();

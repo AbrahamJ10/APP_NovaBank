@@ -6,7 +6,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import Screen from '../../components/Screen';
-import { SectionCard } from '../../components/Primitives';
 import TransactionRow from '../../components/TransactionRow';
 import Icon from '../../components/Icon';
 import LanguageSwitch from '../../components/LanguageSwitch';

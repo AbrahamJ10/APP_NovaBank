@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Screen from '../../components/Screen';
-import { BackButton, Row, ScreenTitle } from '../../components/Primitives';
+import { BackButton, ScreenTitle } from '../../components/Primitives';
 import { GhostButton, GoldButton } from '../../components/Buttons';
 import Icon from '../../components/Icon';
 import { useTheme } from '../../theme/ThemeContext';

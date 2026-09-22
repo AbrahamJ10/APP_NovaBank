@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { NotificationItem, Payee, ServiceBill, Session, Tx } from './types';
 import { DniData } from '../lib/dni';
 import {
@@ -121,8 +121,10 @@ function applyApiUser(u: User, apiUser: PublicUser): User {
     email: apiUser.email,
     dni: apiUser.dni ?? u.dni,
     phone: apiUser.phone ?? u.phone,
-    // The server never returns the password (it's hashed); this field now
-    // only backs the local-only "change password" mock UI in ProfileScreen.
+    // The server never returns the password (it's hashed) — this field is
+    // only a transient holding spot on `pendingUser` during registration
+    // (see beginRegister/completeRegister below), always blank on the real
+    // authenticated user. Real password changes go through profileApi.
     password: '',
   };
 }
@@ -170,9 +172,6 @@ const defaultUser: User = {
 
 function genOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
-}
-function genReference() {
-  return 'NV-' + Math.floor(100 + Math.random() * 900) + ' ' + Math.floor(1000 + Math.random() * 9000) + ' ' + Math.floor(1000 + Math.random() * 9000);
 }
 function fmtNow() {
   const d = new Date();

@@ -1,8 +1,7 @@
 export type Language = 'es' | 'en';
 
-// Flat dot-namespaced keys, one screen per prefix. Only the auth flow is
-// translated so far — the rest of the app (home, transfers, cards, etc.)
-// still reads its strings directly and will be migrated in a follow-up pass.
+// Flat dot-namespaced keys, one screen per prefix — every screen reads its
+// strings through this table now (ES/EN kept in sync).
 export const translations: Record<Language, Record<string, string>> = {
   es: {
     // tabs

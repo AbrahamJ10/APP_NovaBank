@@ -1,33 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Animated, Easing, Pressable, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
-import { fonts, radii } from '../theme/tokens';
+import { fonts } from '../theme/tokens';
 import Icon from './Icon';
 import LanguageSwitch from './LanguageSwitch';
-
-export function SectionCard({ children, style, onPress }: { children: React.ReactNode; style?: ViewStyle; onPress?: () => void }) {
-  const { theme } = useTheme();
-  const Wrap = onPress ? Pressable : View;
-  return (
-    <Wrap
-      onPress={onPress}
-      style={[
-        {
-          borderRadius: radii.xl,
-          backgroundColor: theme.surf,
-          borderWidth: 1,
-          borderColor: theme.line,
-          padding: 20,
-        },
-        theme.shadow as ViewStyle,
-        style,
-      ]}
-    >
-      {children}
-    </Wrap>
-  );
-}
 
 export function BackButton({ onPress, dark }: { onPress?: () => void; dark?: boolean }) {
   const nav = useNavigation();
