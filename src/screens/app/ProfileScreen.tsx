@@ -11,20 +11,20 @@ import { BotonPeligroContorno, BotonFantasma, BotonPrimario } from '../../compon
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
-import { RootStackParamList, TabParamList } from '../../navigation/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { ListaParametrosRaiz, ListaParametrosPestanas } from '../../navigation/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
-type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
+type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParametrosRaiz>, BottomTabNavigationProp<ListaParametrosPestanas>>;
 
 export default function ProfileScreen() {
   const nav = useNavigation<Navegacion>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = useAppState();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = usarEstadoApp();
 
   // Refleja la misma verificación de LoginScreen — Face ID aquí significa
   // "el desbloqueo nativo por huella/rostro de este dispositivo de verdad
@@ -150,10 +150,10 @@ export default function ProfileScreen() {
       </View>
       <View style={{ alignItems: 'center', marginTop: 4 }}>
         <View style={{ width: 86, height: 86, borderRadius: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B2340', borderWidth: 2, borderColor: '#C9A227' }}>
-          <Text style={{ fontFamily: fonts.heading, fontSize: 30, color: '#fff' }}>{user.initials}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 30, color: '#fff' }}>{user.initials}</Text>
         </View>
-        <Text style={{ marginTop: 14, fontFamily: fonts.heading, fontSize: 19, letterSpacing: -0.4, color: theme.ink }}>{user.name}</Text>
-        <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('profile.memberSince', { date: user.memberSince })}</Text>
+        <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.4, color: theme.ink }}>{user.name}</Text>
+        <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: theme.soft }}>{t('profile.memberSince', { date: user.memberSince })}</Text>
         <View style={{ marginTop: 12 }}>
           <Insignia label={t('profile.identityVerified')} tone="green" />
         </View>
@@ -163,12 +163,12 @@ export default function ProfileScreen() {
         {campos.map((campo, i) => (
           <View key={campo.label} style={{ paddingVertical: 14, borderBottomWidth: i < campos.length - 1 ? 1 : 0, borderBottomColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{campo.label}</Text>
-              <Text style={{ marginTop: 3, fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{campo.value}</Text>
+              <Text style={{ fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{campo.label}</Text>
+              <Text style={{ marginTop: 3, fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{campo.value}</Text>
             </View>
             {campo.edit ? (
               <Pressable onPress={campo.edit} hitSlop={8}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('profile.edit')}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('profile.edit')}</Text>
               </Pressable>
             ) : null}
           </View>
@@ -192,8 +192,8 @@ export default function ProfileScreen() {
       <HojaInferior visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
         {editando ? (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.editField', { field: editando.label })}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.editField', { field: editando.label })}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('profile.criticalField')}
             </Text>
             <View style={{ marginTop: 18 }}>
@@ -221,11 +221,11 @@ export default function ProfileScreen() {
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
             {errorEnvio ? (
-              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
+              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
             ) : errorCodigo ? (
-              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
+              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
             ) : enviandoOtp ? (
-              <Text style={{ marginTop: 10, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('profile.sendingCode')}</Text>
+              <Text style={{ marginTop: 10, fontFamily: fuentes.body, fontSize: 12, color: theme.soft }}>{t('profile.sendingCode')}</Text>
             ) : null}
             <BotonPrimario
               label={enviandoCodigo ? t('profile.verifying') : t('profile.saveChange')}
@@ -240,8 +240,8 @@ export default function ProfileScreen() {
       <HojaInferior visible={pwAbierto} onClose={cerrarHojaPassword}>
         {pwPaso === 'form' && (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.changePasswordTitle')}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.changePasswordTitle')}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('profile.changePasswordSubtitle')}
             </Text>
             <View style={{ marginTop: 18, gap: 12 }}>
@@ -274,7 +274,7 @@ export default function ProfileScreen() {
               />
             </View>
             {pwErrorEnvio ? (
-              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorEnvio}</Text>
+              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{pwErrorEnvio}</Text>
             ) : null}
             <BotonPrimario
               label={pwEnviandoOtp ? t('profile.sendingCode') : t('profile.continue')}
@@ -288,8 +288,8 @@ export default function ProfileScreen() {
 
         {pwPaso === 'otp' && (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.confirmChangeTitle')}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.confirmChangeTitle')}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('profile.confirmChangeSubtitle')}
             </Text>
             <Pressable onPress={() => refEntradaPw.current?.focus()} style={{ marginTop: 18 }}>
@@ -309,7 +309,7 @@ export default function ProfileScreen() {
               }}
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
-            {pwErrorCodigo ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorCodigo}</Text> : null}
+            {pwErrorCodigo ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{pwErrorCodigo}</Text> : null}
             <BotonPrimario
               label={pwEnviando ? t('profile.verifying') : t('profile.confirm')}
               onPress={() => enviarOtpPassword(pwCodigo)}
@@ -324,8 +324,8 @@ export default function ProfileScreen() {
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
               <Icono name="check" size={36} color={theme.green} />
             </View>
-            <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19, color: theme.ink }}>{t('profile.passwordUpdated')}</Text>
-            <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
+            <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 19, color: theme.ink }}>{t('profile.passwordUpdated')}</Text>
+            <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
               {t('profile.passwordUpdatedBody')}
             </Text>
             <BotonPrimario label={t('profile.done')} onPress={cerrarHojaPassword} style={{ marginTop: 18, width: '100%' }} />
@@ -337,18 +337,18 @@ export default function ProfileScreen() {
 }
 
 function LineaRegla({ cumple, etiqueta }: { cumple: boolean; etiqueta: string }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const color = cumple ? theme.green : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
       <Icono name={cumple ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
-      <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{etiqueta}</Text>
+      <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color }}>{etiqueta}</Text>
     </View>
   );
 }
 
 function FilaPerfil({ icono, etiqueta, descripcion, alPresionar, derecha, ultimo }: { icono: string; etiqueta: string; descripcion: string; alPresionar?: () => void; derecha?: React.ReactNode; ultimo?: boolean }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   return (
     <Pressable
       onPress={alPresionar}
@@ -361,8 +361,8 @@ function FilaPerfil({ icono, etiqueta, descripcion, alPresionar, derecha, ultimo
         <Icono name={icono} size={19} color={theme.gold} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{etiqueta}</Text>
-        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{descripcion}</Text>
+        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{descripcion}</Text>
       </View>
       {derecha ?? (alPresionar ? <Icono name="chevron_right" size={18} color="#A6B1BD" /> : null)}
     </Pressable>

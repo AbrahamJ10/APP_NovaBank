@@ -9,19 +9,19 @@ import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import { MarcaLogo } from '../../components/Logo';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { mmss } from '../../lib/formato';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { limpiarUltimaCuenta, obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 export default function LoginScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { login, blockedUntil, blockLeft, restoreSession } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { login, blockedUntil, blockLeft, restoreSession } = usarEstadoApp();
 
   const [recordado, setRecordado] = useState<{ email: string; fullName: string } | null | undefined>(undefined);
   const [biometriaDisponible, setBiometriaDisponible] = useState(false);
@@ -95,10 +95,10 @@ export default function LoginScreen() {
         <MarcaLogo size={52} />
         <SelectorIdioma />
       </View>
-      <Text style={{ marginTop: 14, fontFamily: fonts.displaySemi, fontSize: 15, letterSpacing: 3, textTransform: 'uppercase', color: theme.gold }}>
+      <Text style={{ marginTop: 14, fontFamily: fuentes.displaySemi, fontSize: 15, letterSpacing: 3, textTransform: 'uppercase', color: theme.gold }}>
         NovaBank
       </Text>
-      <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 28, lineHeight: 32, color: theme.ink, letterSpacing: -1 }}>
+      <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 28, lineHeight: 32, color: theme.ink, letterSpacing: -1 }}>
         {accesoRapido ? (
           <>
             {t('login.greeting')}
@@ -109,34 +109,34 @@ export default function LoginScreen() {
           t('login.greeting')
         )}
       </Text>
-      <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, color: theme.mid }}>{t('login.subtitle')}</Text>
+      <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, color: theme.mid }}>{t('login.subtitle')}</Text>
 
       {bloqueado ? (
         <View style={{ marginTop: 20, borderRadius: 16, backgroundColor: '#FFF4F3', borderWidth: 1, borderColor: '#F6CFCA', padding: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Icono name="lock_clock" size={18} color="#C2352B" />
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#C2352B' }}>{t('login.blockedTitle')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: '#C2352B' }}>{t('login.blockedTitle')}</Text>
           </View>
-          <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: '#8A4741' }}>
+          <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: '#8A4741' }}>
             {t('login.blockedBody')}
           </Text>
-          <Text style={{ marginTop: 10, fontFamily: fonts.heading, fontSize: 28, color: '#C2352B', letterSpacing: -1 }}>{mmss(blockLeft)}</Text>
+          <Text style={{ marginTop: 10, fontFamily: fuentes.heading, fontSize: 28, color: '#C2352B', letterSpacing: -1 }}>{mmss(blockLeft)}</Text>
           <Pressable onPress={() => nav.navigate('Recover')}>
-            <Text style={{ marginTop: 8, fontFamily: fonts.bodyBold, fontSize: 12, color: '#C2352B' }}>{t('login.recoverNow')}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.bodyBold, fontSize: 12, color: '#C2352B' }}>{t('login.recoverNow')}</Text>
           </Pressable>
         </View>
       ) : error ? (
         <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: '#FFF4F3', borderWidth: 1, borderColor: '#F6CFCA', padding: 14, flexDirection: 'row', gap: 10 }}>
           <Icono name="error" size={18} color="#C2352B" />
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 12.5, color: '#C2352B' }}>{t('login.errorTitle')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: '#8A4741' }}>{mensajeError ?? t('login.errorDefault')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 12.5, color: '#C2352B' }}>{t('login.errorTitle')}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: '#8A4741' }}>{mensajeError ?? t('login.errorDefault')}</Text>
           </View>
         </View>
       ) : mensajeBiometria ? (
         <View style={{ marginTop: 20, borderRadius: 14, backgroundColor: theme.tint, padding: 14, flexDirection: 'row', gap: 10 }}>
           <Icono name="fingerprint" size={18} color={theme.gold} />
-          <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>{mensajeBiometria}</Text>
+          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>{mensajeBiometria}</Text>
         </View>
       ) : null}
 
@@ -147,9 +147,9 @@ export default function LoginScreen() {
           )}
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 7 }}>
-              <Text style={{ fontFamily: fonts.headingSemi, fontSize: 12, color: theme.mid }}>{t('login.password')}</Text>
+              <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.mid }}>{t('login.password')}</Text>
               <Pressable onPress={() => nav.navigate('Recover')}>
-                <Text style={{ fontFamily: fonts.headingSemi, fontSize: 12, color: theme.gold }}>{t('login.forgot')}</Text>
+                <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.gold }}>{t('login.forgot')}</Text>
               </Pressable>
             </View>
             <CampoTexto
@@ -177,9 +177,9 @@ export default function LoginScreen() {
           }}
           style={{ marginTop: 14, alignSelf: 'center' }}
         >
-          <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
             {t('login.notYou')}
-            <Text style={{ fontFamily: fonts.bodyBold, color: theme.gold }}>{t('login.useOtherAccount')}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{t('login.useOtherAccount')}</Text>
           </Text>
         </Pressable>
       )}
@@ -198,8 +198,8 @@ export default function LoginScreen() {
           >
             {verificandoBiometria ? <ActivityIndicator color={theme.gold} /> : <Icono name="fingerprint" size={50} color={theme.gold} />}
           </View>
-          <Text style={{ marginTop: 12, fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('login.faceId')}</Text>
-          <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('login.faceIdSub')}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('login.faceId')}</Text>
+          <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('login.faceIdSub')}</Text>
         </Pressable>
       )}
     </Pantalla>

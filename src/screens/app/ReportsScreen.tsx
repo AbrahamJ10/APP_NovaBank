@@ -5,11 +5,11 @@ import Pantalla from '../../components/Pantalla';
 import { BotonVolver, TituloPantalla } from '../../components/Primitivas';
 import { BotonFantasma, BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { ApiError, statementsApi } from '../../lib/api';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 function ultimos6Meses(locale: string) {
   const ahora = new Date();
@@ -22,9 +22,9 @@ function ultimos6Meses(locale: string) {
 
 export default function ReportsScreen() {
   const nav = useNavigation();
-  const { theme } = useTheme();
-  const { t, language } = useLanguage();
-  const { user } = useAppState();
+  const { theme } = usarTema();
+  const { t, language } = usarIdioma();
+  const { user } = usarEstadoApp();
 
   const meses = useMemo(() => ultimos6Meses(language === 'es' ? 'es-PE' : 'en-US'), [language]);
   const [seleccionado, setSeleccionado] = useState(meses[0]);
@@ -54,8 +54,8 @@ export default function ReportsScreen() {
           <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="mark_email_read" size={44} color={theme.green} />
           </View>
-          <Text style={{ marginTop: 20, fontFamily: fonts.heading, fontSize: 22, letterSpacing: -0.7, color: theme.ink }}>{t('reports.sentTitle')}</Text>
-          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, maxWidth: 280 }}>
+          <Text style={{ marginTop: 20, fontFamily: fuentes.heading, fontSize: 22, letterSpacing: -0.7, color: theme.ink }}>{t('reports.sentTitle')}</Text>
+          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid, maxWidth: 280 }}>
             {t('reports.sentBody', { email: user.email })}
           </Text>
           <BotonFantasma label={t('reports.requestAnother')} onPress={() => setEnviado(false)} style={{ marginTop: 22, width: 200 }} />
@@ -70,7 +70,7 @@ export default function ReportsScreen() {
       <TituloPantalla title={t('reports.title')} note={t('reports.note')} />
 
       <View style={{ marginTop: 20, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: theme.ink }}>{t('reports.chooseMonth')}</Text>
+        <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: theme.ink }}>{t('reports.chooseMonth')}</Text>
         <View style={{ marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', gap: 9 }}>
           {meses.map((mes) => {
             const activo = seleccionado.month === mes.month && seleccionado.year === mes.year;
@@ -80,7 +80,7 @@ export default function ReportsScreen() {
                 onPress={() => setSeleccionado(mes)}
                 style={{ width: '47%', height: 48, borderRadius: 13, borderWidth: 1.5, borderColor: activo ? theme.gold : theme.line, backgroundColor: activo ? theme.selBg : theme.bg, alignItems: 'center', justifyContent: 'center' }}
               >
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{mes.label}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{mes.label}</Text>
               </Pressable>
             );
           })}
@@ -89,12 +89,12 @@ export default function ReportsScreen() {
           style={{ marginTop: 18, padding: 14, borderRadius: 14, backgroundColor: theme.bg, flexDirection: 'row', alignItems: 'center', gap: 10 }}
         >
           <Icono name="mail" size={19} color={theme.gold} />
-          <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, color: theme.ink }}>{user.email}</Text>
+          <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, color: theme.ink }}>{user.email}</Text>
         </View>
       </View>
 
       {error ? (
-        <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
+        <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
       ) : null}
 
       <BotonPrimario

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useAppState } from '../state/AppStateContext';
+import { usarEstadoApp } from '../state/ContextoEstadoApp';
 
 // Cualquier toque en cualquier parte de la app cuenta como actividad y
 // reinicia el temporizador de inactividad — sin esto, la cuenta regresiva
@@ -8,7 +8,7 @@ import { useAppState } from '../state/AppStateContext';
 // activamente igual se cerraría en un horario fijo sin importar cuánto
 // estuviera interactuando la persona.
 export default function RastreadorActividad({ children }: { children: React.ReactNode }) {
-  const { touch } = useAppState();
+  const { touch } = usarEstadoApp();
   return (
     <View style={{ flex: 1 }} onTouchStart={touch} onTouchMove={touch}>
       {children}

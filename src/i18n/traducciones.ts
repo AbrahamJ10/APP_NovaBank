@@ -1,8 +1,8 @@
-export type Language = 'es' | 'en';
+export type Idioma = 'es' | 'en';
 
 // Claves planas con espacio de nombres por puntos, un prefijo por pantalla
 // — ahora cada pantalla lee sus textos de esta tabla (ES/EN sincronizados).
-export const translations: Record<Language, Record<string, string>> = {
+export const traducciones: Record<Idioma, Record<string, string>> = {
   es: {
     // tabs
     'tabs.home': 'Inicio',

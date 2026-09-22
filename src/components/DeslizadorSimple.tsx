@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
-import { useTheme } from '../theme/ThemeContext';
+import { usarTema } from '../theme/ContextoTema';
 
 type Props = {
   minimumValue: number;
@@ -17,7 +17,7 @@ type Props = {
 // dependencias: solo View + PanResponder, sin módulo nativo, así que nunca
 // más puede toparse con esa falla de compilación.
 export default function DeslizadorSimple({ minimumValue, maximumValue, step = 1, value, onValueChange, onSlidingComplete }: Props) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const [anchoPista, setAnchoPista] = useState(0);
   const anchoRef = useRef(0);
   const ultimoValorRef = useRef(value);

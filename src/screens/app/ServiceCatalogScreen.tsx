@@ -5,12 +5,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Pantalla from '../../components/Pantalla';
 import { BotonVolver } from '../../components/Primitivas';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { billsApi, Biller } from '../../lib/api';
-import { RootStackParamList } from '../../navigation/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { ListaParametrosRaiz } from '../../navigation/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 const ETIQUETA_CATEGORIA: Record<Biller['category'], string> = {
   luz: 'Luz',
@@ -25,10 +25,10 @@ const ETIQUETA_CATEGORIA: Record<Biller['category'], string> = {
 };
 
 export default function ServiceCatalogScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { services } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { services } = usarEstadoApp();
   const [catalogo, setCatalogo] = useState<Biller[] | null>(null);
   const [consulta, setConsulta] = useState('');
 
@@ -57,8 +57,8 @@ export default function ServiceCatalogScreen() {
   return (
     <Pantalla bg={theme.bg}>
       <BotonVolver onPress={() => nav.goBack()} />
-      <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('serviceCatalog.title')}</Text>
-      <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{t('serviceCatalog.subtitle')}</Text>
+      <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('serviceCatalog.title')}</Text>
+      <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>{t('serviceCatalog.subtitle')}</Text>
 
       <View style={{ marginTop: 16, height: 48, borderRadius: 15, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}>
         <Icono name="search" size={19} color={theme.soft} />
@@ -68,18 +68,18 @@ export default function ServiceCatalogScreen() {
           onChangeText={setConsulta}
           placeholder={t('serviceCatalog.searchPlaceholder')}
           placeholderTextColor={theme.soft}
-          style={{ flex: 1, fontFamily: fonts.body, fontSize: 13.5, color: theme.ink }}
+          style={{ flex: 1, fontFamily: fuentes.body, fontSize: 13.5, color: theme.ink }}
         />
       </View>
 
       {catalogo === null ? (
-        <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.loading')}</Text>
+        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.loading')}</Text>
       ) : filtrados.length === 0 ? (
-        <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.noResults')}</Text>
+        <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 12.5, color: theme.soft, textAlign: 'center' }}>{t('serviceCatalog.noResults')}</Text>
       ) : (
         agrupados.map(([categoria, proveedores]) => (
           <View key={categoria} style={{ marginTop: 20 }}>
-            <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{ETIQUETA_CATEGORIA[categoria]}</Text>
+            <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{ETIQUETA_CATEGORIA[categoria]}</Text>
             <View style={{ marginTop: 10, gap: 9 }}>
               {proveedores.map((proveedor) => {
                 const afiliado = clavesAfiliadas.has(proveedor.key);
@@ -93,8 +93,8 @@ export default function ServiceCatalogScreen() {
                       <Icono name={proveedor.icon} size={19} color={proveedor.iconFg} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{proveedor.name}</Text>
-                      <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{proveedor.fieldLabel}</Text>
+                      <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{proveedor.name}</Text>
+                      <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{proveedor.fieldLabel}</Text>
                     </View>
                     {afiliado ? (
                       <Icono name="check_circle" size={19} color={theme.green} />

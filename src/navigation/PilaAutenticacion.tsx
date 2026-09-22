@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthStackParamList } from './types';
-import { useAppState } from '../state/AppStateContext';
+import { ListaParametrosAuth } from './tipos';
+import { usarEstadoApp } from '../state/ContextoEstadoApp';
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import OtpScreen from '../screens/auth/OtpScreen';
@@ -12,10 +12,10 @@ import ExpiredScreen from '../screens/auth/ExpiredScreen';
 import DniCaptureScreen from '../screens/auth/DniCaptureScreen';
 import RegisterFaceScreen from '../screens/auth/RegisterFaceScreen';
 
-const Stack = createStackNavigator<AuthStackParamList>();
+const Stack = createStackNavigator<ListaParametrosAuth>();
 
-export default function AuthStack() {
-  const { expired } = useAppState();
+export default function PilaAutenticacion() {
+  const { expired } = usarEstadoApp();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={expired ? 'Expired' : 'Welcome'}>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />

@@ -7,21 +7,21 @@ import { BotonVolver, PasosProgreso } from '../../components/Primitivas';
 import CampoTexto from '../../components/CampoTexto';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 function cumpleRegla(regex: RegExp, valor: string) {
   return regex.test(valor);
 }
 
 export default function RegisterScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { beginRegister, scannedDni, setScannedDni } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { beginRegister, scannedDni, setScannedDni } = usarEstadoApp();
 
   // Vienen del escaneo del DNI/consulta a RENIEC hecha antes en el flujo —
   // solo lectura, el usuario nunca los escribe.
@@ -79,8 +79,8 @@ export default function RegisterScreen() {
       <BotonVolver onPress={() => nav.goBack()} />
       <PasosProgreso total={2} current={1} />
       <View>
-        <Text style={{ fontFamily: fonts.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('register.title')}</Text>
-        <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 13.5, color: theme.mid }}>{t('register.step')}</Text>
+        <Text style={{ fontFamily: fuentes.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('register.title')}</Text>
+        <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 13.5, color: theme.mid }}>{t('register.step')}</Text>
       </View>
 
       <View style={{ marginTop: 22, gap: 15 }}>
@@ -128,7 +128,7 @@ export default function RegisterScreen() {
           <View style={{ marginTop: 12, height: 6, borderRadius: 3, backgroundColor: theme.line, overflow: 'hidden' }}>
             <View style={{ height: 6, borderRadius: 3, backgroundColor: fortaleza.color, width: fortaleza.pct as any }} />
           </View>
-          {fortaleza.label ? <Text style={{ marginTop: 6, fontFamily: fonts.bodyBold, fontSize: 11.5, color: fortaleza.color }}>{fortaleza.label}</Text> : null}
+          {fortaleza.label ? <Text style={{ marginTop: 6, fontFamily: fuentes.bodyBold, fontSize: 11.5, color: fortaleza.color }}>{fortaleza.label}</Text> : null}
         </View>
 
         <CampoTexto
@@ -160,7 +160,7 @@ export default function RegisterScreen() {
         >
           {aceptado ? <Icono name="check" size={15} color="#fff" /> : null}
         </View>
-        <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
+        <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
           {t('register.termsPrefix')}<Text style={{ color: '#C9A227' }}>{t('register.termsLink')}</Text>{t('register.termsSuffix')}
         </Text>
       </Pressable>
@@ -171,12 +171,12 @@ export default function RegisterScreen() {
 }
 
 function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const color = ok ? '#21A26B' : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
       <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
-      <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{label}</Text>
+      <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color }}>{label}</Text>
     </View>
   );
 }

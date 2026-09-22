@@ -7,16 +7,16 @@ import { CasillasOtp, TituloPantalla, Interruptor } from '../../components/Primi
 import { BotonPeligro, BotonFantasma, BotonPrimario } from '../../components/Botones';
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function CardScreen() {
   const nav = useNavigation<any>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { user, cardBlocked, requestCardBlock, requestProfileOtp, revealCvv } = useAppState();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { user, cardBlocked, requestCardBlock, requestProfileOtp, revealCvv } = usarEstadoApp();
 
   const CONTROLES = [
     { key: 'pin', icon: 'pin', label: t('card.controlPinLabel'), desc: t('card.controlPinDesc') },
@@ -72,34 +72,34 @@ export default function CardScreen() {
       >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <View>
-            <Text style={{ fontFamily: fonts.displaySemi, fontSize: 17, letterSpacing: 2.4, textTransform: 'uppercase', color: '#E7CE92' }}>NovaBank</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 10.5, color: 'rgba(255,255,255,.55)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('card.visaInfinite')}</Text>
+            <Text style={{ fontFamily: fuentes.displaySemi, fontSize: 17, letterSpacing: 2.4, textTransform: 'uppercase', color: '#E7CE92' }}>NovaBank</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 10.5, color: 'rgba(255,255,255,.55)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('card.visaInfinite')}</Text>
           </View>
           <View style={{ paddingHorizontal: 11, paddingVertical: 5, borderRadius: 9, backgroundColor: cardBlocked ? 'rgba(255,255,255,.18)' : 'rgba(217,190,122,.2)' }}>
-            <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: cardBlocked ? '#fff' : '#E7CE92' }}>{cardBlocked ? t('card.blocked') : t('card.active')}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: cardBlocked ? '#fff' : '#E7CE92' }}>{cardBlocked ? t('card.blocked') : t('card.active')}</Text>
           </View>
         </View>
         <View>
           <LinearGradient colors={['#E7CE92', '#B98B33', '#F0DCA8']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 44, height: 32, borderRadius: 6 }} />
-          <Text style={{ marginTop: 12, fontFamily: fonts.bodyMed, fontSize: 18, letterSpacing: 2.6, color: '#fff' }}>{user.cardNumber}</Text>
+          <Text style={{ marginTop: 12, fontFamily: fuentes.bodyMed, fontSize: 18, letterSpacing: 2.6, color: '#fff' }}>{user.cardNumber}</Text>
           <View style={{ marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <View>
-              <Text style={{ fontFamily: fonts.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.holder')}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fonts.bodyMed, fontSize: 12.5, letterSpacing: 0.5, color: '#fff' }}>{user.name.toUpperCase()}</Text>
+              <Text style={{ fontFamily: fuentes.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.holder')}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, letterSpacing: 0.5, color: '#fff' }}>{user.name.toUpperCase()}</Text>
             </View>
             <View>
-              <Text style={{ fontFamily: fonts.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.expires')}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fonts.bodyMed, fontSize: 12.5, color: '#fff' }}>{user.cardExpiry}</Text>
+              <Text style={{ fontFamily: fuentes.body, fontSize: 9.5, color: 'rgba(255,255,255,.55)' }}>{t('card.expires')}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.bodyMed, fontSize: 12.5, color: '#fff' }}>{user.cardExpiry}</Text>
             </View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 16, fontStyle: 'italic', color: '#E7CE92' }}>VISA</Text>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 16, fontStyle: 'italic', color: '#E7CE92' }}>VISA</Text>
           </View>
         </View>
       </LinearGradient>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 20, flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: theme.ink }}>{cardBlocked ? t('card.blockedTitle') : t('card.blockTitle')}</Text>
-          <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
+          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: theme.ink }}>{cardBlocked ? t('card.blockedTitle') : t('card.blockTitle')}</Text>
+          <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
             {cardBlocked ? t('card.blockedDesc') : t('card.unblockedDesc')}
           </Text>
         </View>
@@ -120,8 +120,8 @@ export default function CardScreen() {
               <Icono name={control.icon} size={19} color={theme.gold} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{control.label}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{control.desc}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{control.label}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{control.desc}</Text>
             </View>
             <Icono name="chevron_right" size={18} color="#A6B1BD" />
           </Pressable>
@@ -132,8 +132,8 @@ export default function CardScreen() {
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icono name="gpp_maybe" size={26} color="#C2352B" />
         </View>
-        <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('card.confirmBlockTitle')}</Text>
-        <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
+        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('card.confirmBlockTitle')}</Text>
+        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('card.confirmBlockBody')}
         </Text>
         <BotonPeligro
@@ -151,8 +151,8 @@ export default function CardScreen() {
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
           <Icono name="pin" size={24} color={theme.gold} />
         </View>
-        <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.changePinTitle')}</Text>
-        <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
+        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.changePinTitle')}</Text>
+        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('card.changePinBody')}
         </Text>
         <BotonPrimario label={t('card.understood')} onPress={() => setPinAbierto(false)} style={{ marginTop: 20 }} />
@@ -168,8 +168,8 @@ export default function CardScreen() {
       >
         {pasoCvv === 'otp' && (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.verifyIdentity')}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('card.verifyIdentity')}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('card.verifyIdentityBody')}
             </Text>
             <Pressable onPress={() => refEntradaCvv.current?.focus()} style={{ marginTop: 18 }}>
@@ -189,9 +189,9 @@ export default function CardScreen() {
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
             {errorCvv ? (
-              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorCvv}</Text>
+              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorCvv}</Text>
             ) : enviandoCvv ? (
-              <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('card.sendingCode')}</Text>
+              <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12, color: theme.soft }}>{t('card.sendingCode')}</Text>
             ) : null}
             <BotonPrimario
               label={verificandoCvv ? t('card.verifying') : t('card.verify')}
@@ -204,9 +204,9 @@ export default function CardScreen() {
         {pasoCvv === 'shown' && (
           <View style={{ alignItems: 'center', paddingVertical: 6 }}>
             <Icono name="lock_open" size={30} color={theme.green} />
-            <Text style={{ marginTop: 14, fontFamily: fonts.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: user.cardNumber.slice(-4) })}</Text>
-            <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{valorCvv}</Text>
-            <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('card.cvvHides')}</Text>
+            <Text style={{ marginTop: 14, fontFamily: fuentes.body, fontSize: 12, color: theme.soft, letterSpacing: 1 }}>{t('card.cvvOf', { last4: user.cardNumber.slice(-4) })}</Text>
+            <Text style={{ marginTop: 8, fontFamily: fuentes.heading, fontSize: 34, letterSpacing: 6, color: theme.ink }}>{valorCvv}</Text>
+            <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('card.cvvHides')}</Text>
             <BotonPrimario label={t('card.done')} onPress={() => setPasoCvv('closed')} style={{ marginTop: 18, width: '100%' }} />
           </View>
         )}

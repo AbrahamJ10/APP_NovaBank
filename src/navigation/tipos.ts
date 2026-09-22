@@ -1,6 +1,6 @@
 import type { Biller } from '../lib/api';
 
-export type AuthStackParamList = {
+export type ListaParametrosAuth = {
   Welcome: undefined;
   Expired: undefined;
   Register: undefined;
@@ -12,7 +12,7 @@ export type AuthStackParamList = {
   Recover: undefined;
 };
 
-export type TabParamList = {
+export type ListaParametrosPestanas = {
   Home: undefined;
   Transactions: undefined;
   Transfer: undefined;
@@ -20,7 +20,7 @@ export type TabParamList = {
   Profile: undefined;
 };
 
-export type RootStackParamList = {
+export type ListaParametrosRaiz = {
   Main: undefined;
   Qr: undefined;
   Withdraw: undefined;

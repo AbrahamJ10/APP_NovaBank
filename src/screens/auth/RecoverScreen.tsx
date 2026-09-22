@@ -7,12 +7,12 @@ import { BotonVolver, CasillasOtp } from '../../components/Primitivas';
 import CampoTexto from '../../components/CampoTexto';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { mmss } from '../../lib/formato';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { ApiError, authApi } from '../../lib/api';
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,10 +34,10 @@ function describirErrorApi(error: unknown, reserva: string): string {
 const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
 export default function RecoverScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { startRecover, otpLeft, resendOtp } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { startRecover, otpLeft, resendOtp } = usarEstadoApp();
 
   const [paso, setPaso] = useState(1);
   const [identificador, setIdentificador] = useState('');
@@ -135,7 +135,7 @@ export default function RecoverScreen() {
       {(paso === 2 || paso === 3) && limiteFlujo ? (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
           <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
-          <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
+          <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
             {t('recover.timeLeft', { time: mmss(tiempoRestante) })}
           </Text>
         </View>
@@ -160,7 +160,7 @@ export default function RecoverScreen() {
             />
           </View>
           {errorEnvio ? (
-            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
+            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
           ) : null}
           <BotonPrimario
             label={enviando ? t('recover.sending') : t('recover.sendCode')}
@@ -170,7 +170,7 @@ export default function RecoverScreen() {
           />
           <View style={{ marginTop: 26, padding: 16, borderRadius: 16, backgroundColor: theme.tint, flexDirection: 'row', gap: 11 }}>
             <Icono name="shield" size={19} color={theme.gold} />
-            <Text style={{ flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
+            <Text style={{ flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: theme.mid }}>
               {t('recover.safetyNote')}
             </Text>
           </View>
@@ -198,10 +198,10 @@ export default function RecoverScreen() {
             autoFocus
             style={{ position: 'absolute', opacity: 0, height: 0 }}
           />
-          <Text style={{ marginTop: 16, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
+          <Text style={{ marginTop: 16, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
             {otpLeft > 0 ? (
               <>
-                {t('recover.resendIn')}<Text style={{ fontFamily: fonts.bodyBold, color: theme.gold }}>{mmss(otpLeft)}</Text>
+                {t('recover.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(otpLeft)}</Text>
               </>
             ) : (
               <Text
@@ -210,7 +210,7 @@ export default function RecoverScreen() {
                   resendOtp();
                   setLimiteFlujo(Date.now() + DURACION_FLUJO_MS);
                 }}
-                style={{ fontFamily: fonts.bodyBold, color: theme.gold }}
+                style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}
               >
                 {t('recover.resend')}
               </Text>
@@ -252,7 +252,7 @@ export default function RecoverScreen() {
             />
           </View>
           {errorConfirmacion ? (
-            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorConfirmacion}</Text>
+            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{errorConfirmacion}</Text>
           ) : null}
           <BotonPrimario
             label={confirmando ? t('recover.confirming') : t('recover.savePassword')}
@@ -278,7 +278,7 @@ export default function RecoverScreen() {
 }
 
 function InsigniaIcono({ name }: { name: string }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   return (
     <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
       <Icono name={name} size={25} color={theme.gold} />
@@ -287,17 +287,17 @@ function InsigniaIcono({ name }: { name: string }) {
 }
 
 function LineaRegla({ ok, label }: { ok: boolean; label: string }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const color = ok ? '#21A26B' : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
       <Icono name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
-      <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{label}</Text>
+      <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color }}>{label}</Text>
     </View>
   );
 }
 
 const estilos = (theme: any) => ({
-  title: { marginTop: 20, fontFamily: fonts.heading, fontSize: 26, lineHeight: 30, color: theme.ink, letterSpacing: -0.9 },
-  sub: { marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid },
+  title: { marginTop: 20, fontFamily: fuentes.heading, fontSize: 26, lineHeight: 30, color: theme.ink, letterSpacing: -0.9 },
+  sub: { marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid },
 });

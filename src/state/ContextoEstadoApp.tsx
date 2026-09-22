@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { NotificationItem, Payee, ServiceBill, Session, Tx } from './types';
+import { NotificationItem, Payee, ServiceBill, Session, Tx } from './tipos';
 import { DatosDni } from '../lib/dni';
 import {
   AccountSummary,
@@ -179,7 +179,7 @@ function formatearAhora() {
   return fecha.toLocaleDateString('es-PE') + ' · ' + fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function useAppStateInternal() {
+export function usarEstadoAppInterno() {
   const [now, setNow] = useState(Date.now());
 
   const [session, setSession] = useState<Session>('checking');
@@ -860,16 +860,16 @@ export function useAppStateInternal() {
   };
 }
 
-type AppState = ReturnType<typeof useAppStateInternal>;
+type AppState = ReturnType<typeof usarEstadoAppInterno>;
 const Ctx = createContext<AppState | null>(null);
 
-export function AppStateProvider({ children }: { children: React.ReactNode }) {
-  const value = useAppStateInternal();
+export function ProveedorEstadoApp({ children }: { children: React.ReactNode }) {
+  const value = usarEstadoAppInterno();
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
-export function useAppState() {
+export function usarEstadoApp() {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useAppState must be used within AppStateProvider');
+  if (!ctx) throw new Error('usarEstadoApp must be used within ProveedorEstadoApp');
   return ctx;
 }

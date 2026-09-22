@@ -7,12 +7,12 @@ import HojaInferior from '../../components/HojaInferior';
 import { BotonFantasma, BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { dinero } from '../../lib/formato';
-import { useAppState } from '../../state/AppStateContext';
-import { Tx } from '../../state/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { Tx } from '../../state/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 const CLAVES_FILTRO = ['7d', '30d', '90d', 'all'] as const;
 const LIMITES: Record<string, number> = { '7d': 7, '30d': 30, '90d': 90, all: 100000 };
@@ -26,9 +26,9 @@ function etiquetaGrupo(diasAtras: number, t: (key: string) => string) {
 }
 
 export default function TransactionsScreen() {
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { transactions, refreshAccount } = useAppState();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { transactions, refreshAccount } = usarEstadoApp();
   const [filtro, setFiltro] = useState<(typeof CLAVES_FILTRO)[number]>('30d');
   const [refrescando, setRefrescando] = useState(false);
   const [seleccionada, setSeleccionada] = useState<Tx | null>(null);
@@ -79,8 +79,8 @@ export default function TransactionsScreen() {
     <Pantalla padded={false} bg={theme.bg}>
       <View style={{ paddingHorizontal: 22, paddingTop: 10, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('transactions.title')}</Text>
-          <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{t('transactions.countInPeriod', { count: filtradas.length })}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{t('transactions.title')}</Text>
+          <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>{t('transactions.countInPeriod', { count: filtradas.length })}</Text>
         </View>
         <SelectorIdioma />
       </View>
@@ -108,7 +108,7 @@ export default function TransactionsScreen() {
         ) : (
           grupos.map(([label, items]) => (
             <View key={label} style={{ marginBottom: 18 }}>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 11.5, color: theme.soft, textTransform: 'uppercase', letterSpacing: 0.7, marginBottom: 9 }}>{label}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 11.5, color: theme.soft, textTransform: 'uppercase', letterSpacing: 0.7, marginBottom: 9 }}>{label}</Text>
               <View style={{ borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
                 {items.map((tx) => (
                   <FilaTransaccion key={tx.id} tx={tx} showDate onPress={() => setSeleccionada(tx)} />
@@ -119,7 +119,7 @@ export default function TransactionsScreen() {
         )}
 
         <BotonFantasma label={t('transactions.refresh')} icon="sync" onPress={refrescar} style={{ marginTop: 4 }} />
-        <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>
+        <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>
           {t('transactions.showingCount', { shown: filtradas.length, total: transactions.length })}
         </Text>
       </View>
@@ -132,16 +132,16 @@ export default function TransactionsScreen() {
                 <Icono name={seleccionada.icon} size={24} color={seleccionada.iconFg} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.headingBold, fontSize: 15.5, color: theme.ink }}>{seleccionada.name}</Text>
-                <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{seleccionada.meta}</Text>
+                <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15.5, color: theme.ink }}>{seleccionada.name}</Text>
+                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{seleccionada.meta}</Text>
               </View>
             </View>
-            <Text style={{ marginTop: 18, fontFamily: fonts.heading, fontSize: 32, letterSpacing: -1.2, color: seleccionada.kind === 'credit' ? theme.green : theme.red }}>
+            <Text style={{ marginTop: 18, fontFamily: fuentes.heading, fontSize: 32, letterSpacing: -1.2, color: seleccionada.kind === 'credit' ? theme.green : theme.red }}>
               {seleccionada.kind === 'credit' ? '+' : '−'}
               {dinero(seleccionada.amount)}
             </Text>
             <View style={{ marginTop: 10, alignSelf: 'flex-start', paddingHorizontal: 11, paddingVertical: 5, borderRadius: 20, backgroundColor: theme.tint }}>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.gold }}>{t('transactions.completed')}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: theme.gold }}>{t('transactions.completed')}</Text>
             </View>
             <View style={{ marginTop: 18 }}>
               <Fila

@@ -4,13 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function RegisterDoneScreen() {
-  const { t } = useLanguage();
-  const { user, setSession, touch } = useAppState();
+  const { t } = usarIdioma();
+  const { user, setSession, touch } = usarEstadoApp();
   const primerNombre = user.name.split(' ')[0];
 
   return (
@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { marginTop: 28, fontFamily: fonts.heading, fontSize: 32, color: '#fff', letterSpacing: -1.2, textAlign: 'center' },
-  sub: { marginTop: 12, fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,.72)', textAlign: 'center' },
+  title: { marginTop: 28, fontFamily: fuentes.heading, fontSize: 32, color: '#fff', letterSpacing: -1.2, textAlign: 'center' },
+  sub: { marginTop: 12, fontFamily: fuentes.body, fontSize: 15, lineHeight: 21, color: 'rgba(255,255,255,.72)', textAlign: 'center' },
   card: { marginTop: 26, width: '100%', backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 18, padding: 20 },
-  cardLabel: { fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' },
-  cardValue: { marginTop: 4, fontFamily: fonts.headingBold, fontSize: 16, color: '#fff' },
+  cardLabel: { fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' },
+  cardValue: { marginTop: 4, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' },
 });

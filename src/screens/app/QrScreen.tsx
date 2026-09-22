@@ -11,15 +11,15 @@ import CampoTexto from '../../components/CampoTexto';
 import { BotonDorado, BotonFantasma, BotonPrimario } from '../../components/Botones';
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
-import { fonts } from '../../theme/tokens';
+import { fuentes } from '../../theme/estilos';
 import { dinero } from '../../lib/formato';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function QrScreen() {
   const nav = useNavigation();
-  const { t } = useLanguage();
-  const { user, available, payQr, transactions } = useAppState();
+  const { t } = usarIdioma();
+  const { user, available, payQr, transactions } = usarEstadoApp();
   const [pestana, setPestana] = useState<'scan' | 'mine'>('scan');
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [escaneado, setEscaneado] = useState<string | null>(null);
@@ -99,10 +99,10 @@ export default function QrScreen() {
 
         <View style={{ flexDirection: 'row', gap: 8, padding: 4, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.1)' }}>
           <Pressable onPress={() => setPestana('scan')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: pestana === 'scan' ? '#fff' : 'transparent' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: pestana === 'scan' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabScan')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: pestana === 'scan' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabScan')}</Text>
           </Pressable>
           <Pressable onPress={() => setPestana('mine')} style={{ flex: 1, height: 38, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: pestana === 'mine' ? '#fff' : 'transparent' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: pestana === 'mine' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabMine')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: pestana === 'mine' ? '#0F1A26' : 'rgba(255,255,255,.7)' }}>{t('qr.tabMine')}</Text>
           </Pressable>
         </View>
 
@@ -118,7 +118,7 @@ export default function QrScreen() {
             ) : (
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
                 <Icono name="qr_code_2" size={56} color="rgba(255,255,255,.3)" />
-                <Text style={{ marginTop: 14, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>
+                <Text style={{ marginTop: 14, textAlign: 'center', fontFamily: fuentes.bodyMed, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>
                   {t('qr.enableCamera')}
                 </Text>
                 <BotonDorado label={t('qr.enableCameraButton')} onPress={solicitarPermiso} style={{ marginTop: 16 }} />
@@ -136,9 +136,9 @@ export default function QrScreen() {
             <View style={{ padding: 14, backgroundColor: '#fff', borderRadius: 18 }}>
               <QRCode value={`NOVABANK|${user.accountNumber}|${user.name}`} size={190} color="#0F1A26" backgroundColor="#fff" />
             </View>
-            <Text style={{ marginTop: 16, fontFamily: fonts.headingBold, fontSize: 15, color: '#fff' }}>{user.name}</Text>
-            <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('qr.account', { account: user.accountNumber })}</Text>
-            <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: 'rgba(255,255,255,.45)' }}>
+            <Text style={{ marginTop: 16, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{user.name}</Text>
+            <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('qr.account', { account: user.accountNumber })}</Text>
+            <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: 'rgba(255,255,255,.45)' }}>
               {t('qr.anyoneCanScan')}
             </Text>
           </View>
@@ -152,23 +152,23 @@ export default function QrScreen() {
               style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: seleccionandoImagen ? 0.6 : 1 }}
             >
               <Icono name="photo_library" size={18} color="#fff" />
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.fromGallery')}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.fromGallery')}</Text>
             </Pressable>
             <Pressable
               onPress={() => setEscaneado('MANUAL')}
               style={{ flex: 1, height: 50, borderRadius: 15, backgroundColor: 'rgba(255,255,255,.1)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
             >
               <Icono name="dialpad" size={18} color="#fff" />
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.manualCode')}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: '#fff' }}>{t('qr.manualCode')}</Text>
             </Pressable>
           </View>
         )}
 
         {pestana === 'scan' && errorGaleria ? (
-          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.bodyMed, fontSize: 12, color: '#FF8C7A' }}>{errorGaleria}</Text>
+          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.bodyMed, fontSize: 12, color: '#FF8C7A' }}>{errorGaleria}</Text>
         ) : null}
 
-        <Text style={{ marginTop: 26, fontFamily: fonts.headingBold, fontSize: 14, color: '#fff' }}>{t('qr.recentQrPayments')}</Text>
+        <Text style={{ marginTop: 26, fontFamily: fuentes.headingBold, fontSize: 14, color: '#fff' }}>{t('qr.recentQrPayments')}</Text>
         <View style={{ marginTop: 12, gap: 13 }}>
           {pagosQr.map((tx) => (
             <View key={tx.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -176,10 +176,10 @@ export default function QrScreen() {
                 <Icono name={tx.icon} size={19} color="#FFB07A" />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: '#fff' }}>{tx.name}</Text>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.5)' }}>{tx.daysAgo === 0 ? t('qr.today') : t('qr.daysAgo', { n: tx.daysAgo })}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: '#fff' }}>{tx.name}</Text>
+                <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.5)' }}>{tx.daysAgo === 0 ? t('qr.today') : t('qr.daysAgo', { n: tx.daysAgo })}</Text>
               </View>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#FF8C7A' }}>−{dinero(tx.amount)}</Text>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: '#FF8C7A' }}>−{dinero(tx.amount)}</Text>
             </View>
           ))}
         </View>
@@ -188,18 +188,18 @@ export default function QrScreen() {
       <HojaInferior visible={!!escaneado} onClose={cerrarHoja}>
         {escaneado && !listo ? (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5 }}>{t('qr.payWithQr')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 20, letterSpacing: -0.5 }}>{t('qr.payWithQr')}</Text>
+            <Text style={{ marginTop: 6, fontFamily: fuentes.body, fontSize: 12.5, color: '#5F6B78' }}>
               {escaneado !== 'MANUAL' ? t('qr.codeReadFrom', { merchant: nombreComercio }) : t('qr.codeReadManually')}
             </Text>
             <View style={{ marginTop: 16 }}>
               <CampoTexto label={t('qr.amountToPay')} icon="payments" keyboardType="decimal-pad" value={monto} onChangeText={(v) => setMonto(v.replace(/[^0-9.]/g, ''))} placeholder="0.00" />
             </View>
-            <Text style={{ marginTop: 6, fontFamily: fonts.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
+            <Text style={{ marginTop: 6, fontFamily: fuentes.bodyMed, fontSize: 11.5, color: montoNum > available ? '#C2352B' : '#5F6B78' }}>
               {montoNum > available ? t('qr.insufficientBalance') : t('qr.availableAmount', { amount: dinero(available) })}
             </Text>
             {error ? (
-              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
+              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
             ) : null}
             <BotonPrimario
               label={pagando ? t('qr.paying') : t('qr.confirmPayment')}
@@ -214,8 +214,8 @@ export default function QrScreen() {
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: '#EAF9F1', alignItems: 'center', justifyContent: 'center' }}>
               <Icono name="check" size={36} color="#21A26B" />
             </View>
-            <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 19 }}>{t('qr.paymentDone')}</Text>
-            <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: dinero(montoNum) })}</Text>
+            <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 19 }}>{t('qr.paymentDone')}</Text>
+            <Text style={{ marginTop: 6, fontFamily: fuentes.body, fontSize: 12.5, color: '#5F6B78' }}>{t('qr.amountSent', { amount: dinero(montoNum) })}</Text>
             <BotonPrimario label={t('qr.done')} onPress={cerrarHoja} style={{ marginTop: 18, width: '100%' }} />
           </View>
         ) : null}
@@ -227,5 +227,5 @@ export default function QrScreen() {
 const estilos = StyleSheet.create({
   frameWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   frame: { width: 190, height: 190, borderRadius: 20, borderWidth: 2, borderColor: 'rgba(255,255,255,.5)' },
-  hint: { position: 'absolute', bottom: 18, fontFamily: fonts.body, fontSize: 12.5, color: 'rgba(255,255,255,.7)' },
+  hint: { position: 'absolute', bottom: 18, fontFamily: fuentes.body, fontSize: 12.5, color: 'rgba(255,255,255,.7)' },
 });

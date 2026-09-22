@@ -5,16 +5,16 @@ import Pantalla from '../../components/Pantalla';
 import { BotonVolver } from '../../components/Primitivas';
 import { BotonFantasma } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function DevicesScreen() {
   const nav = useNavigation();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { sessions, loadSecurity, revokeSession, revokeOtherSessions } = useAppState();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { sessions, loadSecurity, revokeSession, revokeOtherSessions } = usarEstadoApp();
 
   useEffect(() => {
     loadSecurity();
@@ -25,8 +25,8 @@ export default function DevicesScreen() {
   return (
     <Pantalla bg={theme.bg}>
       <BotonVolver onPress={() => nav.goBack()} />
-      <Text style={{ fontFamily: fonts.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('devices.title')}</Text>
-      <Text style={{ marginTop: 6, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
+      <Text style={{ fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('devices.title')}</Text>
+      <Text style={{ marginTop: 6, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
         {t('devices.subtitle', { count: String(sessions.length) })}
       </Text>
 
@@ -38,16 +38,16 @@ export default function DevicesScreen() {
                 <Icono name="smartphone" size={21} color={theme.gold} />
               </View>
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }} numberOfLines={1}>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }} numberOfLines={1}>
                   {sesion.device}
                 </Text>
-                <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>
+                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>
                   {t('devices.since', { date: new Date(sesion.createdAt).toLocaleDateString('es-PE') })}
                   {sesion.ip ? ` · ${sesion.ip}` : ''}
                 </Text>
               </View>
               <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 9, backgroundColor: theme.tint }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 9.5, letterSpacing: 0.6, color: theme.mid }}>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 9.5, letterSpacing: 0.6, color: theme.mid }}>
                   {sesion.current ? t('devices.thisDevice') : t('devices.otherSession')}
                 </Text>
               </View>
@@ -58,7 +58,7 @@ export default function DevicesScreen() {
                 style={{ marginTop: 14, height: 44, borderRadius: 13, backgroundColor: theme.red, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
                 <Icono name="logout" size={18} color="#fff" />
-                <Text style={{ fontFamily: fonts.headingBold, fontSize: 13, color: '#fff' }}>{t('devices.closeSession')}</Text>
+                <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: '#fff' }}>{t('devices.closeSession')}</Text>
               </Pressable>
             )}
           </View>
@@ -66,7 +66,7 @@ export default function DevicesScreen() {
       </View>
 
       {otras.length === 0 && sessions.length > 0 && (
-        <Text style={{ marginTop: 14, fontFamily: fonts.body, fontSize: 12, color: theme.soft, textAlign: 'center' }}>
+        <Text style={{ marginTop: 14, fontFamily: fuentes.body, fontSize: 12, color: theme.soft, textAlign: 'center' }}>
           {t('devices.noOthers')}
         </Text>
       )}

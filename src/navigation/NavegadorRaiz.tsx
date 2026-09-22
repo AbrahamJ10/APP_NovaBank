@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
-import { useTheme } from '../theme/ThemeContext';
-import { useAppState } from '../state/AppStateContext';
+import { usarTema } from '../theme/ContextoTema';
+import { usarEstadoApp } from '../state/ContextoEstadoApp';
 import { iniciarSeguimientoAuditoria, detenerSeguimientoAuditoria, rastrearEvento } from '../lib/auditoria';
-import AuthStack from './AuthStack';
-import RootStack from './RootStack';
+import PilaAutenticacion from './PilaAutenticacion';
+import PilaRaiz from './PilaRaiz';
 
-export default function RootNavigator() {
-  const { theme, dark } = useTheme();
-  const { session, touch } = useAppState();
+export default function NavegadorRaiz() {
+  const { theme, dark } = usarTema();
+  const { session, touch } = usarEstadoApp();
   const refNav = useRef<NavigationContainerRef<Record<string, object | undefined>>>(null);
   const ultimaRuta = useRef<string | undefined>(undefined);
 
@@ -53,7 +53,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer ref={refNav} theme={temaNavegacion} onStateChange={alCambiarEstado}>
-      {session === 'in' ? <RootStack /> : <AuthStack />}
+      {session === 'in' ? <PilaRaiz /> : <PilaAutenticacion />}
     </NavigationContainer>
   );
 }

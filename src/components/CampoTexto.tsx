@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
-import { useTheme } from '../theme/ThemeContext';
-import { fonts } from '../theme/tokens';
+import { usarTema } from '../theme/ContextoTema';
+import { fuentes } from '../theme/estilos';
 import Icono from './Icono';
 
 type Props = TextInputProps & {
@@ -14,7 +14,7 @@ type Props = TextInputProps & {
 };
 
 export default function CampoTexto({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const [enfocado, setEnfocado] = useState(false);
 
   let colorBorde = theme.line;
@@ -32,7 +32,7 @@ export default function CampoTexto({ label, icon, status = 'default', rightIcon,
   return (
     <View style={{ marginBottom: 2 }}>
       {label ? (
-        <Text style={{ fontFamily: fonts.headingSemi, fontSize: 12, color: theme.mid, marginBottom: 7 }}>{label}</Text>
+        <Text style={{ fontFamily: fuentes.headingSemi, fontSize: 12, color: theme.mid, marginBottom: 7 }}>{label}</Text>
       ) : null}
       <View
         style={{
@@ -62,7 +62,7 @@ export default function CampoTexto({ label, icon, status = 'default', rightIcon,
           </Pressable>
         ) : null}
       </View>
-      {hint ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fonts.bodyMed, color: status === 'error' ? '#C2352B' : theme.soft }}>{hint}</Text> : null}
+      {hint ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fuentes.bodyMed, color: status === 'error' ? '#C2352B' : theme.soft }}>{hint}</Text> : null}
     </View>
   );
 }

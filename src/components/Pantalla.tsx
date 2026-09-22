@@ -1,7 +1,7 @@
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../theme/ThemeContext';
+import { usarTema } from '../theme/ContextoTema';
 
 type Props = {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function Pantalla({ children, scroll = true, padded = true, bg, style, contentStyle, edges }: Props) {
-  const { theme, dark } = useTheme();
+  const { theme, dark } = usarTema();
   const fondo = bg ?? theme.bg;
 
   const cuerpo = scroll ? (

@@ -6,10 +6,10 @@ import { useFonts as useDmSans, DMSans_400Regular, DMSans_500Medium, DMSans_700B
 import { useFonts as useCormorant, CormorantGaramond_600SemiBold, CormorantGaramond_700Bold } from '@expo-google-fonts/cormorant-garamond';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ThemeProvider } from './src/theme/ThemeContext';
-import { LanguageProvider } from './src/i18n/LanguageContext';
-import { AppStateProvider } from './src/state/AppStateContext';
-import RootNavigator from './src/navigation/RootNavigator';
+import { ProveedorTema } from './src/theme/ContextoTema';
+import { ProveedorIdioma } from './src/i18n/ContextoIdioma';
+import { ProveedorEstadoApp } from './src/state/ContextoEstadoApp';
+import NavegadorRaiz from './src/navigation/NavegadorRaiz';
 import RastreadorActividad from './src/components/RastreadorActividad';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -44,15 +44,15 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayout}>
       <SafeAreaProvider>
-        <ThemeProvider>
-          <LanguageProvider>
-            <AppStateProvider>
+        <ProveedorTema>
+          <ProveedorIdioma>
+            <ProveedorEstadoApp>
               <RastreadorActividad>
-                <RootNavigator />
+                <NavegadorRaiz />
               </RastreadorActividad>
-            </AppStateProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+            </ProveedorEstadoApp>
+          </ProveedorIdioma>
+        </ProveedorTema>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

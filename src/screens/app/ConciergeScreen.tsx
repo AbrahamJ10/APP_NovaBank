@@ -7,12 +7,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BotonVolver } from '../../components/Primitivas';
 import { MarcaLogo } from '../../components/Logo';
 import Icono from '../../components/Icono';
-import { fonts } from '../../theme/tokens';
+import { fuentes } from '../../theme/estilos';
 import { dinero } from '../../lib/formato';
-import { useAppState } from '../../state/AppStateContext';
-import { RootStackParamList } from '../../navigation/types';
-import { ServiceBill } from '../../state/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { ListaParametrosRaiz } from '../../navigation/tipos';
+import { ServiceBill } from '../../state/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Accion = { id: string; label: string; run: () => void | Promise<void> };
 type Mensaje = { id: string; from: 'agent' | 'user'; text: string; actions?: Accion[] };
@@ -24,8 +24,8 @@ function siguienteId(prefijo: string) {
 }
 
 export default function ConciergeScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { t } = useLanguage();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
+  const { t } = usarIdioma();
   const {
     user,
     cardBlocked,
@@ -43,7 +43,7 @@ export default function ConciergeScreen() {
     payBill,
     suspendBill,
     resumeBill,
-  } = useAppState();
+  } = usarEstadoApp();
 
   const [mensajes, setMensajes] = useState<Mensaje[]>([
     { id: siguienteId('a'), from: 'agent', text: t('concierge.greeting', { name: user.name.split(' ')[0] }), actions: menuPrincipal() },
@@ -244,8 +244,8 @@ export default function ConciergeScreen() {
               <View style={{ position: 'absolute', right: -2, bottom: -2, width: 14, height: 14, borderRadius: 7, backgroundColor: '#21A26B', borderWidth: 2.5, borderColor: '#0E2C4E' }} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: fonts.displaySemi, fontSize: 16, letterSpacing: 2.2, textTransform: 'uppercase', color: '#E7CE92' }}>{t('concierge.label')}</Text>
-              <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' }}>{t('concierge.online')}</Text>
+              <Text style={{ fontFamily: fuentes.displaySemi, fontSize: 16, letterSpacing: 2.2, textTransform: 'uppercase', color: '#E7CE92' }}>{t('concierge.label')}</Text>
+              <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' }}>{t('concierge.online')}</Text>
             </View>
           </View>
 
@@ -263,7 +263,7 @@ export default function ConciergeScreen() {
                     padding: 15,
                   }}
                 >
-                  <Text style={{ fontFamily: fonts.bodyMed, fontSize: 13.5, lineHeight: 20, color: mensaje.from === 'user' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{mensaje.text}</Text>
+                  <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 13.5, lineHeight: 20, color: mensaje.from === 'user' ? '#071B31' : 'rgba(255,255,255,.88)' }}>{mensaje.text}</Text>
                 </View>
                 {mensaje.actions && mensaje.actions.length > 0 ? (
                   <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
@@ -276,7 +276,7 @@ export default function ConciergeScreen() {
                           pressed && { backgroundColor: 'rgba(217,190,122,.16)' },
                         ]}
                       >
-                        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 12, color: '#E7CE92' }}>{accion.label}</Text>
+                        <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 12, color: '#E7CE92' }}>{accion.label}</Text>
                       </Pressable>
                     ))}
                   </View>

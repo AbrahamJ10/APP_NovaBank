@@ -5,15 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Haptics from 'expo-haptics';
-import { fonts } from '../../theme/tokens';
+import { fuentes } from '../../theme/estilos';
 import { BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { analizarFrenteDni } from '../../lib/dniOcr';
 import { analizarCodigoBarrasDni } from '../../lib/dni';
 import { dniApi } from '../../lib/api';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Fase = 'front' | 'back';
 type Estado = 'idle' | 'busy' | 'retry' | 'success';
@@ -28,9 +28,9 @@ const UMBRAL_CONSEJOS = 2; // muestra ayuda extra después de este número de in
 // Mantener una sola cámara viva y solo cambiar el modo de captura evita
 // por completo ese traspaso.
 export default function DniCaptureScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { t } = useLanguage();
-  const { setDniFrontPhoto, setFrontDniNumber, setScannedDni } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { t } = usarIdioma();
+  const { setDniFrontPhoto, setFrontDniNumber, setScannedDni } = usarEstadoApp();
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [fase, setFase] = useState<Fase>('front');
   const [estado, setEstado] = useState<Estado>('idle');
@@ -150,7 +150,7 @@ export default function DniCaptureScreen() {
         <Text style={styles.permBody}>{t('dniCapture.permBody')}</Text>
         <BotonDorado label={t('dniCapture.givePermission')} onPress={solicitarPermiso} style={{ marginTop: 22, width: '100%' }} />
         <Pressable onPress={() => nav.goBack()} style={{ marginTop: 14 }}>
-          <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fonts.bodyMed }}>{t('dniCapture.cancel')}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fuentes.bodyMed }}>{t('dniCapture.cancel')}</Text>
         </Pressable>
       </View>
     );
@@ -227,7 +227,7 @@ export default function DniCaptureScreen() {
             {estado === 'busy' ? (
               <View style={{ alignItems: 'center', gap: 10 }}>
                 <ActivityIndicator color="#E7CE92" />
-                <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fonts.bodyMed, fontSize: 12 }}>{t('dniCapture.reading')}</Text>
+                <Text style={{ color: 'rgba(255,255,255,.7)', fontFamily: fuentes.bodyMed, fontSize: 12 }}>{t('dniCapture.reading')}</Text>
               </View>
             ) : estado === 'success' ? null : (
               <BotonDorado label={estado === 'retry' ? t('dniCapture.retakePhoto') : t('dniCapture.takePhoto')} icon="photo_camera" onPress={capturarFrente} />
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   frame: { width: 300, height: 190, borderRadius: 4 },
   corner: { position: 'absolute', width: 32, height: 32, borderColor: '#D9BE7A', borderWidth: 4, borderRadius: 4 },
-  hint: { marginTop: 28, textAlign: 'center', color: 'rgba(255,255,255,.85)', fontFamily: fonts.bodyMed, fontSize: 13, lineHeight: 19, paddingHorizontal: 30 },
+  hint: { marginTop: 28, textAlign: 'center', color: 'rgba(255,255,255,.85)', fontFamily: fuentes.bodyMed, fontSize: 13, lineHeight: 19, paddingHorizontal: 30 },
   tipsBox: {
     marginTop: 18,
     marginHorizontal: 26,
@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,.14)',
   },
-  tipText: { flex: 1, fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: 'rgba(255,255,255,.85)' },
+  tipText: { flex: 1, fontFamily: fuentes.body, fontSize: 12, lineHeight: 17, color: 'rgba(255,255,255,.85)' },
   permWrap: { flex: 1, backgroundColor: '#08131F', alignItems: 'center', justifyContent: 'center', padding: 30 },
-  permTitle: { marginTop: 18, fontFamily: fonts.heading, fontSize: 21, color: '#fff' },
-  permBody: { marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: 'rgba(255,255,255,.65)' },
+  permTitle: { marginTop: 18, fontFamily: fuentes.heading, fontSize: 21, color: '#fff' },
+  permBody: { marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: 'rgba(255,255,255,.65)' },
 });

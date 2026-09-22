@@ -1,7 +1,7 @@
 // Tokens de diseño de NovaBank — trasladados 1:1 desde los mockups de escritorio/web de Qubank (Canvas.dc.html)
 // El azul marino principal de la marca se mantiene fijo entre temas; las superficies/textos cambian entre claro y oscuro.
 
-export const BRAND = {
+export const MARCA = {
   navy: '#133A63',
   navyDeep: '#061626',
   navyMid: '#0E2C4E',
@@ -12,11 +12,11 @@ export const BRAND = {
   goldPale: '#F0DCA8',
 };
 
-export const GOLD_GRADIENT = ['#B98B33', '#E7CE92', '#C9A227'] as const;
-export const NAVY_GRADIENT = ['#0E2C4E', '#061626'] as const;
-export const NAVY_GRADIENT_GLOW = ['#1B4E80', 'transparent'] as const;
+export const GRADIENTE_DORADO = ['#B98B33', '#E7CE92', '#C9A227'] as const;
+export const GRADIENTE_MARINO = ['#0E2C4E', '#061626'] as const;
+export const GRADIENTE_MARINO_BRILLO = ['#1B4E80', 'transparent'] as const;
 
-export type Theme = {
+export type Tema = {
   dark: boolean;
   bg: string;
   surf: string;
@@ -51,7 +51,7 @@ const shadowDark = {
   elevation: 2,
 };
 
-export const lightTheme: Theme = {
+export const temaClaro: Tema = {
   dark: false,
   bg: '#F4F6F9',
   surf: '#FFFFFF',
@@ -71,7 +71,7 @@ export const lightTheme: Theme = {
   navBg: 'rgba(255,255,255,.92)',
 };
 
-export const darkTheme: Theme = {
+export const temaOscuro: Tema = {
   dark: true,
   bg: '#0A1119',
   surf: '#111E2B',
@@ -91,15 +91,15 @@ export const darkTheme: Theme = {
   navBg: 'rgba(17,30,43,.92)',
 };
 
-export const DANGER = '#C2352B';
-export const SUCCESS = '#21A26B';
-export const PANIC = '#B02B22';
-export const INFO_BG = '#EAF3FF';
-export const INFO_FG = '#2C6FD1';
+export const PELIGRO = '#C2352B';
+export const EXITO = '#21A26B';
+export const PANICO = '#B02B22';
+export const FONDO_INFO = '#EAF3FF';
+export const TEXTO_INFO = '#2C6FD1';
 
-export const radii = { sm: 9, md: 13, lg: 16, xl: 20, xxl: 26 };
+export const radios = { sm: 9, md: 13, lg: 16, xl: 20, xxl: 26 };
 
-export const fonts = {
+export const fuentes = {
   display: 'CormorantGaramond_700Bold',
   displaySemi: 'CormorantGaramond_600SemiBold',
   heading: 'Manrope_800ExtraBold',

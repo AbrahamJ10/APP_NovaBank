@@ -1,13 +1,13 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useTheme } from '../theme/ThemeContext';
-import { fonts } from '../theme/tokens';
+import { usarTema } from '../theme/ContextoTema';
+import { fuentes } from '../theme/estilos';
 import { dinero } from '../lib/formato';
-import { Tx } from '../state/types';
+import { Tx } from '../state/tipos';
 import Icono from './Icono';
 
 export default function FilaTransaccion({ tx, onPress, showDate }: { tx: Tx; onPress?: () => void; showDate?: boolean }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const colorMonto = tx.kind === 'credit' ? theme.green : theme.ink;
   const signo = tx.kind === 'credit' ? '+' : '−';
   return (
@@ -27,19 +27,19 @@ export default function FilaTransaccion({ tx, onPress, showDate }: { tx: Tx; onP
         <Icono name={tx.icon} size={21} color={tx.iconFg} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text numberOfLines={1} style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>
+        <Text numberOfLines={1} style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>
           {tx.name}
         </Text>
-        <Text numberOfLines={1} style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>
+        <Text numberOfLines={1} style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>
           {tx.meta}
         </Text>
       </View>
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: colorMonto }}>
+        <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: colorMonto }}>
           {signo}
           {dinero(tx.amount)}
         </Text>
-        {showDate ? <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{tx.time}</Text> : null}
+        {showDate ? <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{tx.time}</Text> : null}
       </View>
     </Pressable>
   );

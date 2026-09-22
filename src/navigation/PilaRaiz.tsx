@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RootStackParamList } from './types';
-import AppTabs from './AppTabs';
+import { ListaParametrosRaiz } from './tipos';
+import PestanasApp from './PestanasApp';
 import QrScreen from '../screens/app/QrScreen';
 import WithdrawScreen from '../screens/app/WithdrawScreen';
 import CardScreen from '../screens/app/CardScreen';
@@ -16,12 +16,12 @@ import LimitsScreen from '../screens/app/LimitsScreen';
 import ReportsScreen from '../screens/app/ReportsScreen';
 import SpendScreen from '../screens/app/SpendScreen';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<ListaParametrosRaiz>();
 
-export default function RootStack() {
+export default function PilaRaiz() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Main" component={AppTabs} />
+      <Stack.Screen name="Main" component={PestanasApp} />
       <Stack.Screen name="Qr" component={QrScreen} />
       <Stack.Screen name="Withdraw" component={WithdrawScreen} />
       <Stack.Screen name="Card" component={CardScreen} />

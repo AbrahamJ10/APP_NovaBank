@@ -6,13 +6,13 @@ import Pantalla from '../../components/Pantalla';
 import { BotonVolver, CasillasOtp, PasosProgreso } from '../../components/Primitivas';
 import { BotonPrimario } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { mmss, enmascararCorreo } from '../../lib/formato';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { verificationApi } from '../../lib/api';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 const ESPERA_REENVIO_S = 60;
 // Coincide con la expiración propia del OTP del backend (otp.service.ts,
@@ -23,10 +23,10 @@ const ESPERA_REENVIO_S = 60;
 const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
 export default function OtpScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { completeRegister, pendingUser } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { completeRegister, pendingUser } = usarEstadoApp();
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState(false);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
@@ -97,7 +97,7 @@ export default function OtpScreen() {
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
         <Icono name="timer" size={14} color={tiempoRestante <= 60 ? '#C2352B' : theme.soft} />
-        <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
+        <Text style={{ fontFamily: fuentes.bodyMed, fontSize: 11.5, color: tiempoRestante <= 60 ? '#C2352B' : theme.soft }}>
           {t('otp.timeLeft', { time: mmss(tiempoRestante) })}
         </Text>
       </View>
@@ -105,10 +105,10 @@ export default function OtpScreen() {
       <View style={{ width: 52, height: 52, borderRadius: 17, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
         <Icono name="mail" size={25} color={theme.gold} />
       </View>
-      <Text style={{ marginTop: 20, fontFamily: fonts.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('otp.title')}</Text>
-      <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
+      <Text style={{ marginTop: 20, fontFamily: fuentes.heading, fontSize: 26, color: theme.ink, letterSpacing: -0.9 }}>{t('otp.title')}</Text>
+      <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
         {t('otp.subtitle')}
-        <Text style={{ fontFamily: fonts.bodyBold, color: theme.ink }}>{enmascararCorreo(pendingUser?.email ?? '')}</Text>.
+        <Text style={{ fontFamily: fuentes.bodyBold, color: theme.ink }}>{enmascararCorreo(pendingUser?.email ?? '')}</Text>.
       </Text>
 
       <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 26 }}>
@@ -129,23 +129,23 @@ export default function OtpScreen() {
         autoFocus
       />
       {error ? (
-        <Text style={{ marginTop: 10, fontFamily: fonts.bodyBold, fontSize: 12, color: '#C2352B' }}>
+        <Text style={{ marginTop: 10, fontFamily: fuentes.bodyBold, fontSize: 12, color: '#C2352B' }}>
           {mensajeError ?? t('otp.errorDefault')}
         </Text>
       ) : null}
 
       <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>
           {espera > 0 ? (
             <>
-              {t('otp.resendIn')}<Text style={{ fontFamily: fonts.bodyBold, color: theme.gold }}>{mmss(espera)}</Text>
+              {t('otp.resendIn')}<Text style={{ fontFamily: fuentes.bodyBold, color: theme.gold }}>{mmss(espera)}</Text>
             </>
           ) : (
             t('otp.canResend')
           )}
         </Text>
         <Pressable disabled={espera > 0 || reenviando} onPress={reenviar}>
-          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: espera > 0 || reenviando ? theme.soft : theme.gold }}>
+          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: espera > 0 || reenviando ? theme.soft : theme.gold }}>
             {reenviando ? t('otp.resending') : t('otp.resend')}
           </Text>
         </Pressable>

@@ -8,21 +8,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Icono from '../../components/Icono';
 import { BotonDorado, BotonFantasma } from '../../components/Botones';
-import { fonts } from '../../theme/tokens';
-import { AuthStackParamList } from '../../navigation/types';
-import { useAppState } from '../../state/AppStateContext';
+import { fuentes } from '../../theme/estilos';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { mensajeFalloRostro, ejecutarChequeoRostro } from '../../lib/deteccionRostro';
 import { ApiError, verificationApi } from '../../lib/api';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Etapa = 'idle' | 'scanning' | 'checking' | 'ok' | 'otpFailed' | 'fail';
 
 const ANILLO = 178;
 
 export default function RegisterFaceScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { t } = useLanguage();
-  const { pendingUser, dniFrontPhoto, setPendingSelfie } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { t } = usarIdioma();
+  const { pendingUser, dniFrontPhoto, setPendingSelfie } = usarEstadoApp();
   const [permiso, solicitarPermiso] = useCameraPermissions();
   const [etapa, setEtapa] = useState<Etapa>('idle');
   const [mensajeFalla, setMensajeFalla] = useState('');
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   scanLine: { position: 'absolute', left: 14, right: 14, top: '46%', height: 2, backgroundColor: '#D9BE7A', shadowColor: '#C9A227', shadowOpacity: 1, shadowRadius: 8 },
   checkingOverlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,17,26,.35)', alignItems: 'center', justifyContent: 'center' },
   badge: { position: 'absolute', right: -6, bottom: -6, width: 56, height: 56, borderRadius: 28, borderWidth: 4, borderColor: '#08131F', alignItems: 'center', justifyContent: 'center' },
-  title: { marginTop: 34, fontFamily: fonts.heading, fontSize: 24, color: '#fff', letterSpacing: -0.7, textAlign: 'center' },
-  desc: { marginTop: 10, fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: 'rgba(255,255,255,.62)', textAlign: 'center', maxWidth: 280 },
-  footer: { textAlign: 'center', fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.4)', marginTop: 2 },
+  title: { marginTop: 34, fontFamily: fuentes.heading, fontSize: 24, color: '#fff', letterSpacing: -0.7, textAlign: 'center' },
+  desc: { marginTop: 10, fontFamily: fuentes.body, fontSize: 14, lineHeight: 20, color: 'rgba(255,255,255,.62)', textAlign: 'center', maxWidth: 280 },
+  footer: { textAlign: 'center', fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.4)', marginTop: 2 },
 });

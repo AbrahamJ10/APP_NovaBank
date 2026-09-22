@@ -1,19 +1,19 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TabParamList } from './types';
-import { useTheme } from '../theme/ThemeContext';
-import { fonts } from '../theme/tokens';
+import { ListaParametrosPestanas } from './tipos';
+import { usarTema } from '../theme/ContextoTema';
+import { fuentes } from '../theme/estilos';
 import Icono from '../components/Icono';
 import HomeScreen from '../screens/app/HomeScreen';
 import TransactionsScreen from '../screens/app/TransactionsScreen';
 import TransferScreen from '../screens/app/TransferScreen';
 import NotificationsScreen from '../screens/app/NotificationsScreen';
 import ProfileScreen from '../screens/app/ProfileScreen';
-import { useLanguage } from '../i18n/LanguageContext';
+import { usarIdioma } from '../i18n/ContextoIdioma';
 
-const Tab = createBottomTabNavigator<TabParamList>();
+const Tab = createBottomTabNavigator<ListaParametrosPestanas>();
 
-const PESTANAS: { name: keyof TabParamList; labelKey: string; icon: string }[] = [
+const PESTANAS: { name: keyof ListaParametrosPestanas; labelKey: string; icon: string }[] = [
   { name: 'Home', labelKey: 'tabs.home', icon: 'home' },
   { name: 'Transactions', labelKey: 'tabs.transactions', icon: 'receipt_long' },
   { name: 'Transfer', labelKey: 'tabs.transfer', icon: 'swap_horiz' },
@@ -21,9 +21,9 @@ const PESTANAS: { name: keyof TabParamList; labelKey: string; icon: string }[] =
   { name: 'Profile', labelKey: 'tabs.profile', icon: 'person' },
 ];
 
-export default function AppTabs() {
-  const { theme, dark } = useTheme();
-  const { t } = useLanguage();
+export default function PestanasApp() {
+  const { theme, dark } = usarTema();
+  const { t } = usarIdioma();
   const colorActivo = dark ? '#E7CE92' : '#133A63';
 
   return (
@@ -39,7 +39,7 @@ export default function AppTabs() {
           height: 86,
           paddingTop: 8,
         },
-        tabBarLabelStyle: { fontFamily: fonts.bodyBold, fontSize: 10 },
+        tabBarLabelStyle: { fontFamily: fuentes.bodyBold, fontSize: 10 },
       }}
     >
       {PESTANAS.map((pestana) => (

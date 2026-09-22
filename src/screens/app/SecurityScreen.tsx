@@ -10,10 +10,10 @@ import { BotonPeligro, BotonPeligroContorno, BotonFantasma } from '../../compone
 import HojaInferior from '../../components/HojaInferior';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
-import { useAppState } from '../../state/AppStateContext';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 const RADIO = 46;
@@ -21,9 +21,9 @@ const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
 export default function SecurityScreen() {
   const nav = useNavigation<any>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { alerts, toggleAlert, panicMode, openPanic, closePanic, sessions, loadSecurity } = useAppState();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { alerts, toggleAlert, panicMode, openPanic, closePanic, sessions, loadSecurity } = usarEstadoApp();
   const [confirmarPanico, setConfirmarPanico] = useState(false);
 
   useEffect(() => {
@@ -76,8 +76,8 @@ export default function SecurityScreen() {
     <Pantalla bg={theme.bg}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('security.yourAccount')}</Text>
-          <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('security.center')}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: theme.gold, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('security.yourAccount')}</Text>
+          <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: theme.ink }}>{t('security.center')}</Text>
         </View>
         <SelectorIdioma />
       </View>
@@ -89,25 +89,25 @@ export default function SecurityScreen() {
               <Circle cx={56} cy={56} r={RADIO} stroke="rgba(255,255,255,.15)" strokeWidth={9} fill="none" />
               <Circle cx={56} cy={56} r={RADIO} stroke="#C9A227" strokeWidth={9} fill="none" strokeDasharray={`${CIRCUNFERENCIA},${CIRCUNFERENCIA}`} strokeDashoffset={CIRCUNFERENCIA * (1 - puntaje / 100)} strokeLinecap="round" />
             </Svg>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 28, color: '#fff', letterSpacing: -1 }}>{puntaje}</Text>
-            <Text style={{ marginTop: 4, fontFamily: fonts.body, fontSize: 8.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('security.of100')}</Text>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 28, color: '#fff', letterSpacing: -1 }}>{puntaje}</Text>
+            <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 8.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('security.of100')}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 17, color: '#fff' }}>{puntaje >= 90 ? t('security.excellent') : puntaje >= 70 ? t('security.good') : t('security.atRisk')}</Text>
-            <Text style={{ marginTop: 7, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.66)' }}>{t('security.completeActions')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 17, color: '#fff' }}>{puntaje >= 90 ? t('security.excellent') : puntaje >= 70 ? t('security.good') : t('security.atRisk')}</Text>
+            <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.66)' }}>{t('security.completeActions')}</Text>
           </View>
         </View>
       </LinearGradient>
 
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
         <View style={{ marginTop: 14, gap: 16 }}>
           {tareas.map((tarea) => (
             <View key={tarea.label} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
               <Icono name={tarea.done ? 'check_circle' : tarea.icon} size={20} color={tarea.done ? theme.green : theme.red} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{tarea.label}</Text>
-                <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>{tarea.desc}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{tarea.label}</Text>
+                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>{tarea.desc}</Text>
               </View>
             </View>
           ))}
@@ -126,12 +126,12 @@ export default function SecurityScreen() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 22 }}>
-        <Text style={{ fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
         <View style={{ marginTop: 10 }}>
           {filasAlerta.map((fila) => (
             <View key={fila.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
               <Icono name={fila.icon} size={19} color={theme.soft} />
-              <Text style={{ flex: 1, fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{fila.label}</Text>
+              <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{fila.label}</Text>
               <Interruptor value={alerts[fila.key]} onChange={() => toggleAlert(fila.key)} />
             </View>
           ))}
@@ -142,13 +142,13 @@ export default function SecurityScreen() {
         <View style={{ marginTop: 16, borderRadius: 22, backgroundColor: '#B02B22', padding: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Icono name="gpp_bad" size={21} color="#fff" />
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 15, color: '#fff' }}>{t('security.panicModeActive')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{t('security.panicModeActive')}</Text>
           </View>
-          <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.85)' }}>
+          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.85)' }}>
             {t('security.panicModeActiveDesc')}
           </Text>
           <Pressable onPress={closePanic} style={{ marginTop: 16, height: 46, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.16)', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 13.5, color: '#fff' }}>{t('security.deactivatePanic')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: '#fff' }}>{t('security.deactivatePanic')}</Text>
           </Pressable>
         </View>
       )}
@@ -156,7 +156,7 @@ export default function SecurityScreen() {
       {!panicMode && (
         <>
           <BotonPeligroContorno label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmarPanico(true)} style={{ marginTop: 16 }} />
-          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fonts.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
+          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: theme.soft }}>
             {t('security.panicHint')}
           </Text>
         </>
@@ -166,8 +166,8 @@ export default function SecurityScreen() {
         <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
           <Icono name="emergency_home" size={26} color="#C2352B" />
         </View>
-        <Text style={{ marginTop: 16, fontFamily: fonts.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('security.confirmPanicTitle')}</Text>
-        <Text style={{ marginTop: 9, fontFamily: fonts.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
+        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 21, letterSpacing: -0.6, color: theme.ink }}>{t('security.confirmPanicTitle')}</Text>
+        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: theme.mid }}>
           {t('security.confirmPanicBody')}
         </Text>
         <BotonPeligro
@@ -185,19 +185,19 @@ export default function SecurityScreen() {
 }
 
 function FilaModulo({ icono, etiqueta, descripcion, insignia, alPresionar, ultimo }: { icono: string; etiqueta: string; descripcion: string; insignia?: string; alPresionar?: () => void; ultimo?: boolean }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   return (
     <Pressable onPress={alPresionar} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: theme.line }}>
       <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
         <Icono name={icono} size={20} color={theme.gold} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{etiqueta}</Text>
-        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{descripcion}</Text>
+        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{descripcion}</Text>
       </View>
       {insignia ? (
         <View style={{ minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, backgroundColor: theme.warnBg, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: fonts.bodyBold, fontSize: 11, color: theme.red }}>{insignia}</Text>
+          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: theme.red }}>{insignia}</Text>
         </View>
       ) : null}
       <Icono name="chevron_right" size={18} color={theme.soft} />

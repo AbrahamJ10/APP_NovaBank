@@ -7,19 +7,19 @@ import Pantalla from '../../components/Pantalla';
 import { BotonVolver, TituloPantalla } from '../../components/Primitivas';
 import { BotonFantasma, BotonDorado } from '../../components/Botones';
 import Icono from '../../components/Icono';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { dinero } from '../../lib/formato';
-import { useAppState } from '../../state/AppStateContext';
-import { ServiceBill } from '../../state/types';
-import { RootStackParamList } from '../../navigation/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { ServiceBill } from '../../state/tipos';
+import { ListaParametrosRaiz } from '../../navigation/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function ServicesScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { theme } = useTheme();
-  const { t } = useLanguage();
-  const { services, available, payBill, suspendBill, resumeBill } = useAppState();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
+  const { theme } = usarTema();
+  const { t } = usarIdioma();
+  const { services, available, payBill, suspendBill, resumeBill } = usarEstadoApp();
   const [seleccionado, setSeleccionado] = useState<ServiceBill | null>(null);
   const [listo, setListo] = useState(false);
   const [pagando, setPagando] = useState(false);
@@ -59,8 +59,8 @@ export default function ServicesScreen() {
           <View style={{ width: 82, height: 82, borderRadius: 41, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="check" size={44} color={theme.green} />
           </View>
-          <Text style={{ marginTop: 22, fontFamily: fonts.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
-          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fonts.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
+          <Text style={{ marginTop: 22, fontFamily: fuentes.heading, fontSize: 24, letterSpacing: -0.8, color: theme.ink }}>{t('services.receiptPaid')}</Text>
+          <Text style={{ marginTop: 9, textAlign: 'center', fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 19, color: theme.mid }}>
             {t('services.receiptPaidBody', { name: seleccionado.name, amount: dinero(seleccionado.amount) })}
           </Text>
           <BotonFantasma
@@ -84,12 +84,12 @@ export default function ServicesScreen() {
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.tint, alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="pause_circle" size={30} color={theme.gold} />
           </View>
-          <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
-          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
+          <Text style={{ marginTop: 14, fontFamily: fuentes.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
+          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
             {t('concierge.serviceStatusSuspended', { name: seleccionado.name })}
           </Text>
           {error ? (
-            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
+            <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
           ) : null}
           <BotonFantasma
             label={alternando ? t('services.paying') : t('concierge.actionResume')}
@@ -110,8 +110,8 @@ export default function ServicesScreen() {
           <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
             <Icono name="check_circle" size={30} color={theme.green} />
           </View>
-          <Text style={{ marginTop: 14, fontFamily: fonts.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
-          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
+          <Text style={{ marginTop: 14, fontFamily: fuentes.headingBold, fontSize: 16, color: theme.ink }}>{seleccionado.name}</Text>
+          <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: theme.soft }}>
             {t('serviceLookup.upToDateBody', { supply: seleccionado.supplyNumber })}
           </Text>
         </View>
@@ -123,25 +123,25 @@ export default function ServicesScreen() {
     return (
       <Pantalla bg={theme.bg}>
         <BotonVolver onPress={() => setSeleccionado(null)} />
-        <Text style={{ fontFamily: fonts.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{seleccionado.name}</Text>
-        <Text style={{ marginTop: 5, fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>{seleccionado.meta}</Text>
+        <Text style={{ fontFamily: fuentes.heading, fontSize: 25, letterSpacing: -0.8, color: theme.ink }}>{seleccionado.name}</Text>
+        <Text style={{ marginTop: 5, fontFamily: fuentes.body, fontSize: 12.5, color: theme.mid }}>{seleccionado.meta}</Text>
 
         <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 20, borderRadius: 24, padding: 22 }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 10.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.totalToPay')}</Text>
-          <Text style={{ marginTop: 8, fontFamily: fonts.heading, fontSize: 38, letterSpacing: -1.5, color: '#fff' }}>{dinero(seleccionado.amount)}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.totalToPay')}</Text>
+          <Text style={{ marginTop: 8, fontFamily: fuentes.heading, fontSize: 38, letterSpacing: -1.5, color: '#fff' }}>{dinero(seleccionado.amount)}</Text>
           <View style={{ marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(217,190,122,.22)', gap: 11 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontFamily: fonts.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.period')}</Text>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.period}</Text>
+              <Text style={{ fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.period')}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.period}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontFamily: fonts.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.expiry')}</Text>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.expiry}</Text>
+              <Text style={{ fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.expiry')}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.expiry}</Text>
             </View>
             {seleccionado.consumption ? (
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={{ fontFamily: fonts.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.consumption')}</Text>
-                <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.consumption}</Text>
+                <Text style={{ fontFamily: fuentes.body, fontSize: 12, color: 'rgba(255,255,255,.6)' }}>{t('services.consumption')}</Text>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: '#fff' }}>{seleccionado.consumption}</Text>
               </View>
             ) : null}
           </View>
@@ -152,14 +152,14 @@ export default function ServicesScreen() {
             <Icono name="account_balance_wallet" size={20} color={theme.gold} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{t('services.savings')}</Text>
-            <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: dinero(available) })}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{t('services.savings')}</Text>
+            <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{t('services.available', { amount: dinero(available) })}</Text>
           </View>
           <Icono name="check_circle" size={19} color={theme.gold} />
         </View>
 
         {error ? (
-          <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{error}</Text>
+          <Text style={{ marginTop: 12, color: '#C2352B', fontFamily: fuentes.bodyBold, fontSize: 12 }}>{error}</Text>
         ) : null}
 
         <BotonDorado
@@ -186,10 +186,10 @@ export default function ServicesScreen() {
         style={{ marginTop: 14, height: 48, borderRadius: 15, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 15 }}
       >
         <Icono name="search" size={19} color={theme.soft} />
-        <Text style={{ fontFamily: fonts.body, fontSize: 13.5, color: theme.soft }}>{t('services.searchPlaceholder')}</Text>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 13.5, color: theme.soft }}>{t('services.searchPlaceholder')}</Text>
       </Pressable>
 
-      <Text style={{ marginTop: 20, fontFamily: fonts.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.yourBills')}</Text>
+      <Text style={{ marginTop: 20, fontFamily: fuentes.body, fontSize: 10, color: theme.soft, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('services.yourBills')}</Text>
       <View style={{ marginTop: 12, gap: 11 }}>
         {services.map((servicio) => (
           <Pressable
@@ -204,12 +204,12 @@ export default function ServicesScreen() {
               <Icono name={servicio.icon} size={21} color={theme.gold} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{servicio.name}</Text>
-              <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{servicio.meta}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{servicio.name}</Text>
+              <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11, color: theme.soft }}>{servicio.meta}</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: theme.ink }}>{dinero(servicio.amount)}</Text>
-              <Text style={{ marginTop: 3, fontFamily: fonts.bodyBold, fontSize: 10.5, color: servicio.suspended ? theme.gold : servicio.dueColor === 'warn' ? theme.red : theme.green }}>
+              <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: theme.ink }}>{dinero(servicio.amount)}</Text>
+              <Text style={{ marginTop: 3, fontFamily: fuentes.bodyBold, fontSize: 10.5, color: servicio.suspended ? theme.gold : servicio.dueColor === 'warn' ? theme.red : theme.green }}>
                 {servicio.suspended ? t('services.suspended') : servicio.due}
               </Text>
             </View>
@@ -222,7 +222,7 @@ export default function ServicesScreen() {
         style={{ marginTop: 18, borderRadius: 18, borderWidth: 1, borderColor: theme.line, borderStyle: 'dashed', padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}
       >
         <Icono name="add" size={21} color={theme.gold} />
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('services.addNewService')}</Text>
+        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: theme.ink }}>{t('services.addNewService')}</Text>
       </Pressable>
     </Pantalla>
   );

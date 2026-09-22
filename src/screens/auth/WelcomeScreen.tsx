@@ -4,17 +4,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../../navigation/types';
-import { fonts } from '../../theme/tokens';
+import { ListaParametrosAuth } from '../../navigation/tipos';
+import { fuentes } from '../../theme/estilos';
 import { BotonDorado, BotonFantasma } from '../../components/Botones';
 import { MarcaLogo } from '../../components/Logo';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 export default function WelcomeScreen() {
-  const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const { t } = useLanguage();
+  const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
+  const { t } = usarIdioma();
 
   const CARACTERISTICAS = [
     { icon: 'qr_code_2', label: t('welcome.feature1') },
@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     elevation: 8,
   },
-  wordmark: { marginTop: 20, fontFamily: fonts.display, fontSize: 30, color: '#fff', letterSpacing: 3.4 },
+  wordmark: { marginTop: 20, fontFamily: fuentes.display, fontSize: 30, color: '#fff', letterSpacing: 3.4 },
   rule: { marginTop: 6, width: 56, height: 2, backgroundColor: '#C9A227' },
-  headline: { marginTop: 26, fontFamily: fonts.heading, fontSize: 38, lineHeight: 42, color: '#fff', letterSpacing: -1.2 },
-  sub: { marginTop: 16, fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: 'rgba(255,255,255,.7)', maxWidth: 300 },
-  featureText: { fontFamily: fonts.bodyMed, fontSize: 13.5, color: 'rgba(255,255,255,.86)' },
-  footer: { textAlign: 'center', fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.42)', marginTop: 4, letterSpacing: 0.3 },
+  headline: { marginTop: 26, fontFamily: fuentes.heading, fontSize: 38, lineHeight: 42, color: '#fff', letterSpacing: -1.2 },
+  sub: { marginTop: 16, fontFamily: fuentes.body, fontSize: 15, lineHeight: 22, color: 'rgba(255,255,255,.7)', maxWidth: 300 },
+  featureText: { fontFamily: fuentes.bodyMed, fontSize: 13.5, color: 'rgba(255,255,255,.86)' },
+  footer: { textAlign: 'center', fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.42)', marginTop: 4, letterSpacing: 0.3 },
 });

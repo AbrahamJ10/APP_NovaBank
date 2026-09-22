@@ -9,20 +9,20 @@ import Pantalla from '../../components/Pantalla';
 import FilaTransaccion from '../../components/FilaTransaccion';
 import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
-import { useTheme } from '../../theme/ThemeContext';
-import { fonts } from '../../theme/tokens';
+import { usarTema } from '../../theme/ContextoTema';
+import { fuentes } from '../../theme/estilos';
 import { dinero } from '../../lib/formato';
-import { useAppState } from '../../state/AppStateContext';
-import { RootStackParamList, TabParamList } from '../../navigation/types';
-import { useLanguage } from '../../i18n/LanguageContext';
+import { usarEstadoApp } from '../../state/ContextoEstadoApp';
+import { ListaParametrosRaiz, ListaParametrosPestanas } from '../../navigation/tipos';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
+type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParametrosRaiz>, BottomTabNavigationProp<ListaParametrosPestanas>>;
 
 export default function HomeScreen() {
   const nav = useNavigation<Navegacion>();
-  const { theme, dark, toggle } = useTheme();
-  const { t } = useLanguage();
-  const { user, available, held, creditLine, minPayment, cutDate, cardBlocked, transactions } = useAppState();
+  const { theme, dark, toggle } = usarTema();
+  const { t } = usarIdioma();
+  const { user, available, held, creditLine, minPayment, cutDate, cardBlocked, transactions } = usarEstadoApp();
 
   const ACCESOS_RAPIDOS = [
     { icon: 'swap_horiz', label: t('home.quickTransfer'), go: 'TransferTab' as const },
@@ -42,11 +42,11 @@ export default function HomeScreen() {
       <LinearGradient colors={['#0E2C4E', '#061626']} start={{ x: 0.85, y: 0 }} end={{ x: 0.2, y: 1 }} style={{ paddingTop: 14, paddingHorizontal: 22, paddingBottom: 30, borderBottomLeftRadius: 34, borderBottomRightRadius: 34 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.12)', borderWidth: 1, borderColor: 'rgba(217,190,122,.4)', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 14, color: '#E7CE92' }}>{user.initials}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#E7CE92' }}>{user.initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.headingBold, fontSize: 16, color: '#fff' }}>{user.name}</Text>
+            <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' }}>{user.name}</Text>
           </View>
           <SelectorIdioma dark compact />
           <Pressable onPress={toggle} style={estilosH.iconBtn}>
@@ -59,17 +59,17 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ marginTop: 24, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>{t('home.availableBalance')}</Text>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 12.5, color: 'rgba(255,255,255,.6)' }}>{t('home.availableBalance')}</Text>
           <Pressable onPress={() => setOcultar((h) => !h)} style={estilosH.eyeBtn}>
             <Icono name={ocultar ? 'visibility_off' : 'visibility'} size={17} color="#fff" />
           </Pressable>
         </View>
-        <Text style={{ marginTop: 6, fontFamily: fonts.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
+        <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 42, letterSpacing: -1.8, color: '#fff' }}>
           {ocultar ? enmascarar(dinero(available)) : dinero(available)}
         </Text>
         <View style={{ marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <View style={{ width: 22, height: 1, backgroundColor: 'rgba(217,190,122,.7)' }} />
-          <Text style={{ fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' }}>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.55)' }}>
             {t('home.accountsSummary', { a: user.accountNumber.slice(-4), b: user.cardNumber.slice(-4) })}
           </Text>
         </View>
@@ -91,15 +91,15 @@ export default function HomeScreen() {
               style={{ width: '47%', borderRadius: 18, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, padding: 16, gap: 10 }}
             >
               <Icono name={acceso.icon} size={23} color={theme.gold} />
-              <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{acceso.label}</Text>
+              <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: theme.ink }}>{acceso.label}</Text>
             </Pressable>
           ))}
         </View>
 
         <View style={{ marginTop: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fonts.headingBold, fontSize: 15.5, color: theme.ink }}>{t('home.recentMovements')}</Text>
+          <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15.5, color: theme.ink }}>{t('home.recentMovements')}</Text>
           <Pressable onPress={() => nav.navigate('Transactions' as never)}>
-            <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('home.seeAll')}</Text>
+            <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('home.seeAll')}</Text>
           </Pressable>
         </View>
         <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, overflow: 'hidden' }}>
@@ -114,8 +114,8 @@ export default function HomeScreen() {
         >
           <Icono name={cardBlocked ? 'lock' : 'credit_card'} size={26} color="#fff" />
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{user.cardNumber.slice(-4)}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.65)' }}>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14.5, color: '#fff' }}>NovaBank Visa ···{user.cardNumber.slice(-4)}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.65)' }}>
               {t('home.cardStatus', { status: cardBlocked ? t('home.cardBlocked') : t('home.cardActive') })}
             </Text>
           </View>
@@ -130,8 +130,8 @@ export default function HomeScreen() {
             <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: theme.surf }} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 14, color: theme.ink }}>{t('home.monthSpend')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{t('home.reviewCategories')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: theme.ink }}>{t('home.monthSpend')}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: theme.soft }}>{t('home.reviewCategories')}</Text>
           </View>
           <Icono name="chevron_right" size={20} color="#A6B1BD" />
         </Pressable>
@@ -144,8 +144,8 @@ export default function HomeScreen() {
             <Icono name="support_agent" size={21} color="#E7CE92" />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: fonts.headingBold, fontSize: 14, color: '#fff' }}>{t('home.conciergeOnline')}</Text>
-            <Text style={{ marginTop: 3, fontFamily: fonts.body, fontSize: 11.5, color: 'rgba(255,255,255,.6)' }}>{t('home.conciergeReply')}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#fff' }}>{t('home.conciergeOnline')}</Text>
+            <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, color: 'rgba(255,255,255,.6)' }}>{t('home.conciergeReply')}</Text>
           </View>
           <Icono name="chevron_right" size={20} color="rgba(231,206,146,.8)" />
         </Pressable>
@@ -157,8 +157,8 @@ export default function HomeScreen() {
 function MiniEstadistica({ label, value }: { label: string; value: string }) {
   return (
     <View style={{ width: '50%', marginBottom: 10 }}>
-      <Text style={{ fontFamily: fonts.body, fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{label}</Text>
-      <Text style={{ marginTop: 4, fontFamily: fonts.headingBold, fontSize: 15, color: '#fff' }}>{value}</Text>
+      <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{label}</Text>
+      <Text style={{ marginTop: 4, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{value}</Text>
     </View>
   );
 }

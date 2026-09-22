@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Appearance } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { darkTheme, lightTheme, Theme } from './tokens';
+import { temaOscuro, temaClaro, Tema } from './estilos';
 
 type ContextoTema = {
-  theme: Theme;
+  theme: Tema;
   dark: boolean;
   toggle: () => void;
 };
 
-const Contexto = createContext<ContextoTema>({ theme: lightTheme, dark: false, toggle: () => {} });
+const Contexto = createContext<ContextoTema>({ theme: temaClaro, dark: false, toggle: () => {} });
 
 const CLAVE_ALMACENAMIENTO = 'novabank.theme';
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ProveedorTema({ children }: { children: React.ReactNode }) {
   const [oscuro, setOscuro] = useState(Appearance.getColorScheme() === 'dark');
 
   useEffect(() => {
@@ -31,9 +31,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const theme = useMemo(() => (oscuro ? darkTheme : lightTheme), [oscuro]);
+  const theme = useMemo(() => (oscuro ? temaOscuro : temaClaro), [oscuro]);
 
   return <Contexto.Provider value={{ theme, dark: oscuro, toggle }}>{children}</Contexto.Provider>;
 }
 
-export const useTheme = () => useContext(Contexto);
+export const usarTema = () => useContext(Contexto);

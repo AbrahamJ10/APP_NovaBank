@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Easing, KeyboardAvoidingView, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../theme/ThemeContext';
-import { radii } from '../theme/tokens';
+import { usarTema } from '../theme/ContextoTema';
+import { radios } from '../theme/estilos';
 
 const { height: ALTO_PANTALLA } = Dimensions.get('window');
 
@@ -23,7 +23,7 @@ export default function HojaInferior({
   onShow?: () => void;
   children: React.ReactNode;
 }) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const trasladoY = useRef(new Animated.Value(ALTO_PANTALLA)).current;
   const desvanecido = useRef(new Animated.Value(0)).current;
 
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,17,26,.55)' },
   sheetWrap: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   sheet: {
-    borderTopLeftRadius: radii.xxl + 2,
-    borderTopRightRadius: radii.xxl + 2,
+    borderTopLeftRadius: radios.xxl + 2,
+    borderTopRightRadius: radios.xxl + 2,
     paddingHorizontal: 22,
     paddingTop: 14,
     paddingBottom: 20,

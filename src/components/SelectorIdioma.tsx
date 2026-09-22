@@ -1,9 +1,9 @@
 import React from 'react';
 import { Pressable, Text } from 'react-native';
-import { useTheme } from '../theme/ThemeContext';
-import { useLanguage } from '../i18n/LanguageContext';
+import { usarTema } from '../theme/ContextoTema';
+import { usarIdioma } from '../i18n/ContextoIdioma';
 import Icono from './Icono';
-import { fonts } from '../theme/tokens';
+import { fuentes } from '../theme/estilos';
 
 // Píldora de idioma en línea (no flotante) pensada para ir dentro de la
 // propia fila de encabezado de una pantalla — usualmente emparejada con
@@ -13,8 +13,8 @@ import { fonts } from '../theme/tokens';
 // apretados de espacio (ej. la fila de avatar/nombre/modo oscuro/campana
 // de Inicio).
 export default function SelectorIdioma({ dark, compact }: { dark?: boolean; compact?: boolean }) {
-  const { theme } = useTheme();
-  const { language, toggle } = useLanguage();
+  const { theme } = usarTema();
+  const { language, toggle } = usarIdioma();
 
   if (compact) {
     return (
@@ -32,7 +32,7 @@ export default function SelectorIdioma({ dark, compact }: { dark?: boolean; comp
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontFamily: fonts.headingBold, fontSize: 10.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.3 }}>
+        <Text style={{ fontFamily: fuentes.headingBold, fontSize: 10.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.3 }}>
           {language === 'es' ? 'ES' : 'EN'}
         </Text>
       </Pressable>
@@ -56,7 +56,7 @@ export default function SelectorIdioma({ dark, compact }: { dark?: boolean; comp
       }}
     >
       <Icono name="language" size={14} color={dark ? '#fff' : theme.ink} />
-      <Text style={{ fontFamily: fonts.headingBold, fontSize: 11.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.5 }}>
+      <Text style={{ fontFamily: fuentes.headingBold, fontSize: 11.5, color: dark ? '#fff' : theme.ink, letterSpacing: 0.5 }}>
         {language === 'es' ? 'ES' : 'EN'}
       </Text>
     </Pressable>

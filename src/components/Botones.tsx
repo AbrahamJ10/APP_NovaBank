@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '../theme/ThemeContext';
-import { BRAND, fonts, GOLD_GRADIENT, radii } from '../theme/tokens';
+import { usarTema } from '../theme/ContextoTema';
+import { MARCA, fuentes, GRADIENTE_DORADO, radios } from '../theme/estilos';
 import Icono from './Icono';
 
 type BtnProps = {
@@ -29,7 +29,7 @@ export function BotonPrimario({ label, onPress, icon, iconRight, disabled, loadi
       }}
       style={({ pressed }) => [
         styles.base,
-        { backgroundColor: disabled ? '#9AA7B4' : BRAND.navy, opacity: pressed ? 0.9 : 1 },
+        { backgroundColor: disabled ? '#9AA7B4' : MARCA.navy, opacity: pressed ? 0.9 : 1 },
         style,
       ]}
     >
@@ -93,7 +93,7 @@ export function BotonDorado({ label, onPress, icon, disabled, loading, style }: 
       onLayout={(e) => setAncho(e.nativeEvent.layout.width)}
       style={({ pressed }) => [{ opacity: pressed ? 0.92 : 1 }, style]}
     >
-      <LinearGradient colors={GOLD_GRADIENT} start={{ x: 0, y: 0.2 }} end={{ x: 1, y: 0.8 }} style={[styles.base, styles.goldShadow, { overflow: 'hidden' }]}>
+      <LinearGradient colors={GRADIENTE_DORADO} start={{ x: 0, y: 0.2 }} end={{ x: 1, y: 0.8 }} style={[styles.base, styles.goldShadow, { overflow: 'hidden' }]}>
         <Animated.View pointerEvents="none" style={[styles.sheen, { transform: [{ translateX: trasladoX }, { rotate: '14deg' }] }]}>
           <LinearGradient
             colors={['transparent', 'rgba(255,255,255,.5)', 'transparent']}
@@ -116,7 +116,7 @@ export function BotonDorado({ label, onPress, icon, disabled, loading, style }: 
 }
 
 export function BotonFantasma({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   const colorTexto = textColor ?? theme.ink;
   return (
     <Pressable
@@ -140,7 +140,7 @@ export function BotonFantasma({ label, onPress, icon, disabled, style, textColor
 }
 
 export function BotonPeligroContorno({ label, onPress, icon, style }: BtnProps) {
-  const { theme } = useTheme();
+  const { theme } = usarTema();
   return (
     <Pressable
       onPress={() => {
@@ -178,13 +178,13 @@ export function BotonPeligro({ label, onPress, style }: BtnProps) {
 const styles = StyleSheet.create({
   base: {
     height: 54,
-    borderRadius: radii.lg,
+    borderRadius: radios.lg,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  label: { color: '#fff', fontFamily: fonts.headingBold, fontSize: 15.5, letterSpacing: 0.1 },
+  label: { color: '#fff', fontFamily: fuentes.headingBold, fontSize: 15.5, letterSpacing: 0.1 },
   goldShadow: {
     shadowColor: '#C9A227',
     shadowOpacity: 0.35,
