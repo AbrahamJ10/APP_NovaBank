@@ -15,29 +15,29 @@ export type DniData = {
   fullName?: string;
 };
 
-export function parseDniBarcode(raw: string): DniData {
-  const clean = raw.trim();
-  const parts = clean.split('@');
+export function analizarCodigoBarrasDni(crudo: string): DniData {
+  const limpio = crudo.trim();
+  const partes = limpio.split('@');
 
-  if (parts.length >= 6) {
-    const [apellidoPaterno, apellidoMaterno, nombres, , , dni] = parts;
-    const looksValid = /^\d{8}$/.test((dni || '').trim());
-    if (looksValid) {
-      const fullName = [nombres, apellidoPaterno, apellidoMaterno]
+  if (partes.length >= 6) {
+    const [apellidoPaterno, apellidoMaterno, nombres, , , dni] = partes;
+    const seVeValido = /^\d{8}$/.test((dni || '').trim());
+    if (seVeValido) {
+      const nombreCompleto = [nombres, apellidoPaterno, apellidoMaterno]
         .filter(Boolean)
         .map((s) => s?.trim())
         .join(' ');
       return {
-        raw: clean,
+        raw: limpio,
         dni: dni.trim(),
         apellidoPaterno: apellidoPaterno?.trim(),
         apellidoMaterno: apellidoMaterno?.trim(),
         nombres: nombres?.trim(),
-        fullName,
+        fullName: nombreCompleto,
       };
     }
   }
 
-  const digitMatch = clean.match(/\b\d{8}\b/);
-  return { raw: clean, dni: digitMatch ? digitMatch[0] : undefined };
+  const coincidenciaDigitos = limpio.match(/\b\d{8}\b/);
+  return { raw: limpio, dni: coincidenciaDigitos ? coincidenciaDigitos[0] : undefined };
 }

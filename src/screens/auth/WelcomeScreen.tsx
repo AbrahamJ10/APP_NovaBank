@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
   const nav = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   const { t } = useLanguage();
 
-  const FEATURES = [
+  const CARACTERISTICAS = [
     { icon: 'qr_code_2', label: t('welcome.feature1') },
     { icon: 'swap_horiz', label: t('welcome.feature2') },
     { icon: 'shield_lock', label: t('welcome.feature3') },
@@ -40,10 +40,10 @@ export default function WelcomeScreen() {
           <Text style={styles.sub}>{t('welcome.sub')}</Text>
 
           <View style={{ marginTop: 30, gap: 13 }}>
-            {FEATURES.map((f) => (
-              <View key={f.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
-                <Icon name={f.icon} size={19} color="#D9BE7A" />
-                <Text style={styles.featureText}>{f.label}</Text>
+            {CARACTERISTICAS.map((c) => (
+              <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
+                <Icon name={c.icon} size={19} color="#D9BE7A" />
+                <Text style={styles.featureText}>{c.label}</Text>
               </View>
             ))}
           </View>
