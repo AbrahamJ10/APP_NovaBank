@@ -17,7 +17,7 @@ export type Payee = {
   name: string;
   bank: string;
   account: string;
-  initials: string;
+  iniciales: string;
   inactive?: boolean;
 };
 

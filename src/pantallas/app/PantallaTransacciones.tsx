@@ -111,7 +111,7 @@ export default function PantallaTransacciones() {
               <Text style={{ fontFamily: fuentes.headingBold, fontSize: 11.5, color: tema.suave, textTransform: 'uppercase', letterSpacing: 0.7, marginBottom: 9 }}>{label}</Text>
               <View style={{ borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, overflow: 'hidden' }}>
                 {items.map((tx) => (
-                  <FilaTransaccion key={tx.id} tx={tx} showDate onPress={() => setSeleccionada(tx)} />
+                  <FilaTransaccion key={tx.id} tx={tx} mostrarFecha onPress={() => setSeleccionada(tx)} />
                 ))}
               </View>
             </View>

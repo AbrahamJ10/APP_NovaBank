@@ -8,12 +8,12 @@ type Props = TextInputProps & {
   label?: string;
   icon?: string;
   status?: 'default' | 'error' | 'success';
-  rightIcon?: string;
-  onRightIconPress?: () => void;
-  hint?: string;
+  iconoAccion?: string;
+  alPresionarIconoAccion?: () => void;
+  pista?: string;
 };
 
-export default function CampoTexto({ label, icon, status = 'default', rightIcon, onRightIconPress, hint, style, ...rest }: Props) {
+export default function CampoTexto({ label, icon, status = 'default', iconoAccion, alPresionarIconoAccion, pista, style, ...rest }: Props) {
   const { tema } = usarTema();
   const [enfocado, setEnfocado] = useState(false);
 
@@ -56,13 +56,13 @@ export default function CampoTexto({ label, icon, status = 'default', rightIcon,
           {...rest}
         />
         {status === 'success' ? <Icono name="check_circle" size={19} color="#21A26B" /> : null}
-        {rightIcon ? (
-          <Pressable onPress={onRightIconPress} hitSlop={10}>
-            <Icono name={rightIcon} size={19} color={tema.suave} />
+        {iconoAccion ? (
+          <Pressable onPress={alPresionarIconoAccion} hitSlop={10}>
+            <Icono name={iconoAccion} size={19} color={tema.suave} />
           </Pressable>
         ) : null}
       </View>
-      {hint ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fuentes.bodyMed, color: status === 'error' ? '#C2352B' : tema.suave }}>{hint}</Text> : null}
+      {pista ? <Text style={{ marginTop: 6, fontSize: 11.5, fontFamily: fuentes.bodyMed, color: status === 'error' ? '#C2352B' : tema.suave }}>{pista}</Text> : null}
     </View>
   );
 }

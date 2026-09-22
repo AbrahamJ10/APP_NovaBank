@@ -8,15 +8,15 @@ import { fuentes } from '../tema/estilos';
 // Píldora de idioma en línea (no flotante) pensada para ir dentro de la
 // propia fila de encabezado de una pantalla — usualmente emparejada con
 // BotonVolver en el lado opuesto — para que nunca se superponga con lo que
-// esa pantalla ya tenga en sus esquinas. `compact` reduce la etiqueta
+// esa pantalla ya tenga en sus esquinas. `compacto` reduce la etiqueta
 // ES/EN a un simple botón cuadrado con ícono, para encabezados ya
 // apretados de espacio (ej. la fila de avatar/nombre/modo oscuro/campana
 // de Inicio).
-export default function SelectorIdioma({ oscuro, compact }: { oscuro?: boolean; compact?: boolean }) {
+export default function SelectorIdioma({ oscuro, compacto }: { oscuro?: boolean; compacto?: boolean }) {
   const { tema } = usarTema();
   const { language, alternar } = usarIdioma();
 
-  if (compact) {
+  if (compacto) {
     return (
       <Pressable
         onPress={alternar}

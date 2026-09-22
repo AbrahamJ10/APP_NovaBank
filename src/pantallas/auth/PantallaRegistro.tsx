@@ -87,7 +87,7 @@ export default function PantallaRegistro() {
         <CampoTexto label={t('register.names')} icon="person" value={nombres} editable={false} />
         <CampoTexto label={t('register.firstLastName')} icon="badge" value={apellidoPaterno} editable={false} />
         <CampoTexto label={t('register.secondLastName')} icon="badge" value={apellidoMaterno} editable={false} />
-        <CampoTexto label={t('register.dni')} icon="fingerprint" value={dni} editable={false} status="success" hint={t('register.verifiedReniec')} />
+        <CampoTexto label={t('register.dni')} icon="fingerprint" value={dni} editable={false} status="success" pista={t('register.verifiedReniec')} />
 
         <CampoTexto
           label={t('register.email')}
@@ -116,8 +116,8 @@ export default function PantallaRegistro() {
             value={contrasena}
             onChangeText={setContrasena}
             secureTextEntry={!contrasenaVisible}
-            rightIcon={contrasenaVisible ? 'visibility_off' : 'visibility'}
-            onRightIconPress={() => setContrasenaVisible((v) => !v)}
+            iconoAccion={contrasenaVisible ? 'visibility_off' : 'visibility'}
+            alPresionarIconoAccion={() => setContrasenaVisible((v) => !v)}
           />
           <View style={{ marginTop: 10, gap: 6 }}>
             <LineaRegla ok={reglaLargo} label={t('register.ruleLen')} />
@@ -138,10 +138,10 @@ export default function PantallaRegistro() {
           value={confirmarContrasena}
           onChangeText={setConfirmarContrasena}
           secureTextEntry={!confirmarContrasenaVisible}
-          rightIcon={confirmarContrasenaVisible ? 'visibility_off' : 'visibility'}
-          onRightIconPress={() => setConfirmarContrasenaVisible((v) => !v)}
+          iconoAccion={confirmarContrasenaVisible ? 'visibility_off' : 'visibility'}
+          alPresionarIconoAccion={() => setConfirmarContrasenaVisible((v) => !v)}
           status={confirmarContrasena.length === 0 ? 'default' : confirmacionValida ? 'success' : 'error'}
-          hint={confirmarContrasena.length > 0 && !confirmacionValida ? t('register.passwordMismatch') : undefined}
+          pista={confirmarContrasena.length > 0 && !confirmacionValida ? t('register.passwordMismatch') : undefined}
         />
       </View>
 
@@ -165,7 +165,7 @@ export default function PantallaRegistro() {
         </Text>
       </Pressable>
 
-      <BotonPrimario label={t('register.continue')} iconRight="arrow_forward" disabled={!puedeContinuar} onPress={alContinuar} style={{ marginTop: 22 }} />
+      <BotonPrimario label={t('register.continue')} iconoDerecho="arrow_forward" disabled={!puedeContinuar} onPress={alContinuar} style={{ marginTop: 22 }} />
     </Pantalla>
   );
 }

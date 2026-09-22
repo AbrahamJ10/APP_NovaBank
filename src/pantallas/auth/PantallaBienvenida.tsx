@@ -54,7 +54,7 @@ export default function PantallaBienvenida() {
           <BotonFantasma
             label={t('welcome.haveAccount')}
             onPress={() => nav.navigate('Login')}
-            textColor="#fff"
+            colorTexto="#fff"
             style={{ backgroundColor: 'transparent', borderColor: 'rgba(217,190,122,.5)' }}
           />
           <Text style={styles.footer}>{t('welcome.footer')}</Text>

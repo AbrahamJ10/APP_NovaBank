@@ -114,7 +114,7 @@ export default function PantallaTransferencia() {
                   }}
                 >
                   <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tema.matiz, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: tema.tinta }}>{p.initials}</Text>
+                    <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13, color: tema.tinta }}>{p.iniciales}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{p.name}</Text>
@@ -207,7 +207,7 @@ export default function PantallaTransferencia() {
           ) : null}
           <BotonPrimario
             label={enviandoOtp ? t('transfer.sendingCode') : t('transfer.continue')}
-            iconRight="arrow_forward"
+            iconoDerecho="arrow_forward"
             disabled={!puedeContinuar || enviandoOtp}
             onPress={async () => {
               setEnviandoOtp(true);

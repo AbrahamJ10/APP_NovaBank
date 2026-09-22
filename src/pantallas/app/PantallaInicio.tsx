@@ -42,13 +42,13 @@ export default function PantallaInicio() {
       <LinearGradient colors={['#0E2C4E', '#061626']} start={{ x: 0.85, y: 0 }} end={{ x: 0.2, y: 1 }} style={{ paddingTop: 14, paddingHorizontal: 22, paddingBottom: 30, borderBottomLeftRadius: 34, borderBottomRightRadius: 34 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={{ width: 42, height: 42, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.12)', borderWidth: 1, borderColor: 'rgba(217,190,122,.4)', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#E7CE92' }}>{usuario.initials}</Text>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 14, color: '#E7CE92' }}>{usuario.iniciales}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(217,190,122,.85)', letterSpacing: 1.4, textTransform: 'uppercase' }}>{t('home.privateBanking')}</Text>
             <Text style={{ marginTop: 3, fontFamily: fuentes.headingBold, fontSize: 16, color: '#fff' }}>{usuario.name}</Text>
           </View>
-          <SelectorIdioma oscuro compact />
+          <SelectorIdioma oscuro compacto />
           <Pressable onPress={alternar} style={estilosH.iconBtn}>
             <Icono name={oscuro ? 'light_mode' : 'dark_mode'} size={19} color="#E7CE92" />
           </Pressable>
@@ -104,7 +104,7 @@ export default function PantallaInicio() {
         </View>
         <View style={{ marginTop: 8, borderRadius: 20, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, overflow: 'hidden' }}>
           {recientes.map((transaccion) => (
-            <FilaTransaccion key={transaccion.id} tx={transaccion} showDate />
+            <FilaTransaccion key={transaccion.id} tx={transaccion} mostrarFecha />
           ))}
         </View>
 

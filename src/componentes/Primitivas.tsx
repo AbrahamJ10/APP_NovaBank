@@ -103,7 +103,7 @@ export function Pastilla({ label, active, onPress }: { label: string; active?: b
   );
 }
 
-export function Insignia({ label, tone = 'gold' }: { label: string; tone?: 'gold' | 'green' | 'red' | 'neutral' }) {
+export function Insignia({ label, tono = 'gold' }: { label: string; tono?: 'gold' | 'green' | 'red' | 'neutral' }) {
   const { tema } = usarTema();
   const mapaColores = {
     gold: { bg: tema.fondoSel, fg: tema.dorado },
@@ -111,7 +111,7 @@ export function Insignia({ label, tone = 'gold' }: { label: string; tone?: 'gold
     red: { bg: tema.fondoAdvertencia, fg: tema.rojo },
     neutral: { bg: tema.matiz, fg: tema.medio },
   } as const;
-  const colores = mapaColores[tone];
+  const colores = mapaColores[tono];
   return (
     <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: colores.bg, alignSelf: 'flex-start' }}>
       <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 10.5, color: colores.fg }}>{label}</Text>
@@ -119,7 +119,7 @@ export function Insignia({ label, tone = 'gold' }: { label: string; tone?: 'gold
   );
 }
 
-export function Avatar({ initials, size = 42 }: { initials: string; size?: number }) {
+export function Avatar({ iniciales, size = 42 }: { iniciales: string; size?: number }) {
   return (
     <View
       style={{
@@ -133,7 +133,7 @@ export function Avatar({ initials, size = 42 }: { initials: string; size?: numbe
         justifyContent: 'center',
       }}
     >
-      <Text style={{ fontFamily: fuentes.headingBold, fontSize: size * 0.33, color: '#E7CE92' }}>{initials}</Text>
+      <Text style={{ fontFamily: fuentes.headingBold, fontSize: size * 0.33, color: '#E7CE92' }}>{iniciales}</Text>
     </View>
   );
 }

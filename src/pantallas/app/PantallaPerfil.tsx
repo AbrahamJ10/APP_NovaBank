@@ -150,12 +150,12 @@ export default function PantallaPerfil() {
       </View>
       <View style={{ alignItems: 'center', marginTop: 4 }}>
         <View style={{ width: 86, height: 86, borderRadius: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B2340', borderWidth: 2, borderColor: '#C9A227' }}>
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 30, color: '#fff' }}>{usuario.initials}</Text>
+          <Text style={{ fontFamily: fuentes.heading, fontSize: 30, color: '#fff' }}>{usuario.iniciales}</Text>
         </View>
         <Text style={{ marginTop: 14, fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.4, color: tema.tinta }}>{usuario.name}</Text>
         <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 12, color: tema.suave }}>{t('profile.memberSince', { date: usuario.memberSince })}</Text>
         <View style={{ marginTop: 12 }}>
-          <Insignia label={t('profile.identityVerified')} tone="green" />
+          <Insignia label={t('profile.identityVerified')} tono="green" />
         </View>
       </View>
 
@@ -181,7 +181,7 @@ export default function PantallaPerfil() {
           icono="fingerprint"
           etiqueta={t('profile.faceId')}
           descripcion={faceIdActivo ? t('profile.faceIdDesc') : t('profile.faceIdDescOff')}
-          derecha={faceIdActivo ? <Insignia label={t('profile.active')} tone="green" /> : <Insignia label={t('profile.inactive')} tone="neutral" />}
+          derecha={faceIdActivo ? <Insignia label={t('profile.active')} tono="green" /> : <Insignia label={t('profile.inactive')} tono="neutral" />}
         />
         <FilaPerfil icono="shield" etiqueta={t('profile.securityCenter')} descripcion={t('profile.securityCenterDesc')} alPresionar={() => nav.navigate('Security')} />
         <FilaPerfil icono="description" etiqueta={t('profile.accountStatement')} descripcion={t('profile.accountStatementDesc')} alPresionar={() => nav.navigate('Reports')} ultimo />
@@ -255,7 +255,7 @@ export default function PantallaPerfil() {
                   setErrorPwActual(false);
                 }}
                 status={errorPwActual ? 'error' : 'default'}
-                hint={errorPwActual ? t('profile.currentPasswordMismatch') : undefined}
+                pista={errorPwActual ? t('profile.currentPasswordMismatch') : undefined}
               />
               <CampoTexto label={t('profile.newPassword')} icon="lock" secureTextEntry value={pwNueva} onChangeText={setPwNueva} />
               <View style={{ gap: 6 }}>

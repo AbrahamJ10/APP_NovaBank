@@ -208,7 +208,7 @@ export default function PantallaCapturaDni() {
             <View style={[styles.corner, { bottom: -2, left: -2, borderRightWidth: 0, borderTopWidth: 0, borderColor: colorEsquina, borderWidth: anchoEsquina }]} />
             <View style={[styles.corner, { bottom: -2, right: -2, borderLeftWidth: 0, borderTopWidth: 0, borderColor: colorEsquina, borderWidth: anchoEsquina }]} />
           </View>
-          <Text style={styles.hint}>{fase === 'front' ? pistaFrente : pistaReverso}</Text>
+          <Text style={styles.pista}>{fase === 'front' ? pistaFrente : pistaReverso}</Text>
 
           {mostrarConsejos && (
             <View style={styles.tipsBox}>
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   },
   frame: { width: 300, height: 190, borderRadius: 4 },
   corner: { position: 'absolute', width: 32, height: 32, borderColor: '#D9BE7A', borderWidth: 4, borderRadius: 4 },
-  hint: { marginTop: 28, textAlign: 'center', color: 'rgba(255,255,255,.85)', fontFamily: fuentes.bodyMed, fontSize: 13, lineHeight: 19, paddingHorizontal: 30 },
+  pista: { marginTop: 28, textAlign: 'center', color: 'rgba(255,255,255,.85)', fontFamily: fuentes.bodyMed, fontSize: 13, lineHeight: 19, paddingHorizontal: 30 },
   tipsBox: {
     marginTop: 18,
     marginHorizontal: 26,

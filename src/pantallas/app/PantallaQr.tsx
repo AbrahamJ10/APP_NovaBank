@@ -127,7 +127,7 @@ export default function PantallaQr() {
             {permiso?.granted && (
               <View pointerEvents="none" style={estilos.frameWrap}>
                 <View style={estilos.frame} />
-                <Text style={estilos.hint}>{t('qr.pointAtQr')}</Text>
+                <Text style={estilos.pista}>{t('qr.pointAtQr')}</Text>
               </View>
             )}
           </View>
@@ -227,5 +227,5 @@ export default function PantallaQr() {
 const estilos = StyleSheet.create({
   frameWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   frame: { width: 190, height: 190, borderRadius: 20, borderWidth: 2, borderColor: 'rgba(255,255,255,.5)' },
-  hint: { position: 'absolute', bottom: 18, fontFamily: fuentes.body, fontSize: 12.5, color: 'rgba(255,255,255,.7)' },
+  pista: { position: 'absolute', bottom: 18, fontFamily: fuentes.body, fontSize: 12.5, color: 'rgba(255,255,255,.7)' },
 });

@@ -175,7 +175,7 @@ export default function PantallaRegistroRostro() {
         <View style={{ gap: 11 }}>
           {etapa === 'idle' && <BotonDorado label={t('registerFace.scanButton')} icon="face" onPress={iniciarEscaneo} />}
           {(etapa === 'scanning' || etapa === 'checking') && (
-            <BotonFantasma label={t('registerFace.cancel')} onPress={() => setEtapa('idle')} textColor="#fff" style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.28)' }} />
+            <BotonFantasma label={t('registerFace.cancel')} onPress={() => setEtapa('idle')} colorTexto="#fff" style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.28)' }} />
           )}
           {etapa === 'ok' && (
             <BotonDorado label={t('registerFace.continueButton')} icon="arrow_forward" onPress={() => nav.replace('Otp')} />
@@ -189,7 +189,7 @@ export default function PantallaRegistroRostro() {
               <BotonFantasma
                 label={t('registerFace.rescanDni')}
                 onPress={() => nav.goBack()}
-                textColor="#fff"
+                colorTexto="#fff"
                 style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,.3)' }}
               />
             </>

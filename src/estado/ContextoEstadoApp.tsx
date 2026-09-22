@@ -73,7 +73,7 @@ function aNotificacionLocal(n: ApiNotification): NotificationItem {
 }
 
 function aDestinatarioLocal(p: ApiPayee): Payee {
-  return { id: p.id, name: p.name, bank: p.bank, account: p.accountNumber, initials: p.initials, inactive: p.inactive };
+  return { id: p.id, name: p.name, bank: p.bank, account: p.accountNumber, iniciales: p.iniciales, inactive: p.inactive };
 }
 
 function aReciboLocal(b: ApiBill): ServiceBill {
@@ -117,7 +117,7 @@ function aplicarUsuarioApi(u: Usuario, apiUser: PublicUser): Usuario {
   return {
     ...u,
     name: apiUser.fullName,
-    initials: inicialesDe(apiUser.fullName),
+    iniciales: inicialesDe(apiUser.fullName),
     email: apiUser.email,
     dni: apiUser.dni ?? u.dni,
     phone: apiUser.phone ?? u.phone,
@@ -132,7 +132,7 @@ function aplicarUsuarioApi(u: Usuario, apiUser: PublicUser): Usuario {
 
 type Usuario = {
   name: string;
-  initials: string;
+  iniciales: string;
   email: string;
   dni: string;
   phone: string;
@@ -159,7 +159,7 @@ export type ComprobanteTransferencia = {
 
 const usuarioPorDefecto: Usuario = {
   name: 'Ana Quispe Rojas',
-  initials: 'AQ',
+  iniciales: 'AQ',
   email: 'ana.quispe@gmail.com',
   dni: '72481903',
   phone: '987214550',
@@ -446,7 +446,7 @@ export function usarEstadoAppInterno() {
     const u: Usuario = {
       ...usuarioPorDefecto,
       name: data.name || usuarioPorDefecto.name,
-      initials: inicialesDe(data.name || usuarioPorDefecto.name),
+      iniciales: inicialesDe(data.name || usuarioPorDefecto.name),
       email: data.email,
       dni: data.dni,
       phone: data.phone,
@@ -617,7 +617,7 @@ export function usarEstadoAppInterno() {
           name: res.payee.name,
           bank: res.payee.bank,
           account: res.payee.accountNumber,
-          initials: inicialesDe(res.payee.name),
+          iniciales: inicialesDe(res.payee.name),
         };
         const created = new Date(res.createdAt);
         const receipt: ComprobanteTransferencia = {

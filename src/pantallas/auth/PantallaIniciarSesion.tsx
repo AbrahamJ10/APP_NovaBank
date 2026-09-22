@@ -158,8 +158,8 @@ export default function PantallaIniciarSesion() {
               secureTextEntry={!contrasenaVisible}
               value={contrasena}
               onChangeText={setContrasena}
-              rightIcon={contrasenaVisible ? 'visibility_off' : 'visibility'}
-              onRightIconPress={() => setContrasenaVisible((v) => !v)}
+              iconoAccion={contrasenaVisible ? 'visibility_off' : 'visibility'}
+              alPresionarIconoAccion={() => setContrasenaVisible((v) => !v)}
             />
           </View>
         </View>

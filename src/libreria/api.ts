@@ -244,7 +244,7 @@ export type ApiPayee = {
   name: string;
   bank: string;
   accountNumber: string;
-  initials: string;
+  iniciales: string;
   inactive: boolean;
 };
 

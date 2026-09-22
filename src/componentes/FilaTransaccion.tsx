@@ -6,7 +6,7 @@ import { dinero } from '../libreria/formato';
 import { Tx } from '../estado/tipos';
 import Icono from './Icono';
 
-export default function FilaTransaccion({ tx, onPress, showDate }: { tx: Tx; onPress?: () => void; showDate?: boolean }) {
+export default function FilaTransaccion({ tx, onPress, mostrarFecha }: { tx: Tx; onPress?: () => void; mostrarFecha?: boolean }) {
   const { tema } = usarTema();
   const colorMonto = tx.kind === 'credit' ? tema.verde : tema.tinta;
   const signo = tx.kind === 'credit' ? '+' : '−';
@@ -39,7 +39,7 @@ export default function FilaTransaccion({ tx, onPress, showDate }: { tx: Tx; onP
           {signo}
           {dinero(tx.amount)}
         </Text>
-        {showDate ? <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{tx.time}</Text> : null}
+        {mostrarFecha ? <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{tx.time}</Text> : null}
       </View>
     </Pressable>
   );

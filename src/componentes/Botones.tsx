@@ -10,16 +10,16 @@ type BtnProps = {
   label: string;
   onPress?: () => void;
   icon?: string;
-  iconRight?: string;
+  iconoDerecho?: string;
   disabled?: boolean;
   loading?: boolean;
   style?: any;
-  textColor?: string;
+  colorTexto?: string;
 };
 
 const toque = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
 
-export function BotonPrimario({ label, onPress, icon, iconRight, disabled, loading, style }: BtnProps) {
+export function BotonPrimario({ label, onPress, icon, iconoDerecho, disabled, loading, style }: BtnProps) {
   return (
     <Pressable
       onPress={() => {
@@ -39,7 +39,7 @@ export function BotonPrimario({ label, onPress, icon, iconRight, disabled, loadi
         <View style={styles.row}>
           {icon ? <Icono name={icon} color="#fff" size={19} style={{ marginRight: 8 }} /> : null}
           <Text style={styles.label}>{label}</Text>
-          {iconRight ? <Icono name={iconRight} color="#fff" size={19} style={{ marginLeft: 8 }} /> : null}
+          {iconoDerecho ? <Icono name={iconoDerecho} color="#fff" size={19} style={{ marginLeft: 8 }} /> : null}
         </View>
       )}
     </Pressable>
@@ -115,9 +115,9 @@ export function BotonDorado({ label, onPress, icon, disabled, loading, style }: 
   );
 }
 
-export function BotonFantasma({ label, onPress, icon, disabled, style, textColor }: BtnProps) {
+export function BotonFantasma({ label, onPress, icon, disabled, style, colorTexto }: BtnProps) {
   const { tema } = usarTema();
-  const colorTexto = textColor ?? tema.tinta;
+  const colorTextoFinal = colorTexto ?? tema.tinta;
   return (
     <Pressable
       onPress={() => {
@@ -132,8 +132,8 @@ export function BotonFantasma({ label, onPress, icon, disabled, style, textColor
       ]}
     >
       <View style={styles.row}>
-        {icon ? <Icono name={icon} color={colorTexto} size={18} style={{ marginRight: 7 }} /> : null}
-        <Text style={[styles.label, { color: colorTexto }]}>{label}</Text>
+        {icon ? <Icono name={icon} color={colorTextoFinal} size={18} style={{ marginRight: 7 }} /> : null}
+        <Text style={[styles.label, { color: colorTextoFinal }]}>{label}</Text>
       </View>
     </Pressable>
   );

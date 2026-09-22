@@ -231,8 +231,8 @@ export default function PantallaRecuperar() {
               secureTextEntry={!contrasenaVisible}
               value={nuevaContrasena}
               onChangeText={setNuevaContrasena}
-              rightIcon={contrasenaVisible ? 'visibility_off' : 'visibility'}
-              onRightIconPress={() => setContrasenaVisible((v) => !v)}
+              iconoAccion={contrasenaVisible ? 'visibility_off' : 'visibility'}
+              alPresionarIconoAccion={() => setContrasenaVisible((v) => !v)}
             />
             <View style={{ gap: 6 }}>
               <LineaRegla ok={reglaLargo} label={t('recover.ruleLen')} />
@@ -247,8 +247,8 @@ export default function PantallaRecuperar() {
               value={repetirContrasena}
               onChangeText={setRepetirContrasena}
               status={repetirContrasena.length === 0 ? 'default' : repetirOk ? 'success' : 'error'}
-              rightIcon={repetirVisible ? 'visibility_off' : 'visibility'}
-              onRightIconPress={() => setRepetirVisible((v) => !v)}
+              iconoAccion={repetirVisible ? 'visibility_off' : 'visibility'}
+              alPresionarIconoAccion={() => setRepetirVisible((v) => !v)}
             />
           </View>
           {errorConfirmacion ? (
