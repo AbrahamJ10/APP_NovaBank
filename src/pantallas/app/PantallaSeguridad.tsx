@@ -1,0 +1,206 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Circle } from 'react-native-svg';
+import { useNavigation } from '@react-navigation/native';
+import * as LocalAuthentication from 'expo-local-authentication';
+import Pantalla from '../../componentes/Pantalla';
+import { Interruptor } from '../../componentes/Primitivas';
+import { BotonPeligro, BotonPeligroContorno, BotonFantasma } from '../../componentes/Botones';
+import HojaInferior from '../../componentes/HojaInferior';
+import Icono from '../../componentes/Icono';
+import SelectorIdioma from '../../componentes/SelectorIdioma';
+import { usarTema } from '../../tema/ContextoTema';
+import { fuentes } from '../../tema/estilos';
+import { usarEstadoApp } from '../../estado/ContextoEstadoApp';
+import { usarIdioma } from '../../i18n/ContextoIdioma';
+import { obtenerUltimaCuenta } from '../../libreria/tokensSeguros';
+
+const RADIO = 46;
+const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
+
+export default function PantallaSeguridad() {
+  const nav = useNavigation<any>();
+  const { tema } = usarTema();
+  const { t } = usarIdioma();
+  const { alertas, alternarAlerta, modoPanico, abrirPanico, cerrarPanico, sesiones, cargarSeguridad } = usarEstadoApp();
+  const [confirmarPanico, setConfirmarPanico] = useState(false);
+
+  useEffect(() => {
+    cargarSeguridad();
+  }, [cargarSeguridad]);
+
+  const [faceIdActivo, setFaceIdActivo] = useState(false);
+  useEffect(() => {
+    Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), obtenerUltimaCuenta()])
+      .then(([hw, enrolled, remembered]) => setFaceIdActivo(hw && enrolled && !!remembered))
+      .catch(() => setFaceIdActivo(false));
+  }, []);
+
+  const otrasSesiones = Math.max(0, sesiones.length - 1);
+  const sinSospechosas = otrasSesiones === 0;
+
+  const puntaje = useMemo(() => {
+    let puntos = 100;
+    if (!faceIdActivo) puntos -= 10;
+    if (!sinSospechosas) puntos -= 8;
+    if (!alertas.compra) puntos -= 4;
+    if (!alertas.retiro) puntos -= 4;
+    if (!alertas.iniciarSesion) puntos -= 6;
+    return Math.max(0, Math.min(100, puntos));
+  }, [faceIdActivo, sinSospechosas, alertas]);
+
+  const tareas = [
+    { icon: 'fingerprint', done: faceIdActivo, label: t('security.taskFaceId'), desc: faceIdActivo ? t('security.taskFaceIdDesc') : t('security.taskFaceIdDescOff') },
+    // Siempre true, no es un relleno: toda transferencia y cambio de perfil
+    // ya exige un OTP real por correo en toda la app — no hay un estado
+    // "apagado" que verificar.
+    { icon: 'password', done: true, label: t('security.taskTwoStep'), desc: t('security.taskTwoStepDesc') },
+    {
+      icon: 'gpp_maybe',
+      done: sinSospechosas,
+      label: t('security.taskSuspicious'),
+      desc: sinSospechosas ? t('security.taskSuspiciousOk') : t('security.taskSuspiciousBad', { count: String(otrasSesiones) }),
+    },
+    { icon: 'notifications_active', done: alertas.compra && alertas.retiro && alertas.iniciarSesion, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
+  ];
+
+  const filasAlerta: { key: keyof typeof alertas; icon: string; label: string }[] = [
+    { key: 'compra', icon: 'shopping_cart', label: t('security.alertPurchase') },
+    { key: 'retiro', icon: 'local_atm', label: t('security.alertWithdrawal') },
+    { key: 'iniciarSesion', icon: 'iniciarSesion', label: t('security.alertLogin') },
+    { key: 'promo', icon: 'local_offer', label: t('security.alertPromo') },
+  ];
+
+  return (
+    <Pantalla bg={tema.fondo}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontFamily: fuentes.body, fontSize: 10.5, color: tema.dorado, letterSpacing: 1.8, textTransform: 'uppercase' }}>{t('security.yourAccount')}</Text>
+          <Text style={{ marginTop: 6, fontFamily: fuentes.heading, fontSize: 26, letterSpacing: -0.9, color: tema.tinta }}>{t('security.center')}</Text>
+        </View>
+        <SelectorIdioma />
+      </View>
+
+      <LinearGradient colors={['#0E2C4E', '#061626']} style={{ marginTop: 18, borderRadius: 26, padding: 26 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
+          <View style={{ width: 112, height: 112, alignItems: 'center', justifyContent: 'center' }}>
+            <Svg width={112} height={112} style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>
+              <Circle cx={56} cy={56} r={RADIO} stroke="rgba(255,255,255,.15)" strokeWidth={9} fill="none" />
+              <Circle cx={56} cy={56} r={RADIO} stroke="#C9A227" strokeWidth={9} fill="none" strokeDasharray={`${CIRCUNFERENCIA},${CIRCUNFERENCIA}`} strokeDashoffset={CIRCUNFERENCIA * (1 - puntaje / 100)} strokeLinecap="round" />
+            </Svg>
+            <Text style={{ fontFamily: fuentes.heading, fontSize: 28, color: '#fff', letterSpacing: -1 }}>{puntaje}</Text>
+            <Text style={{ marginTop: 4, fontFamily: fuentes.body, fontSize: 8.5, color: 'rgba(217,190,122,.9)', letterSpacing: 1.2, textTransform: 'uppercase' }}>{t('security.of100')}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 17, color: '#fff' }}>{puntaje >= 90 ? t('security.excellent') : puntaje >= 70 ? t('security.good') : t('security.atRisk')}</Text>
+            <Text style={{ marginTop: 7, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.66)' }}>{t('security.completeActions')}</Text>
+          </View>
+        </View>
+      </LinearGradient>
+
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.improveProtection')}</Text>
+        <View style={{ marginTop: 14, gap: 16 }}>
+          {tareas.map((tarea) => (
+            <View key={tarea.label} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+              <Icono name={tarea.done ? 'check_circle' : tarea.icon} size={20} color={tarea.done ? tema.verde : tema.rojo} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{tarea.label}</Text>
+                <Text style={{ marginTop: 3, fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: tema.suave }}>{tarea.desc}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, paddingHorizontal: 18 }}>
+        <FilaModulo
+          icono="devices"
+          etiqueta={t('security.devicesSessions')}
+          descripcion={t('devices.subtitle', { count: String(sesiones.length) })}
+          insignia={otrasSesiones > 0 ? String(otrasSesiones) : undefined}
+          alPresionar={() => nav.navigate('Devices')}
+        />
+        <FilaModulo icono="place" etiqueta={t('security.limitsGeo')} descripcion={t('security.limitsGeoDesc')} alPresionar={() => nav.navigate('Limits')} ultimo />
+      </View>
+
+      <View style={{ marginTop: 16, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
+        <Text style={{ fontFamily: fuentes.body, fontSize: 10, color: tema.suave, letterSpacing: 1.6, textTransform: 'uppercase' }}>{t('security.alertsYouGet')}</Text>
+        <View style={{ marginTop: 10 }}>
+          {filasAlerta.map((fila) => (
+            <View key={fila.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11 }}>
+              <Icono name={fila.icon} size={19} color={tema.suave} />
+              <Text style={{ flex: 1, fontFamily: fuentes.bodyBold, fontSize: 13, color: tema.tinta }}>{fila.label}</Text>
+              <Interruptor value={alertas[fila.key]} onChange={() => alternarAlerta(fila.key)} />
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {modoPanico && (
+        <View style={{ marginTop: 16, borderRadius: 22, backgroundColor: '#B02B22', padding: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Icono name="gpp_bad" size={21} color="#fff" />
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{t('security.panicModeActive')}</Text>
+          </View>
+          <Text style={{ marginTop: 8, fontFamily: fuentes.body, fontSize: 12.5, lineHeight: 18, color: 'rgba(255,255,255,.85)' }}>
+            {t('security.panicModeActiveDesc')}
+          </Text>
+          <Pressable onPress={cerrarPanico} style={{ marginTop: 16, height: 46, borderRadius: 14, backgroundColor: 'rgba(255,255,255,.16)', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontFamily: fuentes.headingBold, fontSize: 13.5, color: '#fff' }}>{t('security.deactivatePanic')}</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {!modoPanico && (
+        <>
+          <BotonPeligroContorno label={t('security.activatePanic')} icon="emergency_home" onPress={() => setConfirmarPanico(true)} style={{ marginTop: 16 }} />
+          <Text style={{ marginTop: 10, textAlign: 'center', fontFamily: fuentes.body, fontSize: 11.5, lineHeight: 16, color: tema.suave }}>
+            {t('security.panicHint')}
+          </Text>
+        </>
+      )}
+
+      <HojaInferior visible={confirmarPanico} onClose={() => setConfirmarPanico(false)}>
+        <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: tema.fondoAdvertencia, alignItems: 'center', justifyContent: 'center' }}>
+          <Icono name="emergency_home" size={26} color="#C2352B" />
+        </View>
+        <Text style={{ marginTop: 16, fontFamily: fuentes.heading, fontSize: 21, letterSpacing: -0.6, color: tema.tinta }}>{t('security.confirmPanicTitle')}</Text>
+        <Text style={{ marginTop: 9, fontFamily: fuentes.body, fontSize: 13.5, lineHeight: 20, color: tema.medio }}>
+          {t('security.confirmPanicBody')}
+        </Text>
+        <BotonPeligro
+          label={t('security.yesBlockAll')}
+          onPress={() => {
+            abrirPanico();
+            setConfirmarPanico(false);
+          }}
+          style={{ marginTop: 22 }}
+        />
+        <BotonFantasma label={t('security.cancel')} onPress={() => setConfirmarPanico(false)} style={{ marginTop: 10 }} />
+      </HojaInferior>
+    </Pantalla>
+  );
+}
+
+function FilaModulo({ icono, etiqueta, descripcion, insignia, alPresionar, ultimo }: { icono: string; etiqueta: string; descripcion: string; insignia?: string; alPresionar?: () => void; ultimo?: boolean }) {
+  const { tema } = usarTema();
+  return (
+    <Pressable onPress={alPresionar} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 15, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: tema.linea }}>
+      <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: tema.matiz, alignItems: 'center', justifyContent: 'center' }}>
+        <Icono name={icono} size={20} color={tema.dorado} />
+      </View>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fuentes.body, fontSize: 11.5, color: tema.suave }}>{descripcion}</Text>
+      </View>
+      {insignia ? (
+        <View style={{ minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, backgroundColor: tema.fondoAdvertencia, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 11, color: tema.rojo }}>{insignia}</Text>
+        </View>
+      ) : null}
+      <Icono name="chevron_right" size={18} color={tema.suave} />
+    </Pressable>
+  );
+}

@@ -8,9 +8,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ProveedorTema } from './src/tema/ContextoTema';
 import { ProveedorIdioma } from './src/i18n/ContextoIdioma';
-import { ProveedorEstadoApp } from './src/state/ContextoEstadoApp';
-import NavegadorRaiz from './src/navigation/NavegadorRaiz';
-import RastreadorActividad from './src/components/RastreadorActividad';
+import { ProveedorEstadoApp } from './src/estado/ContextoEstadoApp';
+import NavegadorRaiz from './src/navegacion/NavegadorRaiz';
+import RastreadorActividad from './src/componentes/RastreadorActividad';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
