@@ -11,7 +11,7 @@ import { useLanguage } from '../../i18n/LanguageContext';
 export default function RegisterDoneScreen() {
   const { t } = useLanguage();
   const { user, setSession, touch } = useAppState();
-  const firstName = user.name.split(' ')[0];
+  const primerNombre = user.name.split(' ')[0];
 
   return (
     <View style={{ flex: 1, backgroundColor: '#061626' }}>
@@ -22,7 +22,7 @@ export default function RegisterDoneScreen() {
             <Icon name="check" size={50} color="#7BE0A8" />
           </View>
           <Text style={styles.title}>{t('registerDone.title')}</Text>
-          <Text style={styles.sub}>{t('registerDone.sub', { name: firstName })}</Text>
+          <Text style={styles.sub}>{t('registerDone.sub', { name: primerNombre })}</Text>
 
           <View style={styles.card}>
             <View>
