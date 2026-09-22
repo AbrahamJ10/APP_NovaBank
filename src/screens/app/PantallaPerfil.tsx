@@ -20,13 +20,13 @@ import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
 type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParametrosRaiz>, BottomTabNavigationProp<ListaParametrosPestanas>>;
 
-export default function ProfileScreen() {
+export default function PantallaPerfil() {
   const nav = useNavigation<Navegacion>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
   const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = usarEstadoApp();
 
-  // Refleja la misma verificación de LoginScreen — Face ID aquí significa
+  // Refleja la misma verificación de PantallaIniciarSesion — Face ID aquí significa
   // "el desbloqueo nativo por huella/rostro de este dispositivo de verdad
   // está registrado y puede hacer login rápido de esta cuenta", no alguna
   // configuración separada por cuenta.

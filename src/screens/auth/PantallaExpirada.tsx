@@ -9,7 +9,7 @@ import { ListaParametrosAuth } from '../../navigation/tipos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function ExpiredScreen() {
+export default function PantallaExpirada() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
   const { setExpired } = usarEstadoApp();

@@ -11,7 +11,7 @@ import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function PayCardScreen() {
+export default function PantallaPagarTarjeta() {
   const { theme } = usarTema();
   const { t } = usarIdioma();
   const { user, cardDebt, minPayment, creditLine, cutDate, payCard } = usarEstadoApp();

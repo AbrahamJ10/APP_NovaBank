@@ -18,7 +18,7 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParametrosRaiz>, BottomTabNavigationProp<ListaParametrosPestanas>>;
 
-export default function HomeScreen() {
+export default function PantallaInicio() {
   const nav = useNavigation<Navegacion>();
   const { theme, dark, toggle } = usarTema();
   const { t } = usarIdioma();

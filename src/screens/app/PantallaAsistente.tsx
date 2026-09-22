@@ -23,7 +23,7 @@ function siguienteId(prefijo: string) {
   return `${prefijo}${secuencia}`;
 }
 
-export default function ConciergeScreen() {
+export default function PantallaAsistente() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { t } = usarIdioma();
   const {

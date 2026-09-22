@@ -25,7 +25,7 @@ function etiquetaGrupo(diasAtras: number, t: (key: string) => string) {
   return t('transactions.groupEarlier');
 }
 
-export default function TransactionsScreen() {
+export default function PantallaTransacciones() {
   const { theme } = usarTema();
   const { t } = usarIdioma();
   const { transactions, refreshAccount } = usarEstadoApp();

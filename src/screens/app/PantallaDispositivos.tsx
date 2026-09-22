@@ -10,7 +10,7 @@ import { fuentes } from '../../theme/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function DevicesScreen() {
+export default function PantallaDispositivos() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();

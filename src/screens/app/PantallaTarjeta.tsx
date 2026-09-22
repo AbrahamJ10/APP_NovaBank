@@ -12,7 +12,7 @@ import { fuentes } from '../../theme/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function CardScreen() {
+export default function PantallaTarjeta() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

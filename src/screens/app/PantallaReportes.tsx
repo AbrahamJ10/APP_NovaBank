@@ -20,7 +20,7 @@ function ultimos6Meses(locale: string) {
   });
 }
 
-export default function ReportsScreen() {
+export default function PantallaReportes() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t, language } = usarIdioma();

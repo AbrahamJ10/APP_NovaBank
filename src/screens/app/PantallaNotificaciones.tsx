@@ -13,7 +13,7 @@ import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { NotificationItem } from '../../state/tipos';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function NotificationsScreen() {
+export default function PantallaNotificaciones() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

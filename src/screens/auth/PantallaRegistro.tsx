@@ -17,7 +17,7 @@ function cumpleRegla(regex: RegExp, valor: string) {
   return regex.test(valor);
 }
 
-export default function RegisterScreen() {
+export default function PantallaRegistro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

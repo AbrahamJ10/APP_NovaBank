@@ -19,7 +19,7 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<ListaParametrosRaiz>, BottomTabNavigationProp<ListaParametrosPestanas>>;
 type Paso = 'form' | 'otp' | 'done' | 'error';
 
-export default function TransferScreen() {
+export default function PantallaTransferencia() {
   const nav = useNavigation<Navegacion>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

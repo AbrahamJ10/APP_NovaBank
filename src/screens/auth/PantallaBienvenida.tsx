@@ -12,7 +12,7 @@ import Icono from '../../components/Icono';
 import SelectorIdioma from '../../components/SelectorIdioma';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function WelcomeScreen() {
+export default function PantallaBienvenida() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
 

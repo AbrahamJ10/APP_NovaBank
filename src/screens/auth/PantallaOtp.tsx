@@ -22,7 +22,7 @@ const ESPERA_REENVIO_S = 60;
 // dejar que alguien se quede en esta pantalla indefinidamente.
 const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
-export default function OtpScreen() {
+export default function PantallaOtp() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

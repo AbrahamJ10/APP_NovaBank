@@ -2,19 +2,19 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ListaParametrosRaiz } from './tipos';
 import PestanasApp from './PestanasApp';
-import QrScreen from '../screens/app/QrScreen';
-import WithdrawScreen from '../screens/app/WithdrawScreen';
-import CardScreen from '../screens/app/CardScreen';
-import ServicesScreen from '../screens/app/ServicesScreen';
-import ServiceCatalogScreen from '../screens/app/ServiceCatalogScreen';
-import ServiceLookupScreen from '../screens/app/ServiceLookupScreen';
-import PayCardScreen from '../screens/app/PayCardScreen';
-import ConciergeScreen from '../screens/app/ConciergeScreen';
-import SecurityScreen from '../screens/app/SecurityScreen';
-import DevicesScreen from '../screens/app/DevicesScreen';
-import LimitsScreen from '../screens/app/LimitsScreen';
-import ReportsScreen from '../screens/app/ReportsScreen';
-import SpendScreen from '../screens/app/SpendScreen';
+import PantallaQr from '../screens/app/PantallaQr';
+import PantallaRetiro from '../screens/app/PantallaRetiro';
+import PantallaTarjeta from '../screens/app/PantallaTarjeta';
+import PantallaServicios from '../screens/app/PantallaServicios';
+import PantallaCatalogoServicios from '../screens/app/PantallaCatalogoServicios';
+import PantallaConsultaServicio from '../screens/app/PantallaConsultaServicio';
+import PantallaPagarTarjeta from '../screens/app/PantallaPagarTarjeta';
+import PantallaAsistente from '../screens/app/PantallaAsistente';
+import PantallaSeguridad from '../screens/app/PantallaSeguridad';
+import PantallaDispositivos from '../screens/app/PantallaDispositivos';
+import PantallaLimites from '../screens/app/PantallaLimites';
+import PantallaReportes from '../screens/app/PantallaReportes';
+import PantallaGastos from '../screens/app/PantallaGastos';
 
 const Stack = createNativeStackNavigator<ListaParametrosRaiz>();
 
@@ -22,19 +22,19 @@ export default function PilaRaiz() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Main" component={PestanasApp} />
-      <Stack.Screen name="Qr" component={QrScreen} />
-      <Stack.Screen name="Withdraw" component={WithdrawScreen} />
-      <Stack.Screen name="Card" component={CardScreen} />
-      <Stack.Screen name="Services" component={ServicesScreen} />
-      <Stack.Screen name="ServiceCatalog" component={ServiceCatalogScreen} />
-      <Stack.Screen name="ServiceLookup" component={ServiceLookupScreen} />
-      <Stack.Screen name="PayCard" component={PayCardScreen} />
-      <Stack.Screen name="Concierge" component={ConciergeScreen} />
-      <Stack.Screen name="Security" component={SecurityScreen} />
-      <Stack.Screen name="Devices" component={DevicesScreen} />
-      <Stack.Screen name="Limits" component={LimitsScreen} />
-      <Stack.Screen name="Reports" component={ReportsScreen} />
-      <Stack.Screen name="Spend" component={SpendScreen} />
+      <Stack.Screen name="Qr" component={PantallaQr} />
+      <Stack.Screen name="Withdraw" component={PantallaRetiro} />
+      <Stack.Screen name="Card" component={PantallaTarjeta} />
+      <Stack.Screen name="Services" component={PantallaServicios} />
+      <Stack.Screen name="ServiceCatalog" component={PantallaCatalogoServicios} />
+      <Stack.Screen name="ServiceLookup" component={PantallaConsultaServicio} />
+      <Stack.Screen name="PayCard" component={PantallaPagarTarjeta} />
+      <Stack.Screen name="Concierge" component={PantallaAsistente} />
+      <Stack.Screen name="Security" component={PantallaSeguridad} />
+      <Stack.Screen name="Devices" component={PantallaDispositivos} />
+      <Stack.Screen name="Limits" component={PantallaLimites} />
+      <Stack.Screen name="Reports" component={PantallaReportes} />
+      <Stack.Screen name="Spend" component={PantallaGastos} />
     </Stack.Navigator>
   );
 }

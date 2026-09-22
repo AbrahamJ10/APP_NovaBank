@@ -16,7 +16,7 @@ const EN_LINEA_MAX = 5000;
 const CAJERO_MIN = 100;
 const CAJERO_MAX = 2000;
 
-export default function LimitsScreen() {
+export default function PantallaLimites() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();

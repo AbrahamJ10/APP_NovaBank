@@ -24,7 +24,7 @@ const ETIQUETA_CATEGORIA: Record<Biller['category'], string> = {
   municipalidad: 'Municipalidades',
 };
 
-export default function ServiceCatalogScreen() {
+export default function PantallaCatalogoServicios() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

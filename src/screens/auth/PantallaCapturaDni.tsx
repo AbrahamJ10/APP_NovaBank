@@ -27,7 +27,7 @@ const UMBRAL_CONSEJOS = 2; // muestra ayuda extra después de este número de in
 // pantalla no se liberaba antes de que la segunda intentara adquirirla.
 // Mantener una sola cámara viva y solo cambiar el modo de captura evita
 // por completo ese traspaso.
-export default function DniCaptureScreen() {
+export default function PantallaCapturaDni() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
   const { setDniFrontPhoto, setFrontDniNumber, setScannedDni } = usarEstadoApp();

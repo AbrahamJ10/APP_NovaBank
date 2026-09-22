@@ -472,7 +472,7 @@ export function usarEstadoAppInterno() {
       // aplicarUsuarioApi solo transfiere nombre/correo/dni/teléfono — el número
       // de cuenta/CCI/tarjeta reales solo existen una vez que el backend
       // los crea durante register(), así que se traen ahora. De lo
-      // contrario RegisterDoneScreen (que se muestra a continuación, antes
+      // contrario PantallaRegistroCompleto (que se muestra a continuación, antes
       // de que `session` llegue a 'in') mostraría los valores falsos de
       // relleno que hubiera en usuarioPorDefecto.
       await refreshAccount();

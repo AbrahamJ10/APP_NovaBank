@@ -11,7 +11,7 @@ import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function SpendScreen() {
+export default function PantallaGastos() {
   const nav = useNavigation();
   const { theme } = usarTema();
   const { t } = usarIdioma();

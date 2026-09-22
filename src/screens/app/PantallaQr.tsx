@@ -16,7 +16,7 @@ import { dinero } from '../../lib/formato';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function QrScreen() {
+export default function PantallaQr() {
   const nav = useNavigation();
   const { t } = usarIdioma();
   const { user, available, payQr, transactions } = usarEstadoApp();

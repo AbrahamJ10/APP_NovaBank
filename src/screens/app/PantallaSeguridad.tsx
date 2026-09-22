@@ -19,7 +19,7 @@ import { obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 const RADIO = 46;
 const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
-export default function SecurityScreen() {
+export default function PantallaSeguridad() {
   const nav = useNavigation<any>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

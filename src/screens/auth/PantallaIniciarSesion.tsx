@@ -17,7 +17,7 @@ import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 import { limpiarUltimaCuenta, obtenerUltimaCuenta } from '../../lib/tokensSeguros';
 
-export default function LoginScreen() {
+export default function PantallaIniciarSesion() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

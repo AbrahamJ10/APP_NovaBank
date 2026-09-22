@@ -4,11 +4,11 @@ import { ListaParametrosPestanas } from './tipos';
 import { usarTema } from '../theme/ContextoTema';
 import { fuentes } from '../theme/estilos';
 import Icono from '../components/Icono';
-import HomeScreen from '../screens/app/HomeScreen';
-import TransactionsScreen from '../screens/app/TransactionsScreen';
-import TransferScreen from '../screens/app/TransferScreen';
-import NotificationsScreen from '../screens/app/NotificationsScreen';
-import ProfileScreen from '../screens/app/ProfileScreen';
+import PantallaInicio from '../screens/app/PantallaInicio';
+import PantallaTransacciones from '../screens/app/PantallaTransacciones';
+import PantallaTransferencia from '../screens/app/PantallaTransferencia';
+import PantallaNotificaciones from '../screens/app/PantallaNotificaciones';
+import PantallaPerfil from '../screens/app/PantallaPerfil';
 import { usarIdioma } from '../i18n/ContextoIdioma';
 
 const Tab = createBottomTabNavigator<ListaParametrosPestanas>();
@@ -48,14 +48,14 @@ export default function PestanasApp() {
           name={pestana.name}
           component={
             pestana.name === 'Home'
-              ? HomeScreen
+              ? PantallaInicio
               : pestana.name === 'Transactions'
-              ? TransactionsScreen
+              ? PantallaTransacciones
               : pestana.name === 'Transfer'
-              ? TransferScreen
+              ? PantallaTransferencia
               : pestana.name === 'Notifications'
-              ? NotificationsScreen
-              : ProfileScreen
+              ? PantallaNotificaciones
+              : PantallaPerfil
           }
           options={{
             tabBarLabel: t(pestana.labelKey),

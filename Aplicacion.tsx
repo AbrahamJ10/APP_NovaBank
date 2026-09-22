@@ -21,7 +21,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 // the JS bundle) need to be cancelled explicitly or they'd keep firing.
 Notifications.cancelAllScheduledNotificationsAsync().catch(() => {});
 
-export default function App() {
+export default function Aplicacion() {
   const [manropeLoaded] = useManrope({ Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold });
   const [dmSansLoaded] = useDmSans({ DMSans_400Regular, DMSans_500Medium, DMSans_700Bold });
   const [cormorantLoaded] = useCormorant({ CormorantGaramond_600SemiBold, CormorantGaramond_700Bold });

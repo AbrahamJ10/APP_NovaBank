@@ -19,7 +19,7 @@ type Etapa = 'idle' | 'scanning' | 'checking' | 'ok' | 'otpFailed' | 'fail';
 
 const ANILLO = 178;
 
-export default function RegisterFaceScreen() {
+export default function PantallaRegistroRostro() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { t } = usarIdioma();
   const { pendingUser, dniFrontPhoto, setPendingSelfie } = usarEstadoApp();

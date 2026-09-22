@@ -33,7 +33,7 @@ function describirErrorApi(error: unknown, reserva: string): string {
 // que el código deja de ser válido del lado del servidor.
 const DURACION_FLUJO_MS = 10 * 60 * 1000;
 
-export default function RecoverScreen() {
+export default function PantallaRecuperar() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosAuth>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();

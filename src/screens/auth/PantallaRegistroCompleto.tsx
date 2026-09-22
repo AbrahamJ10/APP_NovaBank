@@ -8,7 +8,7 @@ import { fuentes } from '../../theme/estilos';
 import { usarEstadoApp } from '../../state/ContextoEstadoApp';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function RegisterDoneScreen() {
+export default function PantallaRegistroCompleto() {
   const { t } = usarIdioma();
   const { user, setSession, touch } = usarEstadoApp();
   const primerNombre = user.name.split(' ')[0];

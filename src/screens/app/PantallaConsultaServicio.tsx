@@ -17,7 +17,7 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 type Ruta = RouteProp<ListaParametrosRaiz, 'ServiceLookup'>;
 
-export default function ServiceLookupScreen() {
+export default function PantallaConsultaServicio() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { params } = useRoute<Ruta>();
   const { biller } = params;

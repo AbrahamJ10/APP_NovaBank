@@ -15,7 +15,7 @@ const PREDEFINIDOS = [100, 200, 400, 700];
 const RADIO = 46;
 const CIRCUNFERENCIA = 2 * Math.PI * RADIO;
 
-export default function WithdrawScreen() {
+export default function PantallaRetiro() {
   const { theme } = usarTema();
   const { t } = usarIdioma();
   const { withdraw, withdrawLeft, withdrawExpired, generateWithdraw, cancelWithdraw, renewWithdraw } = usarEstadoApp();

@@ -15,7 +15,7 @@ import { ServiceBill } from '../../state/tipos';
 import { ListaParametrosRaiz } from '../../navigation/tipos';
 import { usarIdioma } from '../../i18n/ContextoIdioma';
 
-export default function ServicesScreen() {
+export default function PantallaServicios() {
   const nav = useNavigation<NativeStackNavigationProp<ListaParametrosRaiz>>();
   const { theme } = usarTema();
   const { t } = usarIdioma();
