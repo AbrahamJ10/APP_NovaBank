@@ -18,10 +18,10 @@ import { RootStackParamList, TabParamList } from '../../navigation/types';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { getLastAccount } from '../../lib/secureTokens';
 
-type Nav = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
+type Navegacion = CompositeNavigationProp<NativeStackNavigationProp<RootStackParamList>, BottomTabNavigationProp<TabParamList>>;
 
 export default function ProfileScreen() {
-  const nav = useNavigation<Nav>();
+  const nav = useNavigation<Navegacion>();
   const { theme } = useTheme();
   const { t } = useLanguage();
   const { user, logout, requestProfileOtp, confirmEmailChange, confirmPhoneChange, changePassword } = useAppState();
@@ -30,117 +30,117 @@ export default function ProfileScreen() {
   // "el desbloqueo nativo por huella/rostro de este dispositivo de verdad
   // está registrado y puede hacer login rápido de esta cuenta", no alguna
   // configuración separada por cuenta.
-  const [faceIdOn, setFaceIdOn] = useState(false);
+  const [faceIdActivo, setFaceIdActivo] = useState(false);
   useEffect(() => {
     Promise.all([LocalAuthentication.hasHardwareAsync(), LocalAuthentication.isEnrolledAsync(), getLastAccount()])
-      .then(([hw, enrolled, remembered]) => setFaceIdOn(hw && enrolled && !!remembered))
-      .catch(() => setFaceIdOn(false));
+      .then(([hw, enrolled, remembered]) => setFaceIdActivo(hw && enrolled && !!remembered))
+      .catch(() => setFaceIdActivo(false));
   }, []);
 
-  const [editing, setEditing] = useState<{ field: 'email' | 'phone'; label: string } | null>(null);
-  const [value, setValue] = useState('');
-  const [code, setCode] = useState('');
-  const [codeError, setCodeError] = useState<string | null>(null);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [sendError, setSendError] = useState<string | null>(null);
-  const [submittingCode, setSubmittingCode] = useState(false);
-  const inputRef = useRef<TextInput>(null);
+  const [editando, setEditando] = useState<{ field: 'email' | 'phone'; label: string } | null>(null);
+  const [valor, setValor] = useState('');
+  const [codigo, setCodigo] = useState('');
+  const [errorCodigo, setErrorCodigo] = useState<string | null>(null);
+  const [enviandoOtp, setEnviandoOtp] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
+  const [enviandoCodigo, setEnviandoCodigo] = useState(false);
+  const refEntrada = useRef<TextInput>(null);
 
-  const [pwOpen, setPwOpen] = useState(false);
-  const [pwStep, setPwStep] = useState<'form' | 'otp' | 'done'>('form');
-  const [currentPass, setCurrentPass] = useState('');
-  const [currentPassError, setCurrentPassError] = useState(false);
-  const [newPass, setNewPass] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
-  const [pwCode, setPwCode] = useState('');
-  const [pwCodeError, setPwCodeError] = useState<string | null>(null);
-  const [pwSendingOtp, setPwSendingOtp] = useState(false);
-  const [pwSendError, setPwSendError] = useState<string | null>(null);
-  const [pwSubmitting, setPwSubmitting] = useState(false);
-  const pwInputRef = useRef<TextInput>(null);
+  const [pwAbierto, setPwAbierto] = useState(false);
+  const [pwPaso, setPwPaso] = useState<'form' | 'otp' | 'done'>('form');
+  const [pwActual, setPwActual] = useState('');
+  const [errorPwActual, setErrorPwActual] = useState(false);
+  const [pwNueva, setPwNueva] = useState('');
+  const [pwConfirmar, setPwConfirmar] = useState('');
+  const [pwCodigo, setPwCodigo] = useState('');
+  const [pwErrorCodigo, setPwErrorCodigo] = useState<string | null>(null);
+  const [pwEnviandoOtp, setPwEnviandoOtp] = useState(false);
+  const [pwErrorEnvio, setPwErrorEnvio] = useState<string | null>(null);
+  const [pwEnviando, setPwEnviando] = useState(false);
+  const refEntradaPw = useRef<TextInput>(null);
 
-  const openEdit = async (field: 'email' | 'phone', label: string, current: string) => {
-    setEditing({ field, label });
-    setValue(current);
-    setCode('');
-    setCodeError(null);
-    setSendError(null);
-    setSendingOtp(true);
-    const result = await requestProfileOtp();
-    setSendingOtp(false);
-    if (!result.ok) setSendError(result.message);
+  const abrirEdicion = async (campo: 'email' | 'phone', etiqueta: string, actual: string) => {
+    setEditando({ field: campo, label: etiqueta });
+    setValor(actual);
+    setCodigo('');
+    setErrorCodigo(null);
+    setErrorEnvio(null);
+    setEnviandoOtp(true);
+    const resultado = await requestProfileOtp();
+    setEnviandoOtp(false);
+    if (!resultado.ok) setErrorEnvio(resultado.message);
   };
 
-  const submit = async (v: string) => {
-    if (v.length !== 6 || !editing || submittingCode) return;
-    setSubmittingCode(true);
-    setCodeError(null);
-    const result = editing.field === 'email' ? await confirmEmailChange(value, v) : await confirmPhoneChange(value, v);
-    setSubmittingCode(false);
-    if (!result.ok) {
-      setCodeError(result.message);
-      setCode('');
+  const enviarCambio = async (v: string) => {
+    if (v.length !== 6 || !editando || enviandoCodigo) return;
+    setEnviandoCodigo(true);
+    setErrorCodigo(null);
+    const resultado = editando.field === 'email' ? await confirmEmailChange(valor, v) : await confirmPhoneChange(valor, v);
+    setEnviandoCodigo(false);
+    if (!resultado.ok) {
+      setErrorCodigo(resultado.message);
+      setCodigo('');
       return;
     }
-    setEditing(null);
+    setEditando(null);
   };
 
-  const ruleLen = newPass.length >= 10;
-  const ruleNum = /\d/.test(newPass);
-  const ruleUp = /[A-Z]/.test(newPass);
-  const ruleLow = /[a-z]/.test(newPass);
-  const newPassValid = ruleLen && ruleNum && ruleUp && ruleLow;
-  const confirmValid = confirmPass.length > 0 && confirmPass === newPass;
+  const reglaLargo = pwNueva.length >= 10;
+  const reglaNumero = /\d/.test(pwNueva);
+  const reglaMayuscula = /[A-Z]/.test(pwNueva);
+  const reglaMinuscula = /[a-z]/.test(pwNueva);
+  const pwNuevaValida = reglaLargo && reglaNumero && reglaMayuscula && reglaMinuscula;
+  const pwConfirmarValida = pwConfirmar.length > 0 && pwConfirmar === pwNueva;
 
-  const closePasswordSheet = () => {
-    setPwOpen(false);
-    setPwStep('form');
-    setCurrentPass('');
-    setCurrentPassError(false);
-    setNewPass('');
-    setConfirmPass('');
-    setPwCode('');
-    setPwCodeError(null);
-    setPwSendError(null);
+  const cerrarHojaPassword = () => {
+    setPwAbierto(false);
+    setPwPaso('form');
+    setPwActual('');
+    setErrorPwActual(false);
+    setPwNueva('');
+    setPwConfirmar('');
+    setPwCodigo('');
+    setPwErrorCodigo(null);
+    setPwErrorEnvio(null);
   };
 
-  const submitPasswordForm = async () => {
-    setCurrentPassError(false);
-    setPwSendError(null);
-    setPwSendingOtp(true);
-    const result = await requestProfileOtp();
-    setPwSendingOtp(false);
-    if (!result.ok) {
-      setPwSendError(result.message);
+  const enviarFormularioPassword = async () => {
+    setErrorPwActual(false);
+    setPwErrorEnvio(null);
+    setPwEnviandoOtp(true);
+    const resultado = await requestProfileOtp();
+    setPwEnviandoOtp(false);
+    if (!resultado.ok) {
+      setPwErrorEnvio(resultado.message);
       return;
     }
-    setPwStep('otp');
+    setPwPaso('otp');
   };
 
-  const submitPasswordOtp = async (v: string) => {
-    if (v.length !== 6 || pwSubmitting) return;
-    setPwSubmitting(true);
-    setPwCodeError(null);
-    const result = await changePassword(currentPass, newPass, v);
-    setPwSubmitting(false);
-    if (!result.ok) {
-      if (result.message.includes('contraseña actual')) {
-        setPwStep('form');
-        setCurrentPassError(true);
+  const enviarOtpPassword = async (v: string) => {
+    if (v.length !== 6 || pwEnviando) return;
+    setPwEnviando(true);
+    setPwErrorCodigo(null);
+    const resultado = await changePassword(pwActual, pwNueva, v);
+    setPwEnviando(false);
+    if (!resultado.ok) {
+      if (resultado.message.includes('contraseña actual')) {
+        setPwPaso('form');
+        setErrorPwActual(true);
       } else {
-        setPwCodeError(result.message);
+        setPwErrorCodigo(resultado.message);
       }
-      setPwCode('');
+      setPwCodigo('');
       return;
     }
-    setPwStep('done');
+    setPwPaso('done');
   };
 
-  const fields = [
+  const campos = [
     { label: t('profile.fullName'), value: user.name },
     { label: t('profile.dni'), value: user.dni },
-    { label: t('profile.email'), value: user.email, edit: () => openEdit('email', t('profile.emailField'), user.email) },
-    { label: t('profile.phone'), value: '+51 ' + user.phone, edit: () => openEdit('phone', t('profile.phoneField'), user.phone) },
+    { label: t('profile.email'), value: user.email, edit: () => abrirEdicion('email', t('profile.emailField'), user.email) },
+    { label: t('profile.phone'), value: '+51 ' + user.phone, edit: () => abrirEdicion('phone', t('profile.phoneField'), user.phone) },
   ];
 
   return (
@@ -160,14 +160,14 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ marginTop: 22, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 16 }}>
-        {fields.map((f, i) => (
-          <View key={f.label} style={{ paddingVertical: 14, borderBottomWidth: i < fields.length - 1 ? 1 : 0, borderBottomColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        {campos.map((campo, i) => (
+          <View key={campo.label} style={{ paddingVertical: 14, borderBottomWidth: i < campos.length - 1 ? 1 : 0, borderBottomColor: theme.line, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{f.label}</Text>
-              <Text style={{ marginTop: 3, fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{f.value}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11.5, color: theme.soft }}>{campo.label}</Text>
+              <Text style={{ marginTop: 3, fontFamily: fonts.bodyBold, fontSize: 13.5, color: theme.ink }}>{campo.value}</Text>
             </View>
-            {f.edit ? (
-              <Pressable onPress={f.edit} hitSlop={8}>
+            {campo.edit ? (
+              <Pressable onPress={campo.edit} hitSlop={8}>
                 <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12.5, color: theme.gold }}>{t('profile.edit')}</Text>
               </Pressable>
             ) : null}
@@ -176,69 +176,69 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ marginTop: 16, borderRadius: 20, backgroundColor: theme.surf, borderWidth: 1, borderColor: theme.line, paddingHorizontal: 16 }}>
-        <ProfileRow icon="password" label={t('profile.changePassword')} desc={t('profile.changePasswordDesc')} onPress={() => setPwOpen(true)} />
-        <ProfileRow
-          icon="fingerprint"
-          label={t('profile.faceId')}
-          desc={faceIdOn ? t('profile.faceIdDesc') : t('profile.faceIdDescOff')}
-          right={faceIdOn ? <Badge label={t('profile.active')} tone="green" /> : <Badge label={t('profile.inactive')} tone="neutral" />}
+        <FilaPerfil icono="password" etiqueta={t('profile.changePassword')} descripcion={t('profile.changePasswordDesc')} alPresionar={() => setPwAbierto(true)} />
+        <FilaPerfil
+          icono="fingerprint"
+          etiqueta={t('profile.faceId')}
+          descripcion={faceIdActivo ? t('profile.faceIdDesc') : t('profile.faceIdDescOff')}
+          derecha={faceIdActivo ? <Badge label={t('profile.active')} tone="green" /> : <Badge label={t('profile.inactive')} tone="neutral" />}
         />
-        <ProfileRow icon="shield" label={t('profile.securityCenter')} desc={t('profile.securityCenterDesc')} onPress={() => nav.navigate('Security')} />
-        <ProfileRow icon="description" label={t('profile.accountStatement')} desc={t('profile.accountStatementDesc')} onPress={() => nav.navigate('Reports')} last />
+        <FilaPerfil icono="shield" etiqueta={t('profile.securityCenter')} descripcion={t('profile.securityCenterDesc')} alPresionar={() => nav.navigate('Security')} />
+        <FilaPerfil icono="description" etiqueta={t('profile.accountStatement')} descripcion={t('profile.accountStatementDesc')} alPresionar={() => nav.navigate('Reports')} ultimo />
       </View>
 
       <DangerOutlineButton label={t('profile.logout')} icon="logout" onPress={logout} style={{ marginTop: 16 }} />
 
-      <BottomSheet visible={!!editing} onShow={() => inputRef.current?.focus()} onClose={() => setEditing(null)}>
-        {editing ? (
+      <BottomSheet visible={!!editando} onShow={() => refEntrada.current?.focus()} onClose={() => setEditando(null)}>
+        {editando ? (
           <View>
-            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.editField', { field: editing.label })}</Text>
+            <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.editField', { field: editando.label })}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('profile.criticalField')}
             </Text>
             <View style={{ marginTop: 18 }}>
               <TextField
-                value={value}
-                onChangeText={(v) => setValue(editing.field === 'phone' ? v.replace(/\D/g, '').slice(0, 9) : v)}
+                value={valor}
+                onChangeText={(v) => setValor(editando.field === 'phone' ? v.replace(/\D/g, '').slice(0, 9) : v)}
                 autoCapitalize="none"
-                keyboardType={editing.field === 'phone' ? 'number-pad' : 'email-address'}
+                keyboardType={editando.field === 'phone' ? 'number-pad' : 'email-address'}
               />
             </View>
-            <Pressable onPress={() => inputRef.current?.focus()} style={{ marginTop: 16 }}>
-              <OtpBoxes value={code} />
+            <Pressable onPress={() => refEntrada.current?.focus()} style={{ marginTop: 16 }}>
+              <OtpBoxes value={codigo} />
             </Pressable>
             <TextInput
-              ref={inputRef}
-              value={code}
+              ref={refEntrada}
+              value={codigo}
               keyboardType="number-pad"
               maxLength={6}
               onChangeText={(v) => {
-                const d = v.replace(/\D/g, '').slice(0, 6);
-                setCode(d);
-                setCodeError(null);
-                if (d.length === 6) submit(d);
+                const digitos = v.replace(/\D/g, '').slice(0, 6);
+                setCodigo(digitos);
+                setErrorCodigo(null);
+                if (digitos.length === 6) enviarCambio(digitos);
               }}
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
-            {sendError ? (
-              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{sendError}</Text>
-            ) : codeError ? (
-              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{codeError}</Text>
-            ) : sendingOtp ? (
+            {errorEnvio ? (
+              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorEnvio}</Text>
+            ) : errorCodigo ? (
+              <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{errorCodigo}</Text>
+            ) : enviandoOtp ? (
               <Text style={{ marginTop: 10, fontFamily: fonts.body, fontSize: 12, color: theme.soft }}>{t('profile.sendingCode')}</Text>
             ) : null}
             <PrimaryButton
-              label={submittingCode ? t('profile.verifying') : t('profile.saveChange')}
-              onPress={() => submit(code)}
-              disabled={code.length !== 6 || submittingCode || sendingOtp}
+              label={enviandoCodigo ? t('profile.verifying') : t('profile.saveChange')}
+              onPress={() => enviarCambio(codigo)}
+              disabled={codigo.length !== 6 || enviandoCodigo || enviandoOtp}
               style={{ marginTop: 18 }}
             />
           </View>
         ) : null}
       </BottomSheet>
 
-      <BottomSheet visible={pwOpen} onClose={closePasswordSheet}>
-        {pwStep === 'form' && (
+      <BottomSheet visible={pwAbierto} onClose={cerrarHojaPassword}>
+        {pwPaso === 'form' && (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.changePasswordTitle')}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
@@ -249,77 +249,77 @@ export default function ProfileScreen() {
                 label={t('profile.currentPassword')}
                 icon="lock"
                 secureTextEntry
-                value={currentPass}
+                value={pwActual}
                 onChangeText={(v) => {
-                  setCurrentPass(v);
-                  setCurrentPassError(false);
+                  setPwActual(v);
+                  setErrorPwActual(false);
                 }}
-                status={currentPassError ? 'error' : 'default'}
-                hint={currentPassError ? t('profile.currentPasswordMismatch') : undefined}
+                status={errorPwActual ? 'error' : 'default'}
+                hint={errorPwActual ? t('profile.currentPasswordMismatch') : undefined}
               />
-              <TextField label={t('profile.newPassword')} icon="lock" secureTextEntry value={newPass} onChangeText={setNewPass} />
+              <TextField label={t('profile.newPassword')} icon="lock" secureTextEntry value={pwNueva} onChangeText={setPwNueva} />
               <View style={{ gap: 6 }}>
-                <RuleLine ok={ruleLen} label={t('profile.ruleLen')} />
-                <RuleLine ok={ruleNum} label={t('profile.ruleNum')} />
-                <RuleLine ok={ruleUp} label={t('profile.ruleUp')} />
-                <RuleLine ok={ruleLow} label={t('profile.ruleLow')} />
+                <LineaRegla cumple={reglaLargo} etiqueta={t('profile.ruleLen')} />
+                <LineaRegla cumple={reglaNumero} etiqueta={t('profile.ruleNum')} />
+                <LineaRegla cumple={reglaMayuscula} etiqueta={t('profile.ruleUp')} />
+                <LineaRegla cumple={reglaMinuscula} etiqueta={t('profile.ruleLow')} />
               </View>
               <TextField
                 label={t('profile.repeatNewPassword')}
                 icon="lock"
                 secureTextEntry
-                value={confirmPass}
-                onChangeText={setConfirmPass}
-                status={confirmPass.length === 0 ? 'default' : confirmValid ? 'success' : 'error'}
+                value={pwConfirmar}
+                onChangeText={setPwConfirmar}
+                status={pwConfirmar.length === 0 ? 'default' : pwConfirmarValida ? 'success' : 'error'}
               />
             </View>
-            {pwSendError ? (
-              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwSendError}</Text>
+            {pwErrorEnvio ? (
+              <Text style={{ marginTop: 10, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorEnvio}</Text>
             ) : null}
             <PrimaryButton
-              label={pwSendingOtp ? t('profile.sendingCode') : t('profile.continue')}
-              onPress={submitPasswordForm}
-              disabled={currentPass.length === 0 || !newPassValid || !confirmValid || pwSendingOtp}
+              label={pwEnviandoOtp ? t('profile.sendingCode') : t('profile.continue')}
+              onPress={enviarFormularioPassword}
+              disabled={pwActual.length === 0 || !pwNuevaValida || !pwConfirmarValida || pwEnviandoOtp}
               style={{ marginTop: 20 }}
             />
-            <GhostButton label={t('profile.cancel')} onPress={closePasswordSheet} style={{ marginTop: 10 }} />
+            <GhostButton label={t('profile.cancel')} onPress={cerrarHojaPassword} style={{ marginTop: 10 }} />
           </View>
         )}
 
-        {pwStep === 'otp' && (
+        {pwPaso === 'otp' && (
           <View>
             <Text style={{ fontFamily: fonts.heading, fontSize: 20, letterSpacing: -0.5, color: theme.ink }}>{t('profile.confirmChangeTitle')}</Text>
             <Text style={{ marginTop: 8, fontFamily: fonts.body, fontSize: 12.5, lineHeight: 18, color: theme.mid }}>
               {t('profile.confirmChangeSubtitle')}
             </Text>
-            <Pressable onPress={() => pwInputRef.current?.focus()} style={{ marginTop: 18 }}>
-              <OtpBoxes value={pwCode} />
+            <Pressable onPress={() => refEntradaPw.current?.focus()} style={{ marginTop: 18 }}>
+              <OtpBoxes value={pwCodigo} />
             </Pressable>
             <TextInput
-              ref={pwInputRef}
-              value={pwCode}
+              ref={refEntradaPw}
+              value={pwCodigo}
               autoFocus
               keyboardType="number-pad"
               maxLength={6}
               onChangeText={(v) => {
-                const d = v.replace(/\D/g, '').slice(0, 6);
-                setPwCode(d);
-                setPwCodeError(null);
-                if (d.length === 6) submitPasswordOtp(d);
+                const digitos = v.replace(/\D/g, '').slice(0, 6);
+                setPwCodigo(digitos);
+                setPwErrorCodigo(null);
+                if (digitos.length === 6) enviarOtpPassword(digitos);
               }}
               style={{ position: 'absolute', opacity: 0, height: 0 }}
             />
-            {pwCodeError ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwCodeError}</Text> : null}
+            {pwErrorCodigo ? <Text style={{ marginTop: 8, color: '#C2352B', fontFamily: fonts.bodyBold, fontSize: 12 }}>{pwErrorCodigo}</Text> : null}
             <PrimaryButton
-              label={pwSubmitting ? t('profile.verifying') : t('profile.confirm')}
-              onPress={() => submitPasswordOtp(pwCode)}
-              disabled={pwCode.length !== 6 || pwSubmitting}
+              label={pwEnviando ? t('profile.verifying') : t('profile.confirm')}
+              onPress={() => enviarOtpPassword(pwCodigo)}
+              disabled={pwCodigo.length !== 6 || pwEnviando}
               style={{ marginTop: 18 }}
             />
           </View>
         )}
 
-        {pwStep === 'done' && (
+        {pwPaso === 'done' && (
           <View style={{ alignItems: 'center', paddingVertical: 10 }}>
             <View style={{ width: 70, height: 70, borderRadius: 35, backgroundColor: theme.okBg, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name="check" size={36} color={theme.green} />
@@ -328,7 +328,7 @@ export default function ProfileScreen() {
             <Text style={{ marginTop: 6, textAlign: 'center', fontFamily: fonts.body, fontSize: 12.5, color: theme.mid }}>
               {t('profile.passwordUpdatedBody')}
             </Text>
-            <PrimaryButton label={t('profile.done')} onPress={closePasswordSheet} style={{ marginTop: 18, width: '100%' }} />
+            <PrimaryButton label={t('profile.done')} onPress={cerrarHojaPassword} style={{ marginTop: 18, width: '100%' }} />
           </View>
         )}
       </BottomSheet>
@@ -336,35 +336,35 @@ export default function ProfileScreen() {
   );
 }
 
-function RuleLine({ ok, label }: { ok: boolean; label: string }) {
+function LineaRegla({ cumple, etiqueta }: { cumple: boolean; etiqueta: string }) {
   const { theme } = useTheme();
-  const color = ok ? theme.green : theme.soft;
+  const color = cumple ? theme.green : theme.soft;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <Icon name={ok ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
-      <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{label}</Text>
+      <Icon name={cumple ? 'check_circle' : 'radio_button_unchecked'} size={15} color={color} />
+      <Text style={{ fontFamily: fonts.bodyMed, fontSize: 11.5, color }}>{etiqueta}</Text>
     </View>
   );
 }
 
-function ProfileRow({ icon, label, desc, onPress, right, last }: { icon: string; label: string; desc: string; onPress?: () => void; right?: React.ReactNode; last?: boolean }) {
+function FilaPerfil({ icono, etiqueta, descripcion, alPresionar, derecha, ultimo }: { icono: string; etiqueta: string; descripcion: string; alPresionar?: () => void; derecha?: React.ReactNode; ultimo?: boolean }) {
   const { theme } = useTheme();
   return (
     <Pressable
-      onPress={onPress}
+      onPress={alPresionar}
       style={({ pressed }) => [
-        { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: last ? 0 : 1, borderBottomColor: theme.line },
-        pressed && onPress ? { opacity: 0.6 } : null,
+        { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, borderBottomWidth: ultimo ? 0 : 1, borderBottomColor: theme.line },
+        pressed && alPresionar ? { opacity: 0.6 } : null,
       ]}
     >
       <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: theme.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name={icon} size={19} color={theme.gold} />
+        <Icon name={icono} size={19} color={theme.gold} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{label}</Text>
-        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{desc}</Text>
+        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 13, color: theme.ink }}>{etiqueta}</Text>
+        <Text style={{ marginTop: 2, fontFamily: fonts.body, fontSize: 11, color: theme.soft }}>{descripcion}</Text>
       </View>
-      {right ?? (onPress ? <Icon name="chevron_right" size={18} color="#A6B1BD" /> : null)}
+      {derecha ?? (alPresionar ? <Icon name="chevron_right" size={18} color="#A6B1BD" /> : null)}
     </Pressable>
   );
 }
