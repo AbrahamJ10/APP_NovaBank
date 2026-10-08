@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ListaParametrosRaiz } from './tipos';
 import PestanasApp from './PestanasApp';
 import PantallaQr from '../pantallas/app/PantallaQr';
-import PantallaRetiro from '../pantallas/app/PantallaRetiro';
 import PantallaTarjeta from '../pantallas/app/PantallaTarjeta';
 import PantallaServicios from '../pantallas/app/PantallaServicios';
 import PantallaCatalogoServicios from '../pantallas/app/PantallaCatalogoServicios';
@@ -23,7 +22,6 @@ export default function PilaRaiz() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Main" component={PestanasApp} />
       <Stack.Screen name="Qr" component={PantallaQr} />
-      <Stack.Screen name="Withdraw" component={PantallaRetiro} />
       <Stack.Screen name="Card" component={PantallaTarjeta} />
       <Stack.Screen name="Services" component={PantallaServicios} />
       <Stack.Screen name="ServiceCatalog" component={PantallaCatalogoServicios} />

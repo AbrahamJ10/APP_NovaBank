@@ -7,7 +7,7 @@ export type Tx = {
   icon: string;
   iconBg: string;
   iconFg: string;
-  category: 'compras' | 'transferencias' | 'qr' | 'ingresos' | 'retiros' | 'servicios' | 'pago_tarjeta';
+  category: 'compras' | 'transferencias' | 'qr' | 'ingresos' | 'servicios' | 'pago_tarjeta';
   daysAgo: number;
   time: string;
 };

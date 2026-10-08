@@ -45,7 +45,6 @@ export default function PantallaSeguridad() {
     if (!faceIdActivo) puntos -= 10;
     if (!sinSospechosas) puntos -= 8;
     if (!alertas.compra) puntos -= 4;
-    if (!alertas.retiro) puntos -= 4;
     if (!alertas.login) puntos -= 6;
     return Math.max(0, Math.min(100, puntos));
   }, [faceIdActivo, sinSospechosas, alertas]);
@@ -62,12 +61,11 @@ export default function PantallaSeguridad() {
       label: t('security.taskSuspicious'),
       desc: sinSospechosas ? t('security.taskSuspiciousOk') : t('security.taskSuspiciousBad', { count: String(otrasSesiones) }),
     },
-    { icon: 'notifications_active', done: alertas.compra && alertas.retiro && alertas.login, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
+    { icon: 'notifications_active', done: alertas.compra && alertas.login, label: t('security.taskAlerts'), desc: t('security.taskAlertsDesc') },
   ];
 
   const filasAlerta: { key: keyof typeof alertas; icon: string; label: string }[] = [
     { key: 'compra', icon: 'shopping_cart', label: t('security.alertPurchase') },
-    { key: 'retiro', icon: 'local_atm', label: t('security.alertWithdrawal') },
     { key: 'login', icon: 'login', label: t('security.alertLogin') },
     { key: 'promo', icon: 'local_offer', label: t('security.alertPromo') },
   ];

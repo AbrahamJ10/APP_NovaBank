@@ -311,7 +311,7 @@ export const profileApi = {
   },
 };
 
-export type SecurityAlerts = { compra: boolean; retiro: boolean; login: boolean; promo: boolean };
+export type SecurityAlerts = { compra: boolean; login: boolean; promo: boolean };
 export type SecurityLimits = { limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean };
 export type SecuritySession = { id: string; device: string; ip: string | null; createdAt: string; current: boolean };
 
@@ -405,22 +405,6 @@ export const billsApi = {
 
   async resume(id: string): Promise<ApiBill> {
     return authedRequest(`/api/bills/${id}/resume`, { method: 'POST' });
-  },
-};
-
-export type ApiWithdrawal = { id: string; code: string; amount: number; expiresAt: string };
-
-export const withdrawalsApi = {
-  async create(amount: number): Promise<ApiWithdrawal> {
-    return authedRequest('/api/withdrawals', { method: 'POST', body: JSON.stringify({ amount }) });
-  },
-
-  async cancel(id: string) {
-    await authedRequest(`/api/withdrawals/${id}/cancel`, { method: 'POST' });
-  },
-
-  async renew(id: string): Promise<ApiWithdrawal> {
-    return authedRequest(`/api/withdrawals/${id}/renew`, { method: 'POST' });
   },
 };
 

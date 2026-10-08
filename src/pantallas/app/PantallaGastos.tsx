@@ -21,7 +21,6 @@ export default function PantallaGastos() {
     compras: { label: t('spend.catCompras'), color: '#2C6FD1', icon: 'shopping_cart' },
     transferencias: { label: t('spend.catTransferencias'), color: '#133A63', icon: 'swap_horiz' },
     qr: { label: t('spend.catQr'), color: '#D2691E', icon: 'qr_code_2' },
-    retiros: { label: t('spend.catRetiros'), color: '#5F6B78', icon: 'local_atm' },
     servicios: { label: t('spend.catServicios'), color: '#B07D07', icon: 'bolt' },
     pago_tarjeta: { label: t('spend.catPagoTarjeta'), color: '#7C3AED', icon: 'credit_card' },
   };

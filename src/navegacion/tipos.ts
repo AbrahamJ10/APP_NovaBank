@@ -22,7 +22,6 @@ export type ListaParametrosPestanas = {
 export type ListaParametrosRaiz = {
   Main: undefined;
   Qr: undefined;
-  Withdraw: undefined;
   Card: undefined;
   Services: undefined;
   ServiceCatalog: undefined;

@@ -22,7 +22,6 @@ import {
   transactionsApi,
   transfersApi,
   verificationApi,
-  withdrawalsApi,
   withTimeout,
 } from '../libreria/api';
 import { obtenerTokenAcceso, obtenerUltimoCorreo, obtenerTokenRefresco, guardarUltimaCuenta } from '../libreria/tokensSeguros';
@@ -216,10 +215,9 @@ export function usarEstadoAppInterno() {
   const [limiteCajero, setLimiteCajero] = useState(700);
   const [geoPeru, setGeoPeru] = useState(true);
   const [geoInternacional, setGeoInternacional] = useState(false);
-  const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, retiro: true, login: true, promo: false });
+  const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, login: true, promo: false });
   const [sesiones, setSessions] = useState<SecuritySession[]>([]);
 
-  const [retiro, setWithdraw] = useState<{ id: string; code: string; qr: string; deadline: number; amount: number } | null>(null);
   const [dniEscaneado, setDniEscaneado] = useState<DatosDni | null>(null);
   const [fotoFrenteDni, setFotoFrenteDni] = useState<string | null>(null);
   const [numeroFrenteDni, setNumeroFrenteDni] = useState<string | null>(null);
@@ -409,11 +407,11 @@ export function usarEstadoAppInterno() {
   }, [sesion]);
 
   // `ahora` solo necesita avanzar mientras haya de verdad una cuenta
-  // regresiva visible en algún lado (reenvío de OTP, bloqueo de iniciarSesion,
-  // código de retiro sin tarjeta). Hacerlo avanzar siempre re-renderizaba
-  // cada pantalla cada segundo, incluso a mitad de tecleo en formularios
-  // simples sin ningún temporizador.
-  const hasActiveTimer = otpDeadline > Date.now() || !!bloqueadoHasta || !!retiro;
+  // regresiva visible en algún lado (reenvío de OTP, bloqueo de
+  // iniciarSesion). Hacerlo avanzar siempre re-renderizaba cada pantalla
+  // cada segundo, incluso a mitad de tecleo en formularios simples sin
+  // ningún temporizador.
+  const hasActiveTimer = otpDeadline > Date.now() || !!bloqueadoHasta;
   useEffect(() => {
     if (!hasActiveTimer) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -429,9 +427,6 @@ export function usarEstadoAppInterno() {
   }, [tiempoBloqueoRestante, bloqueadoHasta]);
 
   const otpRestante = Math.max(0, Math.round((otpDeadline - ahora) / 1000));
-
-  const retiroRestante = retiro ? Math.max(0, Math.round((retiro.deadline - ahora) / 1000)) : 0;
-  const retiroExpirado = !!retiro && retiroRestante === 0;
 
   const iniciarOtp = useCallback((purpose: PropositoOtp, ctx?: any) => {
     const code = generarOtp();
@@ -737,42 +732,6 @@ export function usarEstadoAppInterno() {
     }
   }, []);
 
-  // Retiro sin tarjeta: el monto de verdad se debita del lado del servidor
-  // en el momento en que se genera un código (aquí no hay una red de
-  // cajeros real contra la cual canjearlo después) — cancelar emite un
-  // reembolso real, renovar rota el código sin mover dinero de nuevo.
-  const generarRetiro = useCallback(async (amount: number) => {
-    try {
-      const w = await withdrawalsApi.create(amount);
-      setWithdraw({ id: w.id, code: w.code, qr: `NOVABANK|WD|${w.code}|${w.amount}`, deadline: new Date(w.expiresAt).getTime(), amount: w.amount });
-      refrescarCuenta();
-      return { ok: true as const };
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 422) {
-        const details = err.details as Record<string, unknown> | undefined;
-        return { ok: false as const, message: typeof details?.reasonLabel === 'string' ? details.reasonLabel : err.message };
-      }
-      return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo generar la clave. Intenta de nuevo.' };
-    }
-  }, [refrescarCuenta]);
-
-  const cancelarRetiro = useCallback(() => {
-    if (!retiro) return;
-    const id = retiro.id;
-    setWithdraw(null); // optimistic
-    withdrawalsApi.cancel(id).then(refrescarCuenta).catch(() => {});
-  }, [retiro, refrescarCuenta]);
-
-  const renovarRetiro = useCallback(async () => {
-    if (!retiro) return;
-    try {
-      const w = await withdrawalsApi.renew(retiro.id);
-      setWithdraw({ id: w.id, code: w.code, qr: `NOVABANK|WD|${w.code}|${w.amount}`, deadline: new Date(w.expiresAt).getTime(), amount: w.amount });
-    } catch {
-      // se deja el estado expirado tal cual; el botón sigue disponible para reintentar
-    }
-  }, [retiro]);
-
   const pagarRecibo = useCallback(async (billId: string) => {
     try {
       await billsApi.pay(billId);
@@ -874,7 +833,6 @@ export function usarEstadoAppInterno() {
     solicitarOtpTransferencia, ejecutarTransferencia, agregarDestinatario,
     iniciarRecuperacion,
     solicitarOtpPerfil, confirmarCambioCorreo, confirmarCambioTelefono, cambiarContrasena,
-    retiro, retiroRestante, retiroExpirado, generarRetiro, cancelarRetiro, renovarRetiro,
     dniEscaneado, setDniEscaneado,
     fotoFrenteDni, setFotoFrenteDni,
     numeroFrenteDni, setNumeroFrenteDni,

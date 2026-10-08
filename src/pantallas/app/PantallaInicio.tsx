@@ -28,7 +28,6 @@ export default function PantallaInicio() {
     { icon: 'swap_horiz', label: t('home.quickTransfer'), go: 'TransferTab' as const },
     { icon: 'qr_code_2', label: t('home.quickQr'), go: 'Qr' as const },
     { icon: 'receipt_long', label: t('home.quickServices'), go: 'Services' as const },
-    { icon: 'local_atm', label: t('home.quickWithdraw'), go: 'Withdraw' as const },
     { icon: 'credit_score', label: t('home.quickPayCard'), go: 'PayCard' as const },
     { icon: 'support_agent', label: t('home.quickConcierge'), go: 'Concierge' as const },
   ];
