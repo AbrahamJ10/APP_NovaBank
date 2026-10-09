@@ -13,21 +13,19 @@ import { usarIdioma } from '../../i18n/ContextoIdioma';
 
 const EN_LINEA_MIN = 200;
 const EN_LINEA_MAX = 5000;
-const CAJERO_MIN = 100;
-const CAJERO_MAX = 2000;
 
 export default function PantallaLimites() {
   const nav = useNavigation();
   const { tema } = usarTema();
   const { t } = usarIdioma();
-  const { limiteEnLinea, setLimiteEnLinea, limiteCajero, setLimiteCajero, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional, cargarSeguridad, guardarLimites } = usarEstadoApp();
+  const { limiteEnLinea, setLimiteEnLinea, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional, cargarSeguridad, guardarLimites } = usarEstadoApp();
 
   useEffect(() => {
     cargarSeguridad();
   }, [cargarSeguridad]);
 
-  const persistir = (siguiente: Partial<{ limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean }>) => {
-    guardarLimites({ limiteEnLinea, limiteCajero, geoPeru, geoInternacional, ...siguiente });
+  const persistir = (siguiente: Partial<{ limiteEnLinea: number; geoPeru: boolean; geoInternacional: boolean }>) => {
+    guardarLimites({ limiteEnLinea, geoPeru, geoInternacional, ...siguiente });
   };
 
   return (
@@ -55,28 +53,6 @@ export default function PantallaLimites() {
           <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{dinero(EN_LINEA_MIN)}</Text>
           <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{t('limits.dailyCap')}</Text>
           <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{dinero(EN_LINEA_MAX)}</Text>
-        </View>
-      </View>
-
-      <View style={{ marginTop: 14, borderRadius: 24, backgroundColor: tema.superficie, borderWidth: 1, borderColor: tema.linea, padding: 22 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <Text style={{ fontFamily: fuentes.bodyBold, fontSize: 13.5, color: tema.tinta }}>{t('limits.atmWithdrawals')}</Text>
-          <Text style={{ fontFamily: fuentes.heading, fontSize: 19, letterSpacing: -0.5, color: tema.tinta }}>{dinero(limiteCajero)}</Text>
-        </View>
-        <View style={{ marginTop: 14 }}>
-          <DeslizadorSimple
-            minimumValue={CAJERO_MIN}
-            maximumValue={CAJERO_MAX}
-            step={100}
-            value={limiteCajero}
-            onValueChange={setLimiteCajero}
-            onSlidingComplete={(valor) => persistir({ limiteCajero: valor })}
-          />
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{dinero(CAJERO_MIN)}</Text>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{t('limits.dailyCap')}</Text>
-          <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: tema.suave }}>{dinero(CAJERO_MAX)}</Text>
         </View>
       </View>
 

@@ -22,13 +22,12 @@ export default function PantallaInicio() {
   const nav = useNavigation<Navegacion>();
   const { tema, oscuro, alternar } = usarTema();
   const { t } = usarIdioma();
-  const { usuario, disponible, retenido, lineaCredito, pagoMinimo, fechaCorte, tarjetaBloqueada, transacciones } = usarEstadoApp();
+  const { usuario, disponible, retenido, lineaCredito, fechaCorte, tarjetaBloqueada, transacciones } = usarEstadoApp();
 
   const ACCESOS_RAPIDOS = [
     { icon: 'swap_horiz', label: t('home.quickTransfer'), go: 'TransferTab' as const },
     { icon: 'qr_code_2', label: t('home.quickQr'), go: 'Qr' as const },
     { icon: 'receipt_long', label: t('home.quickServices'), go: 'Services' as const },
-    { icon: 'credit_score', label: t('home.quickPayCard'), go: 'PayCard' as const },
     { icon: 'support_agent', label: t('home.quickConcierge'), go: 'Concierge' as const },
   ];
   const [ocultar, setOcultar] = useState(false);
@@ -76,7 +75,6 @@ export default function PantallaInicio() {
         <View style={{ marginTop: 22, borderRadius: 18, backgroundColor: 'rgba(255,255,255,.07)', borderWidth: 1, borderColor: 'rgba(217,190,122,.22)', padding: 18, flexDirection: 'row', flexWrap: 'wrap' }}>
           <MiniEstadistica label={t('home.heldBalance')} value={dinero(retenido)} />
           <MiniEstadistica label={t('home.creditLine')} value={dinero(lineaCredito)} />
-          <MiniEstadistica label={t('home.minPayment')} value={dinero(pagoMinimo)} />
           <MiniEstadistica label={t('home.cutDate')} value={fechaCorte} />
         </View>
       </LinearGradient>
@@ -155,7 +153,7 @@ export default function PantallaInicio() {
 
 function MiniEstadistica({ label, value }: { label: string; value: string }) {
   return (
-    <View style={{ width: '50%', marginBottom: 10 }}>
+    <View style={{ width: '33%', marginBottom: 10 }}>
       <Text style={{ fontFamily: fuentes.body, fontSize: 11, color: 'rgba(255,255,255,.55)' }}>{label}</Text>
       <Text style={{ marginTop: 4, fontFamily: fuentes.headingBold, fontSize: 15, color: '#fff' }}>{value}</Text>
     </View>

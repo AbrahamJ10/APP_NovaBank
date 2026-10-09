@@ -7,7 +7,6 @@ import PantallaTarjeta from '../pantallas/app/PantallaTarjeta';
 import PantallaServicios from '../pantallas/app/PantallaServicios';
 import PantallaCatalogoServicios from '../pantallas/app/PantallaCatalogoServicios';
 import PantallaConsultaServicio from '../pantallas/app/PantallaConsultaServicio';
-import PantallaPagarTarjeta from '../pantallas/app/PantallaPagarTarjeta';
 import PantallaAsistente from '../pantallas/app/PantallaAsistente';
 import PantallaSeguridad from '../pantallas/app/PantallaSeguridad';
 import PantallaDispositivos from '../pantallas/app/PantallaDispositivos';
@@ -26,7 +25,6 @@ export default function PilaRaiz() {
       <Stack.Screen name="Services" component={PantallaServicios} />
       <Stack.Screen name="ServiceCatalog" component={PantallaCatalogoServicios} />
       <Stack.Screen name="ServiceLookup" component={PantallaConsultaServicio} />
-      <Stack.Screen name="PayCard" component={PantallaPagarTarjeta} />
       <Stack.Screen name="Concierge" component={PantallaAsistente} />
       <Stack.Screen name="Security" component={PantallaSeguridad} />
       <Stack.Screen name="Devices" component={PantallaDispositivos} />

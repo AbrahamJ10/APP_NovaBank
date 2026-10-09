@@ -190,8 +190,6 @@ export function usarEstadoAppInterno() {
   const [disponible, setAvailable] = useState(0);
   const [retenido, setHeld] = useState(0);
   const [lineaCredito, setCreditLine] = useState(0);
-  const [deudaTarjeta, setCardDebt] = useState(0);
-  const [pagoMinimo, setMinPayment] = useState(0);
   const [fechaCorte, setCutDate] = useState('');
   const [cargandoCuenta, setAccountLoading] = useState(false);
 
@@ -212,7 +210,6 @@ export function usarEstadoAppInterno() {
   const [contextoOtp, setOtpContext] = useState<any>(null);
 
   const [limiteEnLinea, setLimiteEnLinea] = useState(1500);
-  const [limiteCajero, setLimiteCajero] = useState(700);
   const [geoPeru, setGeoPeru] = useState(true);
   const [geoInternacional, setGeoInternacional] = useState(false);
   const [alertas, setAlerts] = useState<SecurityAlerts>({ compra: true, login: true, promo: false });
@@ -258,8 +255,6 @@ export function usarEstadoAppInterno() {
     setAvailable(summary.availableBalance);
     setHeld(summary.heldBalance);
     setCreditLine(summary.creditLine);
-    setCardDebt(summary.cardDebt);
-    setMinPayment(summary.minPayment);
     setCutDate(summary.cutDate);
     setCardBlocked(summary.cardBlocked);
     setUser((u) => ({
@@ -317,7 +312,6 @@ export function usarEstadoAppInterno() {
       ]);
       setAlerts(alertsRes);
       setLimiteEnLinea(limitsRes.limitOnline);
-      setLimiteCajero(limitsRes.limitAtm);
       setGeoPeru(limitsRes.geoPeru);
       setGeoInternacional(limitsRes.geoIntl);
       setSessions(sessionsRes);
@@ -337,16 +331,14 @@ export function usarEstadoAppInterno() {
     }
   }, [alertas]);
 
-  const guardarLimites = useCallback(async (next: { limiteEnLinea: number; limiteCajero: number; geoPeru: boolean; geoInternacional: boolean }) => {
+  const guardarLimites = useCallback(async (next: { limiteEnLinea: number; geoPeru: boolean; geoInternacional: boolean }) => {
     try {
       const saved = await securityApi.updateLimits({
         limitOnline: next.limiteEnLinea,
-        limitAtm: next.limiteCajero,
         geoPeru: next.geoPeru,
         geoIntl: next.geoInternacional,
       });
       setLimiteEnLinea(saved.limitOnline);
-      setLimiteCajero(saved.limitAtm);
       setGeoPeru(saved.geoPeru);
       setGeoInternacional(saved.geoIntl);
     } catch {
@@ -782,16 +774,6 @@ export function usarEstadoAppInterno() {
     }
   }, [refrescarCuenta]);
 
-  const pagarTarjeta = useCallback(async (amount: number) => {
-    try {
-      const summary = await accountApi.pagarTarjeta(amount);
-      applyAccountSummary(summary);
-      return { ok: true as const };
-    } catch (err) {
-      return { ok: false as const, message: err instanceof ApiError ? err.message : 'No se pudo procesar el pago. Intenta de nuevo.' };
-    }
-  }, [applyAccountSummary]);
-
   const revelarCvv = useCallback(async (otpCode: string) => {
     try {
       const { cvv } = await accountApi.revelarCvv(otpCode);
@@ -822,7 +804,7 @@ export function usarEstadoAppInterno() {
     ahora, tocar,
     sesion, setSesion, expirado, setExpirado,
     usuario, usuarioPendiente,
-    disponible, retenido, lineaCredito, deudaTarjeta, pagoMinimo, fechaCorte, cargandoCuenta, refrescarCuenta,
+    disponible, retenido, lineaCredito, fechaCorte, cargandoCuenta, refrescarCuenta,
     transacciones, destinatarios, notificaciones, servicios,
     tarjetaBloqueada, solicitarBloqueoTarjeta,
     modoPanico, abrirPanico, cerrarPanico,
@@ -837,9 +819,9 @@ export function usarEstadoAppInterno() {
     fotoFrenteDni, setFotoFrenteDni,
     numeroFrenteDni, setNumeroFrenteDni,
     selfiePendiente, setSelfiePendiente,
-    pagarRecibo, pagarQr, pagarTarjeta, revelarCvv, afiliarServicio, suspenderRecibo, reanudarRecibo,
+    pagarRecibo, pagarQr, revelarCvv, afiliarServicio, suspenderRecibo, reanudarRecibo,
     marcarTodasNotifLeidas, marcarNotifLeida, limpiarNotificaciones,
-    limiteEnLinea, setLimiteEnLinea, limiteCajero, setLimiteCajero, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional,
+    limiteEnLinea, setLimiteEnLinea, geoPeru, setGeoPeru, geoInternacional, setGeoInternacional,
     alertas, alternarAlerta,
     sesiones, cargarSeguridad, guardarLimites, revocarSesion, revocarOtrasSesiones,
   };

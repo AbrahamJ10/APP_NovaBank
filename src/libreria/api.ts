@@ -168,8 +168,6 @@ export type AccountSummary = {
   availableBalance: number;
   heldBalance: number;
   creditLine: number;
-  cardDebt: number;
-  minPayment: number;
   cutDate: string;
   cardBlocked: boolean;
   memberSince: string;
@@ -182,10 +180,6 @@ export const accountApi = {
 
   async setCardBlocked(blocked: boolean): Promise<{ cardBlocked: boolean }> {
     return authedRequest('/api/account/card-block', { method: 'POST', body: JSON.stringify({ blocked }) });
-  },
-
-  async pagarTarjeta(amount: number): Promise<AccountSummary> {
-    return authedRequest('/api/account/pay-card', { method: 'POST', body: JSON.stringify({ amount }) });
   },
 
   async revelarCvv(otpCode: string): Promise<{ cvv: string }> {
@@ -312,7 +306,7 @@ export const profileApi = {
 };
 
 export type SecurityAlerts = { compra: boolean; login: boolean; promo: boolean };
-export type SecurityLimits = { limitOnline: number; limitAtm: number; geoPeru: boolean; geoIntl: boolean };
+export type SecurityLimits = { limitOnline: number; geoPeru: boolean; geoIntl: boolean };
 export type SecuritySession = { id: string; device: string; ip: string | null; createdAt: string; current: boolean };
 
 export const securityApi = {

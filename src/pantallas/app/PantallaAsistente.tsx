@@ -33,12 +33,9 @@ export default function PantallaAsistente() {
     servicios,
     disponible,
     lineaCredito,
-    deudaTarjeta,
-    pagoMinimo,
     transacciones,
     sesiones,
     limiteEnLinea,
-    limiteCajero,
     cargarSeguridad,
     pagarRecibo,
     suspenderRecibo,
@@ -182,7 +179,7 @@ export default function PantallaAsistente() {
 
   // --- Saldo y movimientos ---
   function mostrarSaldo() {
-    enviarAgente(t('concierge.balanceInfo', { disponible: dinero(disponible), debt: dinero(deudaTarjeta), min: dinero(pagoMinimo), line: dinero(lineaCredito) }), [
+    enviarAgente(t('concierge.balanceInfo', { disponible: dinero(disponible), line: dinero(lineaCredito) }), [
       { id: 'movements', label: t('concierge.actionShowMovements'), run: mostrarMovimientos },
       accionVolver(),
     ]);
@@ -202,7 +199,7 @@ export default function PantallaAsistente() {
   async function mostrarInfoSeguridad() {
     enviarAgente(t('concierge.securityLoading'));
     await cargarSeguridad();
-    enviarAgente(t('concierge.securityInfo', { count: String(sesiones.length), online: dinero(limiteEnLinea), atm: dinero(limiteCajero) }), [
+    enviarAgente(t('concierge.securityInfo', { count: String(sesiones.length), online: dinero(limiteEnLinea) }), [
       { id: 'goSecurity', label: t('concierge.actionGoSecurity'), run: () => nav.navigate('Security') },
       accionVolver(),
     ]);

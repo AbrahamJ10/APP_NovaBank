@@ -26,7 +26,6 @@ export type ListaParametrosRaiz = {
   Services: undefined;
   ServiceCatalog: undefined;
   ServiceLookup: { biller: Biller };
-  PayCard: undefined;
   Concierge: undefined;
   Security: undefined;
   Devices: undefined;
